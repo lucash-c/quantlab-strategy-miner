@@ -1,0 +1,62 @@
+{
+  "schema_version": "strategy-definition/v1",
+  "strategy_id": "WINV26.SMA.VALIDATION",
+  "strategy_version": 1,
+  "name": "WINV26 deterministic adapter validation",
+  "symbol": "WINV26",
+  "timeframe": "1m",
+  "evaluation_mode": "ON_CLOSE",
+  "direction": "BUY",
+  "required_indicators": [
+    {
+      "name": "sma_close",
+      "version": "1.0.0",
+      "parameters": {
+        "period": 20
+      }
+    }
+  ],
+  "entry_conditions": {
+    "type": "logical",
+    "operator": "AND",
+    "children": [
+      {
+        "type": "comparison",
+        "operator": "GT",
+        "left": {
+          "type": "field",
+          "name": "close"
+        },
+        "right": {
+          "type": "indicator",
+          "name": "sma_close",
+          "version": "1.0.0",
+          "parameters": {
+            "period": 20
+          }
+        }
+      }
+    ]
+  },
+  "take_profit": {
+    "unit": "POINTS",
+    "value": "100"
+  },
+  "stop_loss": {
+    "unit": "POINTS",
+    "value": "100"
+  },
+  "execution": {
+    "entry_fill": "NEXT_TRADE",
+    "position_policy": "SINGLE_POSITION_NO_QUEUE",
+    "same_tick_reentry": false,
+    "end_of_data": "CLOSE_AT_LAST_TRADE",
+    "position_size": 1
+  },
+  "cost_model": {
+    "type": "NONE"
+  },
+  "slippage_model": {
+    "type": "NONE"
+  }
+}

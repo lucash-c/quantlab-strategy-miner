@@ -40,7 +40,13 @@ from quantlab_data.parquet import (
 )
 
 
-def _run_into(source: Path, strategy_source: Path, destination: Path) -> dict[str, object]:
+def run_first_increment_into(
+    source: Path,
+    strategy_source: Path,
+    destination: Path,
+) -> dict[str, object]:
+    """Run the first increment into a caller-owned new directory."""
+
     strategy = load_strategy(strategy_source)
     dataset_manifest = normalize_csv(source, destination)
     if dataset_manifest["symbol"] != strategy.symbol:
@@ -165,7 +171,7 @@ def run_first_increment(
         tempfile.mkdtemp(prefix=f".{output_directory.name}.tmp-", dir=output_directory.parent)
     )
     try:
-        manifest = _run_into(source, strategy_source, temporary)
+        manifest = run_first_increment_into(source, strategy_source, temporary)
         os.replace(temporary, output_directory)
         return manifest
     except BaseException:
