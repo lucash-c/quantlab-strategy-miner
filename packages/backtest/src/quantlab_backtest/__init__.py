@@ -1,5 +1,6 @@
 """Deterministic chronological backtest package."""
 
-BACKTEST_ENGINE_VERSION = "0.1.0"
+from quantlab_backtest.engine import BACKTEST_ENGINE_VERSION, run_backtest
+from quantlab_backtest.models import BacktestSummary, ClosedTrade
 
-__all__ = ["BACKTEST_ENGINE_VERSION"]
+__all__ = ["BACKTEST_ENGINE_VERSION", "BacktestSummary", "ClosedTrade", "run_backtest"]
