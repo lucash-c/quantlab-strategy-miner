@@ -2,7 +2,7 @@
 
 Base independente e deterministica para pesquisa quantitativa de estrategias de scalp.
 
-O primeiro incremento implementa somente o seguinte fluxo:
+O nucleo implementa o seguinte fluxo deterministico:
 
 ```text
 CSV canonico v1
@@ -15,6 +15,10 @@ CSV canonico v1
 ```
 
 Candidate Generator, Strategy Score, LLM, interface, Monte Carlo, mineracao e ranking estao deliberadamente fora deste incremento.
+
+O segundo incremento acrescenta somente o adaptador do arquivo oficial B3 Negocio a Negocio -
+Listados, perfil `_DRV`. Para a amostra de 10/09/2026, `WINV26` e uma selecao explicita de
+validacao e nao uma regra de contrato vigente ou rollover.
 
 ## Principios
 
@@ -29,7 +33,9 @@ Candidate Generator, Strategy Score, LLM, interface, Monte Carlo, mineracao e ra
 
 Os contratos completos estao em [docs/contracts/canonical-csv-v1.md](docs/contracts/canonical-csv-v1.md),
 [docs/contracts/manual-strategy-v1.md](docs/contracts/manual-strategy-v1.md) e
-[docs/architecture/first-increment.md](docs/architecture/first-increment.md).
+[docs/contracts/b3-listed-trades-drv-v1.md](docs/contracts/b3-listed-trades-drv-v1.md). As
+fronteiras dos slices estao em [docs/architecture/first-increment.md](docs/architecture/first-increment.md)
+e [docs/architecture/second-increment.md](docs/architecture/second-increment.md).
 
 ## Desenvolvimento
 
@@ -51,3 +57,33 @@ uv run quantlab-miner run `
 
 O comando imprime o `run_id` derivado dos hashes semanticos. Consulte o manifest final no
 diretorio de saida para auditar dados, estrategia, engines e artefatos.
+
+Para executar o segundo incremento:
+
+```powershell
+uv run quantlab-miner run-b3 `
+  --input C:\caminho\10-09-2026_NEGOCIOSAVISTA_DRV.zip `
+  --contract WINV26 `
+  --strategy examples\strategies\winv26-validation-sma-v1.json `
+  --output artifacts\b3-run-001
+```
+
+## Testes B3
+
+A suite comum usa apenas fixtures pequenas derivadas da amostra real:
+
+```powershell
+uv run python scripts\run_tests.py
+```
+
+O ZIP integral nao participa dessa suite. Seu aceite e opt-in, roda o fluxo completo duas vezes
+e compara os hashes de todos os artefatos:
+
+```powershell
+uv run python scripts\run_b3_full_acceptance.py `
+  --input C:\caminho\10-09-2026_NEGOCIOSAVISTA_DRV.zip `
+  --output artifacts\b3-full-acceptance
+```
+
+O aceite da amostra de 10/09/2026 esta registrado em
+[docs/evidence/second-increment-acceptance-2026-09-10.md](docs/evidence/second-increment-acceptance-2026-09-10.md).
