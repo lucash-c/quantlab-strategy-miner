@@ -5,7 +5,7 @@
 *.json text eol=lf
 *.jsonl text eol=lf
 *.csv text eol=lf
+tests/fixtures/b3_listed/*.txt text eol=lf
 *.parquet binary
 *.png binary
 *.zip binary
-

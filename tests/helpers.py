@@ -6,6 +6,7 @@ from pathlib import Path
 
 def strategy_record(
     *,
+    symbol: str = "TEST",
     direction: str = "BUY",
     target: str = "5",
     stop: str = "10",
@@ -22,7 +23,7 @@ def strategy_record(
         "strategy_id": "TEST.SMA",
         "strategy_version": 1,
         "name": "Technical deterministic fixture",
-        "symbol": "TEST",
+        "symbol": symbol,
         "timeframe": "1m",
         "evaluation_mode": "ON_CLOSE",
         "direction": direction,
