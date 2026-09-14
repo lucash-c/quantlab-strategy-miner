@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import csv
+import platform
 import sqlite3
 from collections.abc import Iterator
 from pathlib import Path
@@ -19,6 +20,7 @@ from quantlab_core.time import parse_iso8601_ns
 
 from quantlab_data.parquet import (
     PARQUET_ENGINE_VERSION,
+    PYARROW_VERSION,
     TRADE_SCHEMA,
     new_semantic_digest,
     update_semantic_digest,
@@ -169,6 +171,11 @@ def normalize_csv(source: Path, output_directory: Path) -> dict[str, object]:
         "contract_version": CSV_CONTRACT_VERSION,
         "normalizer_version": NORMALIZER_VERSION,
         "parquet_engine_version": PARQUET_ENGINE_VERSION,
+        "runtime_versions": {
+            "python": platform.python_version(),
+            "sqlite": sqlite3.sqlite_version,
+            "pyarrow": PYARROW_VERSION,
+        },
         "source_sha256": source_hash,
         "normalized_semantic_sha256": artifact["semantic_sha256"],
         "price_scale": price_scale,
@@ -184,6 +191,7 @@ def normalize_csv(source: Path, output_directory: Path) -> dict[str, object]:
         },
         "contract": {"name": "canonical-csv", "version": "v1"},
         "normalizer": {"name": "quantlab-data", "version": NORMALIZER_VERSION},
+        "runtime_versions": identity["runtime_versions"],
         "symbol": symbol,
         "row_count": staged_count,
         "timezone": "UTC",

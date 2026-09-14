@@ -64,5 +64,5 @@ O dataset recebe identidade derivada de:
 - hash semantico das linhas normalizadas.
 
 O resultado recebe identidade derivada dos hashes dos dados, candles, features, estrategia,
-ledger, metricas e versoes dos engines.
-
+ledger, metricas, versoes dos engines e fingerprints dos runtimes Python, SQLite, PyArrow e
+Pydantic.

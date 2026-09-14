@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -9,7 +10,7 @@ from pydantic import ValidationError
 from quantlab_core.errors import ContractError
 from quantlab_core.evaluator import evaluate_condition
 from quantlab_core.market_data import Candle, FeatureRow
-from quantlab_core.strategy import StrategyDefinition, load_strategy
+from quantlab_core.strategy import StrategyDefinition, load_strategy, strategy_json_schema
 
 
 class StrategySchemaTests(unittest.TestCase):
@@ -38,6 +39,13 @@ class StrategySchemaTests(unittest.TestCase):
         candle = Candle("TEST", "1m", 0, 60, 101, 101, 101, 101, 1, 1)
         feature = FeatureRow(candle, 201, 2, 60)
         self.assertTrue(evaluate_condition(strategy.entry_conditions, feature, 0))
+
+    def test_published_json_schema_matches_model(self) -> None:
+        root = Path(__file__).resolve().parents[1]
+        published = json.loads(
+            (root / "schemas" / "strategy-definition" / "v1.schema.json").read_text()
+        )
+        self.assertEqual(published, strategy_json_schema())
 
 
 if __name__ == "__main__":

@@ -10,6 +10,9 @@ dependencies = [
   "quantlab-data",
 ]
 
+[dependency-groups]
+dev = ["ruff>=0.11,<1"]
+
 [tool.uv.sources]
 quantlab-backtest = { workspace = true }
 quantlab-cli = { workspace = true }
@@ -29,4 +32,3 @@ select = ["E", "F", "I", "UP", "B", "SIM"]
 [tool.pyright]
 pythonVersion = "3.12"
 typeCheckingMode = "strict"
-

@@ -17,6 +17,7 @@ from quantlab_core.market_data import Candle
 from quantlab_data.parquet import (
     CANDLE_SCHEMA,
     FEATURE_SCHEMA,
+    PYARROW_VERSION,
     iter_candles,
     iter_trades,
     new_semantic_digest,
@@ -56,6 +57,7 @@ def materialize_one_minute_candles(source: Path, destination: Path) -> dict[str,
         "byte_sha256": sha256_file(destination),
         "semantic_sha256": digest.hexdigest(),
         "engine": {"name": "candle-engine", "version": CANDLE_ENGINE_VERSION},
+        "pyarrow_version": PYARROW_VERSION,
         "timeframe": "1m",
         "empty_interval_policy": "DO_NOT_FILL",
         "interval": "[open_time,close_time)",
@@ -90,6 +92,7 @@ def materialize_sma_features(
         "byte_sha256": sha256_file(destination),
         "semantic_sha256": digest.hexdigest(),
         "engine": {"name": "indicator-engine", "version": INDICATOR_ENGINE_VERSION},
+        "pyarrow_version": PYARROW_VERSION,
         "indicator": {
             "name": "sma_close",
             "version": SMA_CLOSE_VERSION,

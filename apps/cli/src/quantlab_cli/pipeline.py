@@ -2,34 +2,42 @@
 
 from __future__ import annotations
 
-import json
 import os
+import platform
 import shutil
 import tempfile
 from pathlib import Path
 
+from pydantic.version import VERSION as PYDANTIC_VERSION
 from quantlab_backtest.artifacts import LedgerWriter, write_metrics
 from quantlab_backtest.engine import BACKTEST_ENGINE_VERSION, run_backtest
+from quantlab_backtest.metrics import METRICS_ENGINE_VERSION
 from quantlab_core import CORE_VERSION
-from quantlab_core.canonical import sha256_bytes, sha256_file, write_canonical_json
+from quantlab_core.candles import CANDLE_ENGINE_VERSION
+from quantlab_core.canonical import (
+    canonical_json_bytes,
+    sha256_bytes,
+    sha256_file,
+    write_canonical_json,
+)
 from quantlab_core.errors import ContractError
 from quantlab_core.evaluator import STRATEGY_EVALUATOR_VERSION
+from quantlab_core.indicators import INDICATOR_ENGINE_VERSION
 from quantlab_core.price import decimal_to_units
-from quantlab_core.strategy import load_strategy
+from quantlab_core.strategy import STRATEGY_SCHEMA_VERSION, load_strategy
 from quantlab_data import (
     DATA_ENGINE_VERSION,
+    NORMALIZER_VERSION,
     materialize_one_minute_candles,
     materialize_sma_features,
     normalize_csv,
 )
-from quantlab_data.parquet import iter_features, iter_trades
-
-
-def _read_json(path: Path) -> dict[str, object]:
-    value = json.loads(path.read_text(encoding="utf-8"))
-    if not isinstance(value, dict):
-        raise ContractError(f"expected JSON object in {path.name}")
-    return value
+from quantlab_data.parquet import (
+    PARQUET_ENGINE_VERSION,
+    PYARROW_VERSION,
+    iter_features,
+    iter_trades,
+)
 
 
 def _run_into(source: Path, strategy_source: Path, destination: Path) -> dict[str, object]:
@@ -91,22 +99,34 @@ def _run_into(source: Path, strategy_source: Path, destination: Path) -> dict[st
         "ledger": ledger_artifact,
         "metrics": metrics_artifact,
     }
+    engine_versions = {
+        "core": CORE_VERSION,
+        "data": DATA_ENGINE_VERSION,
+        "normalizer": NORMALIZER_VERSION,
+        "parquet": PARQUET_ENGINE_VERSION,
+        "candle": CANDLE_ENGINE_VERSION,
+        "indicator": INDICATOR_ENGINE_VERSION,
+        "strategy_schema": STRATEGY_SCHEMA_VERSION,
+        "strategy_evaluator": STRATEGY_EVALUATOR_VERSION,
+        "backtest": BACKTEST_ENGINE_VERSION,
+        "metrics": METRICS_ENGINE_VERSION,
+    }
+    runtime_versions = {
+        "python": platform.python_version(),
+        "sqlite": dataset_manifest["runtime_versions"]["sqlite"],
+        "pyarrow": PYARROW_VERSION,
+        "pydantic": PYDANTIC_VERSION,
+    }
     identity = {
         "dataset_id": dataset_manifest["dataset_id"],
         "strategy_semantic_sha256": strategy.semantic_sha256(),
         "artifact_semantic_sha256": {
             name: artifact["semantic_sha256"] for name, artifact in artifacts.items()
         },
-        "engine_versions": {
-            "core": CORE_VERSION,
-            "data": DATA_ENGINE_VERSION,
-            "strategy_evaluator": STRATEGY_EVALUATOR_VERSION,
-            "backtest": BACKTEST_ENGINE_VERSION,
-        },
+        "engine_versions": engine_versions,
+        "runtime_versions": runtime_versions,
     }
-    run_id = "sha256:" + sha256_bytes(
-        json.dumps(identity, sort_keys=True, separators=(",", ":")).encode("utf-8") + b"\n"
-    )
+    run_id = "sha256:" + sha256_bytes(canonical_json_bytes(identity))
     run_manifest: dict[str, object] = {
         "manifest_version": "first-increment-run/v1",
         "run_id": run_id,
@@ -115,7 +135,8 @@ def _run_into(source: Path, strategy_source: Path, destination: Path) -> dict[st
         "strategy_version": strategy.strategy_version,
         "price": dataset_manifest["price"],
         "artifacts": artifacts,
-        "engine_versions": identity["engine_versions"],
+        "engine_versions": engine_versions,
+        "runtime_versions": runtime_versions,
         "determinism": {
             "json_encoding": "UTF-8 canonical sorted compact with LF",
             "parquet_byte_hash_recorded": True,

@@ -1,0 +1,407 @@
+{
+  "$defs": {
+    "ComparisonCondition": {
+      "additionalProperties": false,
+      "properties": {
+        "left": {
+          "$ref": "#/$defs/Operand"
+        },
+        "operator": {
+          "enum": [
+            "GT",
+            "GTE",
+            "LT",
+            "LTE",
+            "EQ"
+          ],
+          "title": "Operator",
+          "type": "string"
+        },
+        "right": {
+          "$ref": "#/$defs/Operand"
+        },
+        "type": {
+          "const": "comparison",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "operator",
+        "left",
+        "right"
+      ],
+      "title": "ComparisonCondition",
+      "type": "object"
+    },
+    "ConditionNode": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ComparisonCondition"
+        },
+        {
+          "$ref": "#/$defs/LogicalGroup"
+        }
+      ]
+    },
+    "DecimalOperand": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "decimal",
+          "title": "Type",
+          "type": "string"
+        },
+        "value": {
+          "title": "Value",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "value"
+      ],
+      "title": "DecimalOperand",
+      "type": "object"
+    },
+    "ExecutionPolicy": {
+      "additionalProperties": false,
+      "properties": {
+        "end_of_data": {
+          "enum": [
+            "CLOSE_AT_LAST_TRADE",
+            "LEAVE_OPEN"
+          ],
+          "title": "End Of Data",
+          "type": "string"
+        },
+        "entry_fill": {
+          "const": "NEXT_TRADE",
+          "title": "Entry Fill",
+          "type": "string"
+        },
+        "position_policy": {
+          "const": "SINGLE_POSITION_NO_QUEUE",
+          "title": "Position Policy",
+          "type": "string"
+        },
+        "position_size": {
+          "const": 1,
+          "title": "Position Size",
+          "type": "integer"
+        },
+        "same_tick_reentry": {
+          "const": false,
+          "title": "Same Tick Reentry",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "entry_fill",
+        "position_policy",
+        "same_tick_reentry",
+        "end_of_data",
+        "position_size"
+      ],
+      "title": "ExecutionPolicy",
+      "type": "object"
+    },
+    "FieldOperand": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "enum": [
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume"
+          ],
+          "title": "Name",
+          "type": "string"
+        },
+        "type": {
+          "const": "field",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "name"
+      ],
+      "title": "FieldOperand",
+      "type": "object"
+    },
+    "IndicatorOperand": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "const": "sma_close",
+          "title": "Name",
+          "type": "string"
+        },
+        "parameters": {
+          "$ref": "#/$defs/SmaParameters"
+        },
+        "type": {
+          "const": "indicator",
+          "title": "Type",
+          "type": "string"
+        },
+        "version": {
+          "const": "1.0.0",
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "name",
+        "version",
+        "parameters"
+      ],
+      "title": "IndicatorOperand",
+      "type": "object"
+    },
+    "LogicalGroup": {
+      "additionalProperties": false,
+      "properties": {
+        "children": {
+          "items": {
+            "$ref": "#/$defs/ConditionNode"
+          },
+          "title": "Children",
+          "type": "array"
+        },
+        "operator": {
+          "enum": [
+            "AND",
+            "OR",
+            "NOT"
+          ],
+          "title": "Operator",
+          "type": "string"
+        },
+        "type": {
+          "const": "logical",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "operator",
+        "children"
+      ],
+      "title": "LogicalGroup",
+      "type": "object"
+    },
+    "NoCostModel": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "NONE",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "title": "NoCostModel",
+      "type": "object"
+    },
+    "NoSlippageModel": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "NONE",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "title": "NoSlippageModel",
+      "type": "object"
+    },
+    "Operand": {
+      "discriminator": {
+        "mapping": {
+          "decimal": "#/$defs/DecimalOperand",
+          "field": "#/$defs/FieldOperand",
+          "indicator": "#/$defs/IndicatorOperand"
+        },
+        "propertyName": "type"
+      },
+      "oneOf": [
+        {
+          "$ref": "#/$defs/FieldOperand"
+        },
+        {
+          "$ref": "#/$defs/IndicatorOperand"
+        },
+        {
+          "$ref": "#/$defs/DecimalOperand"
+        }
+      ]
+    },
+    "PointDistance": {
+      "additionalProperties": false,
+      "properties": {
+        "unit": {
+          "const": "POINTS",
+          "title": "Unit",
+          "type": "string"
+        },
+        "value": {
+          "title": "Value",
+          "type": "string"
+        }
+      },
+      "required": [
+        "unit",
+        "value"
+      ],
+      "title": "PointDistance",
+      "type": "object"
+    },
+    "SmaDefinition": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "const": "sma_close",
+          "title": "Name",
+          "type": "string"
+        },
+        "parameters": {
+          "$ref": "#/$defs/SmaParameters"
+        },
+        "version": {
+          "const": "1.0.0",
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "version",
+        "parameters"
+      ],
+      "title": "SmaDefinition",
+      "type": "object"
+    },
+    "SmaParameters": {
+      "additionalProperties": false,
+      "properties": {
+        "period": {
+          "maximum": 100000,
+          "minimum": 1,
+          "title": "Period",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "period"
+      ],
+      "title": "SmaParameters",
+      "type": "object"
+    }
+  },
+  "$id": "https://quantlab.local/schemas/strategy-definition/v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "cost_model": {
+      "$ref": "#/$defs/NoCostModel"
+    },
+    "direction": {
+      "enum": [
+        "BUY",
+        "SELL"
+      ],
+      "title": "Direction",
+      "type": "string"
+    },
+    "entry_conditions": {
+      "$ref": "#/$defs/LogicalGroup"
+    },
+    "evaluation_mode": {
+      "const": "ON_CLOSE",
+      "title": "Evaluation Mode",
+      "type": "string"
+    },
+    "execution": {
+      "$ref": "#/$defs/ExecutionPolicy"
+    },
+    "name": {
+      "maxLength": 200,
+      "minLength": 1,
+      "title": "Name",
+      "type": "string"
+    },
+    "required_indicators": {
+      "items": {
+        "$ref": "#/$defs/SmaDefinition"
+      },
+      "title": "Required Indicators",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "strategy-definition/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "slippage_model": {
+      "$ref": "#/$defs/NoSlippageModel"
+    },
+    "stop_loss": {
+      "$ref": "#/$defs/PointDistance"
+    },
+    "strategy_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "title": "Strategy Id",
+      "type": "string"
+    },
+    "strategy_version": {
+      "minimum": 1,
+      "title": "Strategy Version",
+      "type": "integer"
+    },
+    "symbol": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "title": "Symbol",
+      "type": "string"
+    },
+    "take_profit": {
+      "$ref": "#/$defs/PointDistance"
+    },
+    "timeframe": {
+      "const": "1m",
+      "title": "Timeframe",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "strategy_id",
+    "strategy_version",
+    "name",
+    "symbol",
+    "timeframe",
+    "evaluation_mode",
+    "direction",
+    "required_indicators",
+    "entry_conditions",
+    "take_profit",
+    "stop_loss",
+    "execution",
+    "cost_model",
+    "slippage_model"
+  ],
+  "title": "StrategyDefinition",
+  "type": "object"
+}

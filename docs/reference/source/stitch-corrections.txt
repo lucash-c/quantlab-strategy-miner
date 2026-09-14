@@ -1,0 +1,8 @@
+Correcoes aplicadas na referencia aprovada
+
+- Exportacao da tela "Estrategias Encontradas" usa somente QuantLab Strategy Package
+  (`.qlstrategy`) e Realtime Strategy Tester.
+- Referencias residuais a ProfitChart e MetaTrader foram removidas.
+- Textos corrompidos em nomes de estrategias foram corrigidos.
+- O restante das telas e da identidade visual foi mantido.
+

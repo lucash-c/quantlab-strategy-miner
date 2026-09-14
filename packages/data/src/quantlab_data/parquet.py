@@ -12,6 +12,7 @@ import pyarrow.parquet as pq
 from quantlab_core.market_data import Candle, FeatureRow, MarketTrade
 
 PARQUET_ENGINE_VERSION = "1.0.0"
+PYARROW_VERSION = pa.__version__
 ROW_GROUP_SIZE = 65_536
 
 TRADE_SCHEMA = pa.schema(

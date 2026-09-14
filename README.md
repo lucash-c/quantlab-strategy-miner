@@ -27,16 +27,27 @@ Candidate Generator, Strategy Score, LLM, interface, Monte Carlo, mineracao e ra
 - Stops e targets intrabar sao avaliados usando a ordem dos ticks.
 - Artefatos JSON usam serializacao canonica; Parquet possui hash de bytes e hash semantico.
 
-Os contratos completos estao em [docs/contracts/canonical-csv-v1.md](docs/contracts/canonical-csv-v1.md) e [docs/architecture/first-increment.md](docs/architecture/first-increment.md).
+Os contratos completos estao em [docs/contracts/canonical-csv-v1.md](docs/contracts/canonical-csv-v1.md),
+[docs/contracts/manual-strategy-v1.md](docs/contracts/manual-strategy-v1.md) e
+[docs/architecture/first-increment.md](docs/architecture/first-increment.md).
 
 ## Desenvolvimento
 
 O projeto usa Python 3.12 e esta organizado como um workspace `uv` com pacotes independentes.
 
 ```powershell
-uv sync --all-packages
+uv sync --all-packages --locked
 uv run python scripts/run_tests.py
 ```
 
-O comando do slice sera disponibilizado como `quantlab-miner`.
+Para executar o slice, use um diretorio de saida que ainda nao exista:
 
+```powershell
+uv run quantlab-miner run `
+  --input caminho\ticks.csv `
+  --strategy caminho\strategy.json `
+  --output artifacts\run-001
+```
+
+O comando imprime o `run_id` derivado dos hashes semanticos. Consulte o manifest final no
+diretorio de saida para auditar dados, estrategia, engines e artefatos.

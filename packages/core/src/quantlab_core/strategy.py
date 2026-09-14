@@ -21,6 +21,7 @@ from quantlab_core.indicators import SMA_CLOSE_VERSION
 from quantlab_core.price import normalize_decimal_text
 
 STRATEGY_SCHEMA_VERSION = "strategy-definition/v1"
+STRATEGY_SCHEMA_ID = "https://quantlab.local/schemas/strategy-definition/v1.schema.json"
 Identifier = Annotated[str, StringConstraints(pattern=r"^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$")]
 
 
@@ -197,3 +198,10 @@ def load_strategy(path: Path) -> StrategyDefinition:
         raise
     except (OSError, json.JSONDecodeError, ValueError) as exc:
         raise ContractError(f"invalid strategy definition: {exc}") from exc
+
+
+def strategy_json_schema() -> dict[str, object]:
+    schema = StrategyDefinition.model_json_schema()
+    schema["$schema"] = "https://json-schema.org/draft/2020-12/schema"
+    schema["$id"] = STRATEGY_SCHEMA_ID
+    return schema

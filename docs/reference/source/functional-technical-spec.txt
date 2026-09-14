@@ -1,0 +1,540 @@
+SCALP STRATEGY MINER
+DOCUMENTAÇÃO FUNCIONAL E TÉCNICA
+Ecossistema QuantLab
+
+==================================================
+1. OBJETIVO
+==================================================
+
+O Scalp Strategy Miner é um sistema independente destinado a descobrir estratégias de scalp a partir de dados históricos do mercado.
+
+Seu objetivo não é operar em tempo real.
+
+Ele deve responder:
+"Quais padrões de entrada e saída apresentaram comportamento promissor e robusto no histórico fornecido?"
+
+O sistema recebe:
+- dados históricos;
+- ativo;
+- período;
+- timeframes;
+- instruções opcionais do usuário.
+
+Depois:
+1. prepara os dados;
+2. calcula indicadores e features;
+3. procura padrões;
+4. gera candidatas;
+5. executa backtests;
+6. elimina candidatas frágeis;
+7. valida as restantes;
+8. calcula Strategy Score;
+9. gera ranking;
+10. exporta as melhores estratégias em formato padronizado.
+
+==================================================
+2. ESCOPO INICIAL
+==================================================
+
+Ativo inicial:
+Mini Índice B3 — WIN
+
+Timeframes:
+1 minuto
+2 minutos
+5 minutos
+15 minutos
+
+Fonte inicial:
+dados históricos da B3 ou históricos previamente importados e normalizados.
+
+Um ativo por vez.
+
+Hardware alvo inicial:
+Windows
+Intel Core i5
+8 GB RAM
+GeForce GTX 780
+
+A arquitetura não deve depender de GPU.
+
+==================================================
+3. PRINCÍPIO DO SISTEMA
+==================================================
+
+O usuário não precisa programar estratégias manualmente.
+
+Ele fornece intenção.
+
+Exemplo:
+"Procure entradas com 20 pontos de gain e 50 pontos de loss."
+
+Isso vira uma restrição estruturada:
+take_profit = 20 pontos
+stop_loss = 50 pontos
+
+Outro exemplo:
+"Procure estratégias somente entre 09:15 e 11:30."
+
+Isso vira:
+session_start = 09:15
+session_end = 11:30
+
+As instruções livres não podem substituir regras quantitativas.
+
+O sistema deve transformar instruções em parâmetros estruturados e mostrar como foram interpretadas antes da execução.
+
+==================================================
+4. PIPELINE PRINCIPAL
+==================================================
+
+Dados Históricos
+↓
+Normalização
+↓
+Candle Engine
+↓
+Indicator / Feature Engine
+↓
+Candidate Generator
+↓
+Backtest Engine
+↓
+Validation Engine
+↓
+Strategy Scoring
+↓
+Ranking
+↓
+Strategy Registry
+↓
+Exportação
+
+==================================================
+5. DADOS
+==================================================
+
+Negócio normalizado:
+- symbol
+- timestamp
+- price
+- quantity
+
+Candle:
+- symbol
+- timeframe
+- open_time
+- close_time
+- open
+- high
+- low
+- close
+- volume
+
+O Candle Engine deve ser determinístico.
+
+O mesmo histórico, configuração e versão devem produzir os mesmos candles.
+
+==================================================
+6. INDICADORES E FEATURES
+==================================================
+
+Os indicadores pertencem ao ecossistema QuantLab.
+
+Não depender de indicadores do TRYD, Profit ou outras plataformas.
+
+Exemplos:
+- volume;
+- volume relativo;
+- VWAP;
+- SMA;
+- EMA;
+- RSI;
+- ADX;
+- MACD;
+- ATR;
+- momentum;
+- volatilidade;
+- amplitude;
+- corpo;
+- pavios;
+- posição do fechamento no candle;
+- máximas/mínimas recentes;
+- distância da VWAP;
+- distância de médias;
+- rompimentos;
+- falsos rompimentos;
+- sequência de candles;
+- horário;
+- comportamento recente do volume.
+
+Todas as fórmulas precisam ser versionadas.
+
+==================================================
+7. INSTRUÇÕES DO USUÁRIO
+==================================================
+
+O Minerador aceita instrução opcional antes do início.
+
+Exemplos:
+- gain 20 e loss 50;
+- somente compras;
+- somente vendas;
+- não usar RSI;
+- priorizar volume;
+- operar somente de manhã;
+- no mínimo 200 operações;
+- buscar menor drawdown;
+- usar somente timeframe de 1 minuto.
+
+As instruções devem ser convertidas para uma estrutura MiningConstraints.
+
+Exemplo conceitual:
+{
+  target_points: 20,
+  stop_points: 50,
+  directions: ["BUY"],
+  allowed_timeframes: ["1m"],
+  require_features: ["relative_volume"],
+  forbidden_features: ["rsi"],
+  min_trades: 200
+}
+
+Se uma instrução for ambígua, o sistema deve solicitar confirmação antes de iniciar.
+
+==================================================
+8. GERAÇÃO DE CANDIDATOS
+==================================================
+
+O Candidate Generator procura combinações de condições de entrada e saída.
+
+Não usar apenas preço.
+
+Pode combinar:
+preço
+volume
+indicadores
+sequência
+contexto
+horário
+volatilidade
+tendência
+rompimentos
+retorno à média
+
+As regras geradas devem ser determinísticas.
+
+Não salvar regra vaga como:
+"Comprar quando o volume estiver forte."
+
+Salvar regra objetiva como:
+relative_volume(20) > 1.65
+
+==================================================
+9. REPRESENTAÇÃO DA ESTRATÉGIA
+==================================================
+
+Campos principais:
+- strategy_id
+- version
+- name
+- symbol
+- timeframe
+- evaluation_mode
+- direction
+- entry_conditions
+- exit_conditions
+- invalidation_conditions
+- stop_loss
+- take_profit
+- trailing_stop
+- session
+- required_indicators
+- context_profile
+- metrics
+- validation
+- strategy_score
+- engine_versions
+- dataset_version
+- created_at
+
+evaluation_mode:
+ON_CLOSE
+INTRABAR
+HYBRID
+
+==================================================
+10. BACKTEST ENGINE
+==================================================
+
+O backtest deve:
+- respeitar o tempo;
+- nunca acessar dados futuros;
+- diferenciar fechamento e intrabar;
+- aplicar custos;
+- aplicar slippage;
+- registrar cada trade;
+- registrar motivo de entrada e saída;
+- registrar indicadores relevantes;
+- produzir métricas reproduzíveis.
+
+==================================================
+11. PROTEÇÃO CONTRA OVERFITTING
+==================================================
+
+Maior lucro não significa melhor estratégia.
+
+O sistema deve suportar:
+- discovery / validation;
+- out-of-sample;
+- walk-forward;
+- Monte Carlo;
+- sensibilidade de parâmetros;
+- stress de slippage;
+- stress de custos;
+- avaliação por regime;
+- estabilidade por período.
+
+Uma candidata pode ganhar muito e ainda ser descartada.
+
+==================================================
+12. STRATEGY SCORE
+==================================================
+
+O Strategy Score representa qualidade histórica e robustez.
+
+Pode considerar:
+- lucro líquido;
+- expectativa;
+- profit factor;
+- payoff;
+- taxa de acerto;
+- drawdown;
+- quantidade de trades;
+- sequência de perdas;
+- consistência;
+- estabilidade;
+- resultado out-of-sample;
+- sensibilidade;
+- resultado por regime.
+
+A fórmula deve ser versionada.
+
+==================================================
+13. ESTADOS DA ESTRATÉGIA
+==================================================
+
+DISCOVERED
+VALIDATING
+VALIDATED
+APPROVED
+REJECTED
+ARCHIVED
+
+Uma estratégia recém-descoberta não pode se tornar automaticamente aprovada sem cumprir a política de validação.
+
+==================================================
+14. CONTEXTO IDEAL
+==================================================
+
+Registrar em quais condições a estratégia funciona melhor.
+
+Exemplos:
+- tendência de alta;
+- tendência de baixa;
+- lateralização;
+- volatilidade baixa/média/alta;
+- volume baixo/médio/alto;
+- horário;
+- posição em relação à VWAP;
+- amplitude típica.
+
+Esse perfil será usado pelo sistema de testes em tempo real para análise posterior.
+
+==================================================
+15. QUANTLAB STRATEGY PACKAGE
+==================================================
+
+Principal contrato entre os dois sistemas.
+
+Nome:
+QuantLab Strategy Package
+
+Extensão sugerida:
+.qlstrategy
+
+Formato interno sugerido:
+JSON versionado.
+
+O pacote não depende do banco do Minerador.
+
+Campos mínimos:
+- format_version
+- strategy_id
+- strategy_version
+- name
+- symbol
+- timeframe
+- evaluation_mode
+- entry_rules
+- exit_rules
+- invalidation_rules
+- stop_loss
+- take_profit
+- trailing_stop
+- session
+- indicator_definitions/references
+- context_profile
+- historical_metrics
+- strategy_score
+- engine_compatibility
+- checksum
+
+As regras não devem ser strings livres humanas.
+
+Usar estrutura formal, AST ou árvore de condições.
+
+==================================================
+16. RELATÓRIO FINAL
+==================================================
+
+Toda mineração gera relatório com:
+- mining_run_id
+- objetivo/instruções
+- histórico utilizado
+- dataset_version
+- período
+- ativo
+- timeframes
+- quantidade de candidatos
+- quantidade validada
+- quantidade aprovada
+- ranking
+- métricas
+- critérios
+- versões dos engines
+
+Relatório humano e Strategy Package são coisas diferentes.
+
+Relatório = leitura.
+Strategy Package = importação pelo outro sistema.
+
+==================================================
+17. EXECUÇÃO PESADA
+==================================================
+
+A mineração pode ser custosa.
+
+Deve possuir:
+- jobs assíncronos;
+- checkpoints;
+- progresso;
+- pausa;
+- retomada;
+- cancelamento;
+- limite de RAM;
+- processamento em chunks;
+- cache de features.
+
+Uma falha não deve exigir reinício completo quando isso puder ser evitado.
+
+==================================================
+18. PERSISTÊNCIA
+==================================================
+
+Entidades sugeridas:
+Dataset
+CandleDataset
+FeatureDataset
+MiningRun
+MiningConstraint
+CandidateStrategy
+Strategy
+StrategyVersion
+StrategyMetric
+StrategyScoreHistory
+ValidationRun
+BacktestRun
+TradeResult
+StrategyPackageExport
+
+==================================================
+19. INTERFACE
+==================================================
+
+Fluxo simples:
+Nova Mineração
+↓
+Selecionar Dados
+↓
+Informar Instruções
+↓
+Iniciar
+↓
+Acompanhar Progresso
+↓
+Ver Ranking
+↓
+Abrir Estratégia
+↓
+Exportar
+
+Não mostrar detalhes de infraestrutura por padrão.
+
+==================================================
+20. O QUE ESTE SISTEMA NÃO FAZ
+==================================================
+
+Não faz:
+- tempo real;
+- envio de ordens;
+- integração com corretora;
+- TRYD;
+- Profit;
+- dinheiro real;
+- execução operacional.
+
+Ele descobre, testa, valida e exporta estratégias.
+
+==================================================
+21. NÚCLEO COMPARTILHADO
+==================================================
+
+Embora os aplicativos sejam independentes, a matemática fundamental deve ser compartilhada por uma biblioteca QuantLab Core.
+
+Conteúdo ideal:
+- Candle Engine
+- Indicator Engine
+- Strategy Schema
+- Strategy Evaluator
+
+O Minerador e o Realtime Tester devem usar o mesmo core para evitar divergência matemática.
+
+==================================================
+22. CRITÉRIOS DE ACEITE DA PRIMEIRA VERSÃO
+==================================================
+
+A primeira versão útil deve conseguir:
+1. importar histórico do WIN;
+2. gerar candles de 1 minuto;
+3. calcular indicadores iniciais;
+4. aceitar instrução simples de target/stop;
+5. gerar candidatas;
+6. executar backtests;
+7. ranquear candidatas;
+8. abrir detalhes;
+9. exportar Strategy Package;
+10. reproduzir o mesmo resultado com o mesmo dataset e versões.
+
+==================================================
+23. PRINCÍPIO FINAL
+==================================================
+
+O sistema deve ser simples para o usuário e rigoroso internamente.
+
+O usuário pede:
+"Encontre scalps interessantes."
+
+O Minerador responde:
+"Estas estratégias sobreviveram aos testes, estas são suas regras exatas e estes são os pacotes prontos para forward test."
+
