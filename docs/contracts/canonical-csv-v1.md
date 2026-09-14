@@ -13,7 +13,7 @@ symbol,timestamp,source_sequence,price,quantity
 | `symbol` | Identificador nao vazio. Um arquivo contem exatamente um simbolo. |
 | `timestamp` | ISO-8601 com offset explicito e ate 9 casas fracionarias. |
 | `source_sequence` | Inteiro nao negativo que desempata negocios no mesmo timestamp. |
-| `price` | Decimal positivo, sem separador de milhar e sem notacao cientifica. |
+| `price` | Decimal positivo, sem separador de milhar, sem notacao cientifica e com no maximo 9 casas significativas. |
 | `quantity` | Inteiro positivo. |
 
 Exemplo apenas de formato, sem constituir dado ou regra quantitativa:
@@ -33,9 +33,9 @@ TEST,2026-01-02T09:00:00.000000001-03:00,1,100.05,2
 5. O normalizador nao modifica o arquivo de origem.
 6. A escala de preco e derivada depois da remocao de zeros fracionarios nao significativos.
 7. Nao sao criados negocios, candles ou volumes ausentes.
+8. Inteiros devem caber no intervalo positivo de 64 bits usado pelo formato normalizado.
 
 ## Evolucao
 
 Um formato real da B3 sera implementado como adaptador que produz este contrato canonico. Alterar
 semantica, tipos ou ordenacao exige uma nova versao do contrato.
-
