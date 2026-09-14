@@ -33,7 +33,7 @@ layout requer outro perfil versionado.
 | `CodigoInstrumento` | `symbol` | Igualdade exata com o contrato solicitado. |
 | `DataNegocio` + `HoraFechamento` | `timestamp` | ISO-8601 em `-03:00`; internamente UTC. |
 | ordem da linha de dados | `source_sequence` | Indice zero-based no TXT, sem considerar o cabecalho. |
-| `PrecoNegocio` | `price` | Decimal exato; virgula e convertida para ponto sem `float`. |
+| `PrecoNegocio` | `price` | Decimal positivo no instrumento selecionado; virgula e convertida para ponto sem `float`. |
 | `QuantidadeNegociada` | `quantity` | Inteiro positivo de 64 bits. |
 
 `DataReferencia`, `CodigoIdentificadorNegocio`, `TipoSessaoPregao`, `AcaoAtualizacao`, os
@@ -75,6 +75,11 @@ continuam presentes na auditoria. Delete sem negocio correspondente e registrado
 
 Acao desconhecida e rejeitada. A execucao estrita nao envia um dataset com rejeicoes para o
 pipeline quantitativo.
+
+O universo B3 pode conter precos negativos em instrumentos que nao foram selecionados. O
+adapter reconhece e contabiliza esses decimais assinados sem `float`, mas nao os projeta no CSV
+Canonico v1, cujo contrato exige preco positivo. Um preco nao positivo no instrumento
+selecionado e uma rejeicao e bloqueia o pipeline.
 
 ## Sessao
 

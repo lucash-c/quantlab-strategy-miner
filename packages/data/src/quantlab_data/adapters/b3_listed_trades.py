@@ -26,7 +26,6 @@ from quantlab_core.canonical import (
     write_canonical_json,
 )
 from quantlab_core.errors import ContractError
-from quantlab_core.price import normalize_decimal_text
 from quantlab_core.time import format_utc_ns, parse_iso8601_ns
 
 from quantlab_data.normalizer import EXPECTED_HEADER as CANONICAL_HEADER
@@ -60,7 +59,9 @@ B3_DRV_HEADER = [
 ]
 
 _FILE_RE = re.compile(r"^(?P<stem>\d{2}-\d{2}-\d{4}_NEGOCIOSAVISTA_DRV)\.zip$")
-_B3_PRICE_RE = re.compile(r"^(?:0|[1-9]\d*),(?P<fraction>\d{1,9})$")
+_B3_PRICE_RE = re.compile(
+    r"^(?P<sign>-?)(?P<integer>0|[1-9]\d*),(?P<fraction>\d{1,9})$"
+)
 _B3_TIME_RE = re.compile(r"^(?P<hour>\d{2})(?P<minute>\d{2})(?P<second>\d{2})(?P<fraction>\d{3})$")
 _INT64_MAX = 2**63 - 1
 
@@ -159,6 +160,7 @@ class _ScanResult:
     action_counts: Counter[str] = field(default_factory=Counter)
     session_counts: Counter[str] = field(default_factory=Counter)
     selected_session_counts: Counter[str] = field(default_factory=Counter)
+    non_positive_price_instrument_counts: Counter[str] = field(default_factory=Counter)
     cancellation_keys: set[tuple[str, str, int]] = field(default_factory=set)
     source_range: _TimeRange = field(default_factory=_TimeRange)
     selected_event_range: _TimeRange = field(default_factory=_TimeRange)
@@ -215,11 +217,15 @@ def _parse_row(row: dict[Any, Any], source_sequence: int) -> _ParsedRow:
         raise ContractError("AcaoAtualizacao must be 0 (new) or 2 (delete)")
 
     price = values["PrecoNegocio"]
-    if _B3_PRICE_RE.fullmatch(price) is None:
-        raise ContractError("PrecoNegocio must be unsigned decimal text using a comma")
-    canonical_price, _ = normalize_decimal_text(price.replace(",", "."))
-    if canonical_price == "0":
-        raise ContractError("PrecoNegocio must be positive")
+    price_match = _B3_PRICE_RE.fullmatch(price)
+    if price_match is None:
+        raise ContractError("PrecoNegocio must be fixed-point decimal text using a comma")
+    fraction = price_match.group("fraction").rstrip("0")
+    canonical_price = price_match.group("integer")
+    if fraction:
+        canonical_price += "." + fraction
+    if price_match.group("sign") == "-" and canonical_price != "0":
+        canonical_price = "-" + canonical_price
 
     quantity = _parse_uint(values["QuantidadeNegociada"], "QuantidadeNegociada", positive=True)
     trade_id = _parse_uint(
@@ -319,6 +325,12 @@ def _scan(
                         result.instrument_counts[raw_symbol] += 1
                     try:
                         parsed = _parse_row(row, source_sequence)
+                        if parsed.canonical_price.startswith("-") or parsed.canonical_price == "0":
+                            result.non_positive_price_instrument_counts[parsed.symbol] += 1
+                            if parsed.symbol == selected_contract:
+                                raise ContractError(
+                                    "selected PrecoNegocio must be positive for canonical CSV v1"
+                                )
                     except ContractError as exc:
                         result.rejected_rows += 1
                         if raw_symbol == selected_contract:
@@ -513,6 +525,16 @@ def _base_report(
             "rejected_rows": scan.rejected_rows,
             "action_counts": _counter_record(scan.action_counts),
             "session_counts": _counter_record(scan.session_counts),
+            "non_positive_price_rows": sum(
+                scan.non_positive_price_instrument_counts.values()
+            ),
+            "non_positive_price_instruments": [
+                {
+                    "symbol": symbol,
+                    "event_count": scan.non_positive_price_instrument_counts[symbol],
+                }
+                for symbol in sorted(scan.non_positive_price_instrument_counts)
+            ],
             "instruments_found": [
                 {"symbol": symbol, "event_count": scan.instrument_counts[symbol]}
                 for symbol in sorted(scan.instrument_counts)

@@ -50,8 +50,13 @@ class B3AdapterTests(unittest.TestCase):
             report = import_b3_listed_trades_drv(source, "WINV26", root / "adapter")
 
             self.assertEqual(report["status"], "ACCEPTED")
-            self.assertEqual(report["input"]["lines_read"], 12)
-            self.assertEqual(report["input"]["action_counts"], {"0": 11, "2": 1})
+            self.assertEqual(report["input"]["lines_read"], 13)
+            self.assertEqual(report["input"]["action_counts"], {"0": 12, "2": 1})
+            self.assertEqual(report["input"]["non_positive_price_rows"], 1)
+            self.assertEqual(
+                report["input"]["non_positive_price_instruments"],
+                [{"symbol": "DIIF27J27", "event_count": 1}],
+            )
             self.assertEqual(report["selection"]["events"], 9)
             self.assertEqual(report["selection"]["valid_trades"], 9)
             self.assertEqual(report["selection"]["session_counts"], {"1": 9})
@@ -65,8 +70,8 @@ class B3AdapterTests(unittest.TestCase):
             self.assertEqual(canonical[0]["price"], "187500")
             self.assertEqual(canonical[0]["quantity"], "500")
             self.assertEqual(canonical[0]["timestamp"], "2026-09-10T09:03:00.560-03:00")
-            self.assertEqual(canonical[0]["source_sequence"], "1")
-            self.assertEqual(canonical[1]["source_sequence"], "2")
+            self.assertEqual(canonical[0]["source_sequence"], "2")
+            self.assertEqual(canonical[1]["source_sequence"], "3")
             self.assertEqual(canonical[0]["timestamp"], canonical[1]["timestamp"])
 
             audit = pq.read_table(root / "adapter" / "b3-selected-events.parquet").to_pylist()
@@ -105,7 +110,7 @@ class B3AdapterTests(unittest.TestCase):
 
     def test_after_hours_domain_is_accepted_without_filtering(self) -> None:
         rows = rows_from_fixture()
-        selected = rows[2]
+        selected = rows[3]
         selected[7] = "6"
         text = "\n".join(";".join(row) for row in [rows[0], selected]) + "\n"
         with tempfile.TemporaryDirectory() as temporary:
@@ -117,7 +122,7 @@ class B3AdapterTests(unittest.TestCase):
 
     def test_unknown_action_is_reported_and_blocks_import(self) -> None:
         rows = rows_from_fixture()
-        selected = rows[2]
+        selected = rows[3]
         selected[2] = "9"
         text = "\n".join(";".join(row) for row in [rows[0], selected]) + "\n"
         with tempfile.TemporaryDirectory() as temporary:
@@ -132,6 +137,21 @@ class B3AdapterTests(unittest.TestCase):
             rejection = json.loads((output / "b3-rejections.jsonl").read_text())
             self.assertEqual(rejection["source_sequence"], 0)
             self.assertIn("AcaoAtualizacao", rejection["error"])
+
+    def test_negative_price_only_blocks_when_instrument_is_selected(self) -> None:
+        rows = rows_from_fixture()
+        text = "\n".join(";".join(row) for row in [rows[0], rows[2]]) + "\n"
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            source = write_zip(root / ZIP_NAME, text)
+            output = root / "adapter"
+            with self.assertRaisesRegex(B3ImportRejected, "source rows were rejected"):
+                import_b3_listed_trades_drv(source, "DIIF27J27", output)
+            report = json.loads((output / "b3-import-report.json").read_text(encoding="utf-8"))
+            self.assertEqual(report["input"]["non_positive_price_rows"], 1)
+            self.assertEqual(report["selection"]["rejected_rows"], 1)
+            rejection = json.loads((output / "b3-rejections.jsonl").read_text())
+            self.assertIn("must be positive", rejection["error"])
 
     def test_profile_header_is_strict(self) -> None:
         rows = rows_from_fixture()

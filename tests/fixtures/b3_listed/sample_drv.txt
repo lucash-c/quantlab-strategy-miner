@@ -1,5 +1,6 @@
 DataReferencia;CodigoInstrumento;AcaoAtualizacao;PrecoNegocio;QuantidadeNegociada;HoraFechamento;CodigoIdentificadorNegocio;TipoSessaoPregao;DataNegocio;CodigoParticipanteComprador;CodigoParticipanteVendedor;TipoDoCanal
 2026-09-10;WINZ26;0;191590,000;2;090000132;10;1;2026-09-10;107;3;1
+2026-09-10;DIIF27J27;0;-0,035;5;090100642;10;1;2026-09-10;;114;1
 2026-09-10;WINV26;0;187500,000;500;090300560;10;1;2026-09-10;3;3;1
 2026-09-10;WINV26;0;187500,000;500;090300560;20;1;2026-09-10;3;3;1
 2026-09-10;WINV26;0;187430,000;1;090400000;802320;1;2026-09-10;85;8;1

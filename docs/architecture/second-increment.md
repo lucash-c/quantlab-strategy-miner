@@ -61,7 +61,10 @@ para ordenar os negocios por instante UTC e sequencia antes de gravar Parquet.
 
 - Envelope, nome ou cabecalho divergente: erro de contrato.
 - Linha malformada ou dominio desconhecido: rejeicao registrada.
-- Qualquer rejeicao: importacao marcada como rejeitada e pipeline quantitativo nao executado.
+- Qualquer rejeicao estrutural ou do contrato selecionado: importacao marcada como rejeitada e
+  pipeline quantitativo nao executado.
+- Precos assinados validos em instrumentos fora da selecao: contabilizados no relatorio, sem
+  projecao para o CSV Canonico v1.
 - Contrato ausente ou sem negocio ativo: pipeline nao executado.
 - Saida ja existente: recusada; nao ha sobrescrita.
 - Fonte alterada durante a ingestao: erro de contrato.

@@ -7,6 +7,7 @@
 As linhas foram mantidas literalmente e na ordem relativa da origem:
 
 - 2: primeiro evento `WINZ26`, usado para provar o filtro de instrumento;
+- 3597: preco negativo real de `DIIF27J27`, fora do instrumento selecionado;
 - 14302 e 14303: `WINV26` com timestamp identico;
 - 97004, 146924, 201075, 229372, 274281, 302491 e 339273: primeiro evento
   `WINV26` dos minutos 09:04 a 09:10;
