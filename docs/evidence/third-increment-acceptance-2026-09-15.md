@@ -4,6 +4,7 @@
 
 - Ruff: passed.
 - Quick automated suite: 37 tests passed in 13.251 seconds.
+- GitHub Actions Windows quick-suite: passed on push (dependency sync, Ruff, and tests).
 - The original increment 1 and 2 tests remain in the same suite and passed.
 - The full B3 ZIP remains an opt-in regression outside the quick suite and CI.
 
