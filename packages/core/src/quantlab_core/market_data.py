@@ -60,3 +60,54 @@ class FeatureRow:
     sma_close_sum_units: int | None
     sma_close_period: int | None
     available_at_ns_utc: int
+
+
+@dataclass(frozen=True, slots=True)
+class SessionTrade:
+    session_id: str
+    trading_date: str
+    logical_asset: str
+    physical_contract: str
+    timestamp_ns_utc: int
+    source_sequence: int
+    price_units: int
+    quantity: int
+
+    @property
+    def order_key(self) -> tuple[int, int]:
+        return self.timestamp_ns_utc, self.source_sequence
+
+    def as_market_trade(self) -> MarketTrade:
+        return MarketTrade(
+            self.physical_contract,
+            self.timestamp_ns_utc,
+            self.source_sequence,
+            self.price_units,
+            self.quantity,
+        )
+
+
+@dataclass(frozen=True, slots=True)
+class SessionCandle:
+    session_id: str
+    trading_date: str
+    logical_asset: str
+    physical_contract: str
+    candle: Candle
+
+
+@dataclass(frozen=True, slots=True)
+class SessionFeatureRow:
+    session_id: str
+    trading_date: str
+    logical_asset: str
+    physical_contract: str
+    feature: FeatureRow
+    executable_in_session: bool
+    non_executable_reason: str | None
+
+    def __post_init__(self) -> None:
+        if self.executable_in_session and self.non_executable_reason is not None:
+            raise ContractError("an executable feature cannot have a rejection reason")
+        if not self.executable_in_session and not self.non_executable_reason:
+            raise ContractError("a non-executable feature requires a reason")
