@@ -174,7 +174,9 @@ def _validate_cached(directory: Path, manifest_name: str, expected_key: str) -> 
 
 def _publish_cache(directory: Path, builder: Any) -> dict[str, object]:
     directory.parent.mkdir(parents=True, exist_ok=True)
-    temporary = Path(tempfile.mkdtemp(prefix=f".{directory.name}.tmp-", dir=directory.parent))
+    # Keep staging names short for the traditional Windows MAX_PATH boundary. The
+    # published directory still carries the complete SHA-256 cache identity.
+    temporary = Path(tempfile.mkdtemp(prefix=".tmp-", dir=directory.parent))
     try:
         manifest = builder(temporary)
         try:

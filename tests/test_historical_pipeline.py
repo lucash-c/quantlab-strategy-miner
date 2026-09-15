@@ -188,6 +188,22 @@ class HistoricalPipelineTests(unittest.TestCase):
             with self.assertRaisesRegex(ContractError, "failed hash validation"):
                 run_third_increment(catalog, strategy, cache, root / "second")
 
+    def test_cache_staging_uses_windows_safe_short_names(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / "sources").mkdir()
+            sources, strategy = self._prepare(root)
+            catalog = root / "catalog.json"
+            write_historical_catalog(catalog, sources[:1])
+            long_cache_name = "cache-" + ("x" * 80)
+            result = run_third_increment(
+                catalog,
+                strategy,
+                root / long_cache_name,
+                root / "output",
+            )
+            self.assertEqual(result["trading_dates"], ["2026-08-17"])
+
 
 if __name__ == "__main__":
     unittest.main()
