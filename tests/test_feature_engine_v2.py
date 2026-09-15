@@ -196,6 +196,95 @@ class FeatureEngineV2Tests(unittest.TestCase):
         )
         self.assertEqual(momentum[2].value.numeric, CanonicalRational(21, 100))
 
+    def test_true_range_rolling_range_volume_and_relative_volume(self) -> None:
+        session = make_session()
+        candles = candles_from_closes([10, 13, 12])
+        true_range = list(
+            calculate_feature_series(session, candles, feature_spec("true_range"))
+        )
+        self.assertEqual(
+            [row.value.numeric for row in true_range],
+            [CanonicalRational(2), CanonicalRational(4), CanonicalRational(2)],
+        )
+        rolling_range = list(
+            calculate_feature_series(
+                session,
+                candles,
+                feature_spec(
+                    "rolling_mean_range", {"period": 2, "include_current": True}
+                ),
+            )
+        )
+        self.assertEqual(rolling_range[1].value.numeric, CanonicalRational(2))
+        mean_volume = list(
+            calculate_feature_series(
+                session,
+                candles,
+                feature_spec(
+                    "rolling_mean_volume", {"period": 2, "include_current": True}
+                ),
+            )
+        )
+        relative_volume = list(
+            calculate_feature_series(
+                session,
+                candles,
+                feature_spec(
+                    "relative_volume", {"period": 2, "include_current": True}
+                ),
+            )
+        )
+        self.assertEqual(mean_volume[1].value.numeric, CanonicalRational(3, 2))
+        self.assertEqual(relative_volume[1].value.numeric, CanonicalRational(4, 3))
+
+    def test_rolling_low_distances_breakouts_and_momentum_variants(self) -> None:
+        session = make_session()
+        candles = candles_from_closes([10, 20, 31])
+        rolling_low = list(
+            calculate_feature_series(
+                session,
+                candles,
+                feature_spec("rolling_low", {"period": 2, "include_current": False}),
+            )
+        )
+        distance_low = list(
+            calculate_feature_series(
+                session,
+                candles,
+                feature_spec(
+                    "distance_to_rolling_low",
+                    {"period": 2, "include_current": False},
+                ),
+            )
+        )
+        breakout = list(
+            calculate_feature_series(
+                session,
+                candles,
+                feature_spec(
+                    "breakout_above_previous_high",
+                    {"period": 2, "include_current": False},
+                ),
+            )
+        )
+        self.assertEqual(rolling_low[2].value.numeric, CanonicalRational(9))
+        self.assertEqual(distance_low[2].value.numeric, CanonicalRational(22))
+        self.assertTrue(breakout[2].value.boolean)
+
+        for name, expected in (
+            ("point_change", CanonicalRational(21)),
+            ("percent_change", CanonicalRational(21)),
+            ("n_candle_return", CanonicalRational(21, 100)),
+        ):
+            rows = list(
+                calculate_feature_series(
+                    session,
+                    candles_from_closes([100, 110, 121]),
+                    feature_spec(name, {"period": 2}),
+                )
+            )
+            self.assertEqual(rows[2].value.numeric, expected)
+
     def test_dependencies_and_session_anchor_are_deterministic(self) -> None:
         first_trade_offset = 3 * NANOSECONDS_PER_MINUTE + 27_000_000_000
         session = make_session(first_offset_ns=first_trade_offset)
@@ -270,6 +359,29 @@ class FeatureEngineV2Tests(unittest.TestCase):
         )
         self.assertEqual(first[-1].warmup_status, "READY")
         self.assertEqual(second[0].warmup_status, "WARMING_UP")
+
+    def test_feature_state_is_independent_for_all_four_timeframes(self) -> None:
+        session = make_session()
+        spec = feature_spec("ema_close", {"period": 2})
+        for timeframe in ("1m", "2m", "5m", "15m"):
+            candles = [
+                Candle(
+                    candle.symbol,
+                    timeframe,
+                    candle.open_time_ns_utc,
+                    candle.close_time_ns_utc,
+                    candle.open_units,
+                    candle.high_units,
+                    candle.low_units,
+                    candle.close_units,
+                    candle.volume,
+                    candle.trade_count,
+                )
+                for candle in candles_from_closes([10, 20])
+            ]
+            rows = list(calculate_feature_series(session, candles, spec))
+            self.assertEqual(rows[0].warmup_status, "WARMING_UP")
+            self.assertEqual(rows[1].value.numeric, CanonicalRational(15))
 
 
 if __name__ == "__main__":

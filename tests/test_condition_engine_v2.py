@@ -76,6 +76,43 @@ class ConditionEngineV2Tests(unittest.TestCase):
         self.assertFalse(evaluator.evaluate(condition, frame(1)).result)
         self.assertTrue(evaluator.evaluate(condition, frame(3)).result)
 
+    def test_all_comparison_and_range_operators_are_exact(self) -> None:
+        expected = {
+            "GT": False,
+            "GTE": True,
+            "LT": False,
+            "LTE": True,
+            "EQ": True,
+            "NE": False,
+        }
+        for operator, result in expected.items():
+            condition = ComparisonConditionV3.model_validate(
+                {
+                    "type": "comparison",
+                    "operator": operator,
+                    "left": feature_operand(),
+                    "right": price("2"),
+                }
+            )
+            self.assertEqual(
+                ConditionEvaluatorV2().evaluate(condition, frame(2)).result,
+                result,
+            )
+        not_between = RangeConditionV3.model_validate(
+            {
+                "type": "range",
+                "operator": "NOT_BETWEEN",
+                "value": feature_operand(),
+                "lower": price("1"),
+                "upper": price("3"),
+                "lower_inclusive": True,
+                "upper_inclusive": True,
+            }
+        )
+        self.assertFalse(
+            ConditionEvaluatorV2().evaluate(not_between, frame(2)).result
+        )
+
     def test_cross_equality_undefined_and_restart(self) -> None:
         above = CrossConditionV3.model_validate(
             {
