@@ -139,6 +139,16 @@ class HistoricalBuild:
     manifest: dict[str, object]
 
 
+@dataclass(frozen=True, slots=True)
+class MarketHistoricalBuild:
+    """Historical window with immutable trades and candles, but no feature policy."""
+
+    dataset: HistoricalDataset
+    sessions: tuple[MaterializedSession, ...]
+    operational_report: dict[str, object]
+    manifest: dict[str, object]
+
+
 def _identity_key(identity: dict[str, object]) -> str:
     return sha256_bytes(canonical_json_bytes(identity))
 
@@ -819,3 +829,176 @@ def build_historical_dataset(
         "removed_session_cache_preserved": all(item.directory.is_dir() for item in removed),
     }
     return HistoricalBuild(dataset, tuple(materialized), operational_report, manifest)
+
+
+def build_market_history(
+    sources: Sequence[SessionSource],
+    *,
+    logical_asset: str,
+    cache_root: Path,
+    timeframes: Sequence[str],
+    max_sessions: int = 19,
+) -> MarketHistoricalBuild:
+    """Build only the source/session/candle layers for feature-selective consumers."""
+
+    if not sources:
+        raise ContractError("at least one historical source is required")
+    if max_sessions <= 0:
+        raise ContractError("max_sessions must be positive")
+    canonical_timeframes = tuple(timeframes)
+    if (
+        not canonical_timeframes
+        or len(set(canonical_timeframes)) != len(canonical_timeframes)
+        or any(item not in SUPPORTED_TIMEFRAMES for item in canonical_timeframes)
+    ):
+        raise ContractError("timeframes must be a unique subset of 1m,2m,5m,15m")
+    cache_root = cache_root.resolve()
+    cache_root.mkdir(parents=True, exist_ok=True)
+
+    prepared: dict[tuple[str, str], CachedArtifact] = {}
+    operations: list[dict[str, object]] = []
+    for source_spec in sources:
+        imported = _ensure_import(source_spec.source, source_spec.physical_contract, cache_root)
+        session_cache = _ensure_session(
+            imported, logical_asset, source_spec.physical_contract, cache_root
+        )
+        session = _session_from_manifest(session_cache.manifest)
+        existing = prepared.get(session.conflict_key)
+        if existing is not None:
+            existing_session = _session_from_manifest(existing.manifest)
+            if existing_session.session_id == session.session_id:
+                operations.append(
+                    {
+                        "layer": "session",
+                        "key": session_cache.key,
+                        "status": "DEDUPLICATED_IDENTICAL",
+                    }
+                )
+                continue
+            raise ContractError(
+                "conflicting historical sources for "
+                f"{logical_asset}/{session.trading_date}: "
+                f"{existing_session.physical_contract} ({existing_session.source_sha256}) vs "
+                f"{session.physical_contract} ({session.source_sha256}); "
+                "explicit user choice required"
+            )
+        prepared[session.conflict_key] = session_cache
+        operations.extend(
+            [
+                {
+                    "layer": "import",
+                    "key": imported.key,
+                    "status": "CACHE_HIT" if imported.cache_hit else "BUILT",
+                },
+                {
+                    "layer": "session",
+                    "key": session_cache.key,
+                    "status": "CACHE_HIT" if session_cache.cache_hit else "BUILT",
+                },
+            ]
+        )
+
+    ordered = sorted(
+        prepared.values(),
+        key=lambda item: _session_from_manifest(item.manifest).trading_date,
+    )
+    selected = ordered[-max_sessions:]
+    removed = ordered[:-max_sessions]
+    materialized: list[MaterializedSession] = []
+    for session_cache in selected:
+        session = _session_from_manifest(session_cache.manifest)
+        candle_caches: dict[str, CachedArtifact] = {}
+        for timeframe in canonical_timeframes:
+            candle_cache = _ensure_candles(session_cache, session, timeframe, cache_root)
+            candle_caches[timeframe] = candle_cache
+            operations.append(
+                {
+                    "layer": "candles",
+                    "session_id": session.session_id,
+                    "timeframe": timeframe,
+                    "key": candle_cache.key,
+                    "status": "CACHE_HIT" if candle_cache.cache_hit else "BUILT",
+                }
+            )
+        materialized.append(MaterializedSession(session, session_cache, candle_caches, {}))
+
+    sessions = tuple(item.session for item in materialized)
+    window_identity = {
+        "logical_asset": logical_asset,
+        "max_sessions": max_sessions,
+        "selection_policy": "LATEST_AVAILABLE_TRADING_DATES",
+        "session_ids": [session.session_id for session in sessions],
+    }
+    window_fingerprint = "sha256:" + _identity_key(window_identity)
+    dataset_identity = {
+        "window_fingerprint": window_fingerprint,
+        "timeframes": list(canonical_timeframes),
+        "session_reset": True,
+        "candle_engine_version": TIMEFRAME_ENGINE_VERSION,
+        "materializer_version": HISTORICAL_MATERIALIZER_VERSION,
+        "feature_policy": "NOT_MATERIALIZED",
+    }
+    dataset_id = "sha256:" + _identity_key(dataset_identity)
+    dataset = HistoricalDataset(
+        dataset_id,
+        window_fingerprint,
+        logical_asset,
+        max_sessions,
+        canonical_timeframes,
+        sessions,
+    )
+    manifest: dict[str, object] = {
+        "schema_version": "market-historical-dataset-manifest/v1",
+        "dataset_id": dataset_id,
+        "window_fingerprint": window_fingerprint,
+        "logical_asset": logical_asset,
+        "window": {
+            "max_sessions": max_sessions,
+            "available_sessions": len(ordered),
+            "selected_sessions": len(sessions),
+            "selection_policy": "LATEST_AVAILABLE_TRADING_DATES",
+        },
+        "timeframes": list(canonical_timeframes),
+        "sessions": [
+            {
+                **asdict(item.session),
+                "cache": {
+                    "session": item.trades.key,
+                    "candles": {key: value.key for key, value in item.candles.items()},
+                },
+                "artifacts": {
+                    "trades": item.trades.manifest["artifacts"]["trades"],
+                    "candles": {
+                        key: value.manifest["artifacts"]["candles"]
+                        for key, value in item.candles.items()
+                    },
+                },
+            }
+            for item in materialized
+        ],
+        "policies": {
+            "one_physical_contract_per_logical_asset_trading_date": True,
+            "automatic_rollover": False,
+            "continuous_price_adjustment": False,
+            "empty_candles": "DO_NOT_FILL",
+            "partial_last_candle": "KEEP_NOMINAL_BOUNDS",
+        },
+        "versions": {
+            "cache": HISTORICAL_CACHE_VERSION,
+            "materializer": HISTORICAL_MATERIALIZER_VERSION,
+            "parquet": PARQUET_ENGINE_VERSION,
+            "pyarrow": PYARROW_VERSION,
+        },
+    }
+    operational_report = {
+        "schema_version": "market-historical-build-report/v1",
+        "dataset_id": dataset_id,
+        "operations": operations,
+        "logically_removed_session_ids": [
+            _session_from_manifest(item.manifest).session_id for item in removed
+        ],
+        "removed_session_cache_preserved": all(item.directory.is_dir() for item in removed),
+    }
+    return MarketHistoricalBuild(
+        dataset, tuple(materialized), operational_report, manifest
+    )
