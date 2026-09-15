@@ -20,6 +20,11 @@ O segundo incremento acrescenta somente o adaptador do arquivo oficial B3 Negoci
 Listados, perfil `_DRV`. Para a amostra de 10/09/2026, `WINV26` e uma selecao explicita de
 validacao e nao uma regra de contrato vigente ou rollover.
 
+O terceiro incremento acrescenta historico multi-pregao content-addressed: sessoes formais por
+`DataNegocio`, janela configuravel (19 por padrao), candles `1m/2m/5m/15m`, reset de indicadores
+por sessao, backtest sem overnight e cache incremental deterministico. Ativo logico `WIN` e
+contrato fisico continuam explicitamente separados.
+
 ## Principios
 
 - Nenhum preco canonico usa ponto flutuante.
@@ -29,6 +34,9 @@ validacao e nao uma regra de contrato vigente ou rollover.
 - Candles sem negocios nao sao criados.
 - Sinais `ON_CLOSE` so podem executar em eventos posteriores ao candle.
 - Stops e targets intrabar sao avaliados usando a ordem dos ticks.
+- Entradas historicas exigem um evento negociavel posterior ao evento de fill.
+- Candles finais parciais mantem limites nominais; features posteriores ao ultimo negocio sao
+  marcadas como nao executaveis.
 - Artefatos JSON usam serializacao canonica; Parquet possui hash de bytes e hash semantico.
 
 Os contratos completos estao em [docs/contracts/canonical-csv-v1.md](docs/contracts/canonical-csv-v1.md),
@@ -36,6 +44,11 @@ Os contratos completos estao em [docs/contracts/canonical-csv-v1.md](docs/contra
 [docs/contracts/b3-listed-trades-drv-v1.md](docs/contracts/b3-listed-trades-drv-v1.md). As
 fronteiras dos slices estao em [docs/architecture/first-increment.md](docs/architecture/first-increment.md)
 e [docs/architecture/second-increment.md](docs/architecture/second-increment.md).
+O terceiro incremento esta em
+[docs/architecture/third-increment.md](docs/architecture/third-increment.md), com contratos em
+[docs/contracts/trading-session-v1.md](docs/contracts/trading-session-v1.md),
+[docs/contracts/historical-dataset-v1.md](docs/contracts/historical-dataset-v1.md) e
+[docs/contracts/manual-strategy-v2.md](docs/contracts/manual-strategy-v2.md).
 
 ## Desenvolvimento
 
@@ -68,6 +81,20 @@ uv run quantlab-miner run-b3 `
   --output artifacts\b3-run-001
 ```
 
+Para executar o historico, crie um catalogo `historical-sources/v1` com as fontes e contratos
+fisicos explicitamente escolhidos e use:
+
+```powershell
+uv run quantlab-miner run-history `
+  --catalog caminho\historical-sources.json `
+  --strategy caminho\strategy-v2.json `
+  --cache artifacts\historical-cache `
+  --output artifacts\historical-run
+```
+
+O cache e persistente e pode ser reutilizado entre janelas; o diretorio de saida de cada run deve
+ser novo.
+
 ## Testes B3
 
 A suite comum usa apenas fixtures pequenas derivadas da amostra real:
@@ -87,3 +114,15 @@ uv run python scripts\run_b3_full_acceptance.py `
 
 O aceite da amostra de 10/09/2026 esta registrado em
 [docs/evidence/second-increment-acceptance-2026-09-10.md](docs/evidence/second-increment-acceptance-2026-09-10.md).
+
+A regressao real opt-in do terceiro incremento reutiliza esse ZIP como um unico pregão e valida
+os quatro timeframes e duas execucoes equivalentes:
+
+```powershell
+uv run python scripts\run_historical_b3_regression.py `
+  --input C:\caminho\10-09-2026_NEGOCIOSAVISTA_DRV.zip `
+  --output artifacts\third-increment-real-regression
+```
+
+O aceite com 19 pregoes reais permanece pendente ate que os arquivos correspondentes sejam
+fornecidos.
