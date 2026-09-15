@@ -10,6 +10,7 @@ from quantlab_core.market_data import (
     SessionFeatureRow,
     SessionTrade,
 )
+from quantlab_core.numeric import CanonicalRational
 from quantlab_core.sessions import HistoricalDataset, TradingSession
 from quantlab_core.strategy import STRATEGY_SCHEMA_VERSION, StrategyDefinition, strategy_json_schema
 from quantlab_core.timeframes import TIMEFRAME_ENGINE_VERSION, build_timeframe_candles
@@ -21,6 +22,7 @@ __all__ = [
     "CORE_VERSION",
     "INDICATOR_ENGINE_VERSION",
     "Candle",
+    "CanonicalRational",
     "FeatureRow",
     "HistoricalDataset",
     "MarketTrade",
