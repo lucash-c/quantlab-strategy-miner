@@ -2,13 +2,24 @@ from __future__ import annotations
 
 import tempfile
 import unittest
+import zipfile
 from pathlib import Path
 
 from quantlab_core.feature_specs import parse_feature_spec
 from quantlab_data.feature_cache_v2 import build_feature_set, read_feature_observations
 from quantlab_data.historical import SessionSource, build_market_history
 
-from tests.test_b3_adapter import ZIP_NAME, write_zip
+ZIP_NAME = "10-09-2026_NEGOCIOSAVISTA_DRV.zip"
+
+
+def write_zip(path: Path) -> Path:
+    fixture = Path(__file__).parent / "fixtures" / "b3_listed" / "sample_drv.txt"
+    with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+        archive.writestr(
+            "10-09-2026_NEGOCIOSAVISTA_DRV.txt",
+            fixture.read_bytes(),
+        )
+    return path
 
 
 def spec(
