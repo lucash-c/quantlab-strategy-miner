@@ -62,7 +62,9 @@ def common_decimal_scale(scales: list[int], decimal_values: list[str]) -> int:
         raise ContractError("at least one native price scale is required")
     if any(scale < 0 or scale > MAX_DECIMAL_SCALE for scale in scales):
         raise ContractError("native price scale is outside the supported range")
-    parameter_scales = [normalize_decimal_text(value)[1] for value in decimal_values]
+    parameter_scales = [
+        normalize_decimal_text(value.removeprefix("-"))[1] for value in decimal_values
+    ]
     return max([*scales, *parameter_scales], default=0)
 
 

@@ -9,6 +9,7 @@ from pathlib import Path
 from quantlab_core.errors import QuantLabError
 
 from quantlab_cli.b3_pipeline import run_b3_second_increment
+from quantlab_cli.feature_pipeline import run_fourth_increment
 from quantlab_cli.historical_pipeline import DEFAULT_TIMEFRAMES, run_third_increment
 from quantlab_cli.pipeline import run_first_increment
 
@@ -43,13 +44,41 @@ def _parser() -> argparse.ArgumentParser:
         default=list(DEFAULT_TIMEFRAMES),
         choices=list(DEFAULT_TIMEFRAMES),
     )
+    features = subcommands.add_parser(
+        "run-features",
+        help="execute the deterministic feature/strategy fourth increment",
+    )
+    features.add_argument(
+        "--catalog", type=Path, required=True, help="Historical source catalog"
+    )
+    features.add_argument(
+        "--strategy", type=Path, required=True, help="Strategy Definition v3 JSON"
+    )
+    features.add_argument("--cache", type=Path, required=True, help="Persistent cache")
+    features.add_argument("--output", type=Path, required=True, help="New artifact directory")
+    features.add_argument("--max-sessions", type=int, default=19)
+    features.add_argument(
+        "--timeframes",
+        nargs="+",
+        default=list(DEFAULT_TIMEFRAMES),
+        choices=list(DEFAULT_TIMEFRAMES),
+    )
     return parser
 
 
 def main(argv: list[str] | None = None) -> int:
     args = _parser().parse_args(argv)
     try:
-        if args.command == "run-history":
+        if args.command == "run-features":
+            manifest = run_fourth_increment(
+                args.catalog,
+                args.strategy,
+                args.cache,
+                args.output,
+                max_sessions=args.max_sessions,
+                timeframes=tuple(args.timeframes),
+            )
+        elif args.command == "run-history":
             manifest = run_third_increment(
                 args.catalog,
                 args.strategy,

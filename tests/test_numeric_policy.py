@@ -4,6 +4,7 @@ import unittest
 
 from quantlab_core.errors import ContractError
 from quantlab_core.numeric import CanonicalRational, round_half_even
+from quantlab_core.price import common_decimal_scale
 
 
 class CanonicalRationalTests(unittest.TestCase):
@@ -33,7 +34,9 @@ class CanonicalRationalTests(unittest.TestCase):
         self.assertEqual(round_half_even(-5, 2), -2)
         self.assertEqual(round_half_even(-7, 2), -4)
 
+    def test_common_scale_accepts_exact_signed_strategy_constants(self) -> None:
+        self.assertEqual(common_decimal_scale([2], ["-1.250", "0.125"]), 3)
+
 
 if __name__ == "__main__":
     unittest.main()
-

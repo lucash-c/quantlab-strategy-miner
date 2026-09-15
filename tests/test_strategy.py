@@ -15,6 +15,7 @@ from quantlab_core.historical_strategy import (
 )
 from quantlab_core.market_data import Candle, FeatureRow
 from quantlab_core.strategy import StrategyDefinition, load_strategy, strategy_json_schema
+from quantlab_core.strategy_v3 import strategy_v3_json_schema
 
 
 class StrategySchemaTests(unittest.TestCase):
@@ -60,6 +61,13 @@ class StrategySchemaTests(unittest.TestCase):
         strategy = HistoricalStrategyDefinition.model_validate(historical_strategy_record())
         self.assertEqual(strategy.logical_asset, "WIN")
         self.assertEqual(strategy.timeframe, "1m")
+
+    def test_published_v3_json_schema_matches_model(self) -> None:
+        root = Path(__file__).resolve().parents[1]
+        published = json.loads(
+            (root / "schemas" / "strategy-definition" / "v3.schema.json").read_text()
+        )
+        self.assertEqual(published, strategy_v3_json_schema())
 
 
 if __name__ == "__main__":
