@@ -1,0 +1,138 @@
+{
+  "cost_model": {
+    "points_per_side": "0.5",
+    "type": "FIXED_PER_SIDE",
+    "version": "1.0.0"
+  },
+  "direction": "BUY",
+  "entry_conditions": {
+    "children": [
+      {
+        "left": {
+          "feature_id": "ema9",
+          "type": "feature"
+        },
+        "operator": "GT",
+        "right": {
+          "dimension": "PRICE",
+          "type": "constant",
+          "value": "0"
+        },
+        "type": "comparison"
+      },
+      {
+        "left": {
+          "feature_id": "vwap",
+          "type": "feature"
+        },
+        "operator": "GT",
+        "right": {
+          "dimension": "PRICE",
+          "type": "constant",
+          "value": "0"
+        },
+        "type": "comparison"
+      },
+      {
+        "left": {
+          "feature_id": "relative_volume20",
+          "type": "feature"
+        },
+        "operator": "GT",
+        "right": {
+          "dimension": "RATIO",
+          "type": "constant",
+          "value": "0"
+        },
+        "type": "comparison"
+      },
+      {
+        "left": {
+          "feature_id": "previous_high5",
+          "type": "feature"
+        },
+        "operator": "GT",
+        "right": {
+          "dimension": "PRICE",
+          "type": "constant",
+          "value": "0"
+        },
+        "type": "comparison"
+      }
+    ],
+    "operator": "AND",
+    "type": "logical"
+  },
+  "entry_time_filter": {
+    "end": "17:55",
+    "end_inclusive": false,
+    "start": "09:15",
+    "start_inclusive": true
+  },
+  "evaluation_mode": "ON_CLOSE",
+  "execution": {
+    "entry_fill": "NEXT_TRADE",
+    "position_policy": "SINGLE_POSITION_NO_QUEUE",
+    "position_size": 1,
+    "require_post_fill_event": true,
+    "same_tick_reentry": false,
+    "session_end": "CLOSE_AT_LAST_TRADE"
+  },
+  "features": [
+    {
+      "feature_id": "ema9",
+      "inputs": [],
+      "name": "ema_close",
+      "parameters": {
+        "period": 9
+      },
+      "version": "1.0.0"
+    },
+    {
+      "feature_id": "vwap",
+      "inputs": [],
+      "name": "session_trade_vwap",
+      "parameters": {},
+      "version": "1.0.0"
+    },
+    {
+      "feature_id": "relative_volume20",
+      "inputs": [],
+      "name": "relative_volume",
+      "parameters": {
+        "include_current": true,
+        "period": 20
+      },
+      "version": "1.0.0"
+    },
+    {
+      "feature_id": "previous_high5",
+      "inputs": [],
+      "name": "rolling_high",
+      "parameters": {
+        "include_current": false,
+        "period": 5
+      },
+      "version": "1.0.0"
+    }
+  ],
+  "logical_asset": "WIN",
+  "name": "WIN feature engine validation",
+  "schema_version": "strategy-definition/v3",
+  "slippage_model": {
+    "points_per_side": "1",
+    "type": "FIXED_POINTS",
+    "version": "1.0.0"
+  },
+  "stop_loss": {
+    "unit": "POINTS",
+    "value": "100"
+  },
+  "strategy_id": "WIN.FEATURES.VALIDATION",
+  "strategy_version": 1,
+  "take_profit": {
+    "unit": "POINTS",
+    "value": "100"
+  },
+  "timeframe": "1m"
+}

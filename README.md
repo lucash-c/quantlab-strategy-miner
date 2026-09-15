@@ -25,6 +25,11 @@ O terceiro incremento acrescenta historico multi-pregao content-addressed: sesso
 por sessao, backtest sem overnight e cache incremental deterministico. Ativo logico `WIN` e
 contrato fisico continuam explicitamente separados.
 
+O quarto incremento acrescenta o Feature Engine v2 com numeros racionais canonicos, EMA/ATR
+fixed9, VWAP real dos negocios, features de tendencia, volatilidade, volume, estrutura, candle,
+momentum e contexto; Strategy Definition v3; custos/slippage determinísticos; ledger v3 e
+metricas v3 com valores indefinidos tipados. Ele ainda nao gera estrategias automaticamente.
+
 ## Principios
 
 - Nenhum preco canonico usa ponto flutuante.
@@ -49,6 +54,10 @@ O terceiro incremento esta em
 [docs/contracts/trading-session-v1.md](docs/contracts/trading-session-v1.md),
 [docs/contracts/historical-dataset-v1.md](docs/contracts/historical-dataset-v1.md) e
 [docs/contracts/manual-strategy-v2.md](docs/contracts/manual-strategy-v2.md).
+O quarto incremento esta descrito em
+[docs/architecture/fourth-increment.md](docs/architecture/fourth-increment.md), com contratos em
+[docs/contracts/feature-engine-v2.md](docs/contracts/feature-engine-v2.md) e
+[docs/contracts/manual-strategy-v3.md](docs/contracts/manual-strategy-v3.md).
 
 ## Desenvolvimento
 
@@ -95,6 +104,16 @@ uv run quantlab-miner run-history `
 O cache e persistente e pode ser reutilizado entre janelas; o diretorio de saida de cada run deve
 ser novo.
 
+Para executar o vocabulario quantitativo e o backtest v3:
+
+```powershell
+uv run quantlab-miner run-features `
+  --catalog caminho\historical-sources.json `
+  --strategy examples\strategies\win-features-validation-v3.json `
+  --cache artifacts\feature-cache `
+  --output artifacts\feature-run
+```
+
 ## Testes B3
 
 A suite comum usa apenas fixtures pequenas derivadas da amostra real:
@@ -126,3 +145,12 @@ uv run python scripts\run_historical_b3_regression.py `
 
 O aceite com 19 pregoes reais permanece pendente ate que os arquivos correspondentes sejam
 fornecidos.
+
+A regressao real opt-in do quarto incremento executa duas vezes o pipeline de features e compara
+os artefatos de pesquisa byte a byte:
+
+```powershell
+uv run python scripts\run_feature_b3_regression.py `
+  --input C:\caminho\10-09-2026_NEGOCIOSAVISTA_DRV.zip `
+  --output artifacts\fourth-increment-real-regression
+```
