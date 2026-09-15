@@ -215,6 +215,9 @@ def _ensure_import(source: Path, contract: str, cache_root: Path) -> CachedArtif
         audit_path = adapter_directory / cast(
             str, adapter_artifacts["selected_events_audit"]["file"]
         )
+        rejections_path = adapter_directory / cast(
+            str, adapter_artifacts["rejections"]["file"]
+        )
         artifacts = {
             "import_report": _artifact(report_path, 1, sha256_file(report_path)),
             "canonical_trades": _artifact(
@@ -232,6 +235,11 @@ def _ensure_import(source: Path, contract: str, cache_root: Path) -> CachedArtif
                     str,
                     adapter_artifacts["selected_events_audit"]["semantic_sha256"],
                 ),
+            ),
+            "rejections": _artifact(
+                rejections_path,
+                int(adapter_artifacts["rejections"]["row_count"]),
+                cast(str, adapter_artifacts["rejections"]["semantic_sha256"]),
             ),
         }
         for artifact in artifacts.values():
