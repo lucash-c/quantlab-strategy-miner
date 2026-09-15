@@ -11,10 +11,12 @@ sys.path.insert(0, str(ROOT / "packages" / "core" / "src"))
 
 from quantlab_core.historical_strategy import historical_strategy_json_schema  # noqa: E402
 from quantlab_core.strategy import strategy_json_schema  # noqa: E402
+from quantlab_core.strategy_v3 import strategy_v3_json_schema  # noqa: E402
 
 for version, schema in (
     ("v1", strategy_json_schema()),
     ("v2", historical_strategy_json_schema()),
+    ("v3", strategy_v3_json_schema()),
 ):
     destination = ROOT / "schemas" / "strategy-definition" / f"{version}.schema.json"
     destination.parent.mkdir(parents=True, exist_ok=True)

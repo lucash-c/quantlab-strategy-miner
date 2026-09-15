@@ -1,0 +1,653 @@
+{
+  "$defs": {
+    "CandleFieldOperandV3": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "enum": [
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume"
+          ],
+          "title": "Name",
+          "type": "string"
+        },
+        "type": {
+          "const": "candle_field",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "name"
+      ],
+      "title": "CandleFieldOperandV3",
+      "type": "object"
+    },
+    "ComparisonConditionV3": {
+      "additionalProperties": false,
+      "properties": {
+        "left": {
+          "$ref": "#/$defs/OperandV3"
+        },
+        "operator": {
+          "enum": [
+            "GT",
+            "GTE",
+            "LT",
+            "LTE",
+            "EQ",
+            "NE"
+          ],
+          "title": "Operator",
+          "type": "string"
+        },
+        "right": {
+          "$ref": "#/$defs/OperandV3"
+        },
+        "type": {
+          "const": "comparison",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "operator",
+        "left",
+        "right"
+      ],
+      "title": "ComparisonConditionV3",
+      "type": "object"
+    },
+    "ConditionNodeV3": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ComparisonConditionV3"
+        },
+        {
+          "$ref": "#/$defs/CrossConditionV3"
+        },
+        {
+          "$ref": "#/$defs/RangeConditionV3"
+        },
+        {
+          "$ref": "#/$defs/LogicalConditionV3"
+        }
+      ]
+    },
+    "ConstantOperandV3": {
+      "additionalProperties": false,
+      "properties": {
+        "dimension": {
+          "enum": [
+            "PRICE",
+            "QUANTITY",
+            "RATIO",
+            "PERCENT",
+            "MINUTES",
+            "BOOLEAN",
+            "ENUM"
+          ],
+          "title": "Dimension",
+          "type": "string"
+        },
+        "type": {
+          "const": "constant",
+          "title": "Type",
+          "type": "string"
+        },
+        "value": {
+          "title": "Value",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "dimension",
+        "value"
+      ],
+      "title": "ConstantOperandV3",
+      "type": "object"
+    },
+    "CostModelV3": {
+      "discriminator": {
+        "mapping": {
+          "FIXED_PER_SIDE": "#/$defs/FixedPerSideCostModelV3",
+          "NONE": "#/$defs/NoCostModelV3"
+        },
+        "propertyName": "type"
+      },
+      "oneOf": [
+        {
+          "$ref": "#/$defs/NoCostModelV3"
+        },
+        {
+          "$ref": "#/$defs/FixedPerSideCostModelV3"
+        }
+      ]
+    },
+    "CrossConditionV3": {
+      "additionalProperties": false,
+      "properties": {
+        "left": {
+          "$ref": "#/$defs/OperandV3"
+        },
+        "operator": {
+          "enum": [
+            "CROSS_ABOVE",
+            "CROSS_BELOW"
+          ],
+          "title": "Operator",
+          "type": "string"
+        },
+        "right": {
+          "$ref": "#/$defs/OperandV3"
+        },
+        "type": {
+          "const": "cross",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "operator",
+        "left",
+        "right"
+      ],
+      "title": "CrossConditionV3",
+      "type": "object"
+    },
+    "ExecutionPolicyV3": {
+      "additionalProperties": false,
+      "properties": {
+        "entry_fill": {
+          "const": "NEXT_TRADE",
+          "title": "Entry Fill",
+          "type": "string"
+        },
+        "position_policy": {
+          "const": "SINGLE_POSITION_NO_QUEUE",
+          "title": "Position Policy",
+          "type": "string"
+        },
+        "position_size": {
+          "const": 1,
+          "title": "Position Size",
+          "type": "integer"
+        },
+        "require_post_fill_event": {
+          "const": true,
+          "title": "Require Post Fill Event",
+          "type": "boolean"
+        },
+        "same_tick_reentry": {
+          "const": false,
+          "title": "Same Tick Reentry",
+          "type": "boolean"
+        },
+        "session_end": {
+          "const": "CLOSE_AT_LAST_TRADE",
+          "title": "Session End",
+          "type": "string"
+        }
+      },
+      "required": [
+        "entry_fill",
+        "position_policy",
+        "same_tick_reentry",
+        "session_end",
+        "require_post_fill_event",
+        "position_size"
+      ],
+      "title": "ExecutionPolicyV3",
+      "type": "object"
+    },
+    "FeatureDeclaration": {
+      "additionalProperties": false,
+      "properties": {
+        "feature_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+          "title": "Feature Id",
+          "type": "string"
+        },
+        "inputs": {
+          "items": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+            "type": "string"
+          },
+          "title": "Inputs",
+          "type": "array"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "parameters": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "title": "Parameters",
+          "type": "object"
+        },
+        "version": {
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "feature_id",
+        "name",
+        "version",
+        "parameters",
+        "inputs"
+      ],
+      "title": "FeatureDeclaration",
+      "type": "object"
+    },
+    "FeatureOperandV3": {
+      "additionalProperties": false,
+      "properties": {
+        "feature_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+          "title": "Feature Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "feature",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "feature_id"
+      ],
+      "title": "FeatureOperandV3",
+      "type": "object"
+    },
+    "FixedPerSideCostModelV3": {
+      "additionalProperties": false,
+      "properties": {
+        "points_per_side": {
+          "title": "Points Per Side",
+          "type": "string"
+        },
+        "type": {
+          "const": "FIXED_PER_SIDE",
+          "title": "Type",
+          "type": "string"
+        },
+        "version": {
+          "const": "1.0.0",
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "version",
+        "points_per_side"
+      ],
+      "title": "FixedPerSideCostModelV3",
+      "type": "object"
+    },
+    "FixedPointsSlippageModelV3": {
+      "additionalProperties": false,
+      "properties": {
+        "points_per_side": {
+          "title": "Points Per Side",
+          "type": "string"
+        },
+        "type": {
+          "const": "FIXED_POINTS",
+          "title": "Type",
+          "type": "string"
+        },
+        "version": {
+          "const": "1.0.0",
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "version",
+        "points_per_side"
+      ],
+      "title": "FixedPointsSlippageModelV3",
+      "type": "object"
+    },
+    "LogicalConditionV3": {
+      "additionalProperties": false,
+      "properties": {
+        "children": {
+          "items": {
+            "$ref": "#/$defs/ConditionNodeV3"
+          },
+          "title": "Children",
+          "type": "array"
+        },
+        "operator": {
+          "enum": [
+            "AND",
+            "OR",
+            "NOT"
+          ],
+          "title": "Operator",
+          "type": "string"
+        },
+        "type": {
+          "const": "logical",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "operator",
+        "children"
+      ],
+      "title": "LogicalConditionV3",
+      "type": "object"
+    },
+    "NoCostModelV3": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "NONE",
+          "title": "Type",
+          "type": "string"
+        },
+        "version": {
+          "const": "1.0.0",
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "version"
+      ],
+      "title": "NoCostModelV3",
+      "type": "object"
+    },
+    "NoSlippageModelV3": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "NONE",
+          "title": "Type",
+          "type": "string"
+        },
+        "version": {
+          "const": "1.0.0",
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "version"
+      ],
+      "title": "NoSlippageModelV3",
+      "type": "object"
+    },
+    "OperandV3": {
+      "discriminator": {
+        "mapping": {
+          "candle_field": "#/$defs/CandleFieldOperandV3",
+          "constant": "#/$defs/ConstantOperandV3",
+          "feature": "#/$defs/FeatureOperandV3"
+        },
+        "propertyName": "type"
+      },
+      "oneOf": [
+        {
+          "$ref": "#/$defs/CandleFieldOperandV3"
+        },
+        {
+          "$ref": "#/$defs/FeatureOperandV3"
+        },
+        {
+          "$ref": "#/$defs/ConstantOperandV3"
+        }
+      ]
+    },
+    "PointDistanceV3": {
+      "additionalProperties": false,
+      "properties": {
+        "unit": {
+          "const": "POINTS",
+          "title": "Unit",
+          "type": "string"
+        },
+        "value": {
+          "title": "Value",
+          "type": "string"
+        }
+      },
+      "required": [
+        "unit",
+        "value"
+      ],
+      "title": "PointDistanceV3",
+      "type": "object"
+    },
+    "RangeConditionV3": {
+      "additionalProperties": false,
+      "properties": {
+        "lower": {
+          "$ref": "#/$defs/OperandV3"
+        },
+        "lower_inclusive": {
+          "title": "Lower Inclusive",
+          "type": "boolean"
+        },
+        "operator": {
+          "enum": [
+            "BETWEEN",
+            "NOT_BETWEEN"
+          ],
+          "title": "Operator",
+          "type": "string"
+        },
+        "type": {
+          "const": "range",
+          "title": "Type",
+          "type": "string"
+        },
+        "upper": {
+          "$ref": "#/$defs/OperandV3"
+        },
+        "upper_inclusive": {
+          "title": "Upper Inclusive",
+          "type": "boolean"
+        },
+        "value": {
+          "$ref": "#/$defs/OperandV3"
+        }
+      },
+      "required": [
+        "type",
+        "operator",
+        "value",
+        "lower",
+        "upper",
+        "lower_inclusive",
+        "upper_inclusive"
+      ],
+      "title": "RangeConditionV3",
+      "type": "object"
+    },
+    "SlippageModelV3": {
+      "discriminator": {
+        "mapping": {
+          "FIXED_POINTS": "#/$defs/FixedPointsSlippageModelV3",
+          "NONE": "#/$defs/NoSlippageModelV3"
+        },
+        "propertyName": "type"
+      },
+      "oneOf": [
+        {
+          "$ref": "#/$defs/NoSlippageModelV3"
+        },
+        {
+          "$ref": "#/$defs/FixedPointsSlippageModelV3"
+        }
+      ]
+    },
+    "TimeRangeV3": {
+      "additionalProperties": false,
+      "properties": {
+        "end": {
+          "title": "End",
+          "type": "string"
+        },
+        "end_inclusive": {
+          "title": "End Inclusive",
+          "type": "boolean"
+        },
+        "start": {
+          "title": "Start",
+          "type": "string"
+        },
+        "start_inclusive": {
+          "title": "Start Inclusive",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "start",
+        "end",
+        "start_inclusive",
+        "end_inclusive"
+      ],
+      "title": "TimeRangeV3",
+      "type": "object"
+    }
+  },
+  "$id": "https://quantlab.local/schemas/strategy-definition/v3.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "cost_model": {
+      "$ref": "#/$defs/CostModelV3"
+    },
+    "direction": {
+      "enum": [
+        "BUY",
+        "SELL"
+      ],
+      "title": "Direction",
+      "type": "string"
+    },
+    "entry_conditions": {
+      "$ref": "#/$defs/ConditionNodeV3"
+    },
+    "entry_time_filter": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/TimeRangeV3"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "evaluation_mode": {
+      "const": "ON_CLOSE",
+      "title": "Evaluation Mode",
+      "type": "string"
+    },
+    "execution": {
+      "$ref": "#/$defs/ExecutionPolicyV3"
+    },
+    "features": {
+      "items": {
+        "$ref": "#/$defs/FeatureDeclaration"
+      },
+      "title": "Features",
+      "type": "array"
+    },
+    "logical_asset": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "title": "Logical Asset",
+      "type": "string"
+    },
+    "name": {
+      "maxLength": 200,
+      "minLength": 1,
+      "title": "Name",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "strategy-definition/v3",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "slippage_model": {
+      "$ref": "#/$defs/SlippageModelV3"
+    },
+    "stop_loss": {
+      "$ref": "#/$defs/PointDistanceV3"
+    },
+    "strategy_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "title": "Strategy Id",
+      "type": "string"
+    },
+    "strategy_version": {
+      "minimum": 1,
+      "title": "Strategy Version",
+      "type": "integer"
+    },
+    "take_profit": {
+      "$ref": "#/$defs/PointDistanceV3"
+    },
+    "timeframe": {
+      "enum": [
+        "1m",
+        "2m",
+        "5m",
+        "15m"
+      ],
+      "title": "Timeframe",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "strategy_id",
+    "strategy_version",
+    "name",
+    "logical_asset",
+    "timeframe",
+    "evaluation_mode",
+    "direction",
+    "features",
+    "entry_conditions",
+    "entry_time_filter",
+    "take_profit",
+    "stop_loss",
+    "execution",
+    "cost_model",
+    "slippage_model"
+  ],
+  "title": "StrategyDefinitionV3",
+  "type": "object"
+}
