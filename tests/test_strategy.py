@@ -5,10 +5,14 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from helpers import strategy_record, write_strategy
+from helpers import historical_strategy_record, strategy_record, write_strategy
 from pydantic import ValidationError
 from quantlab_core.errors import ContractError
 from quantlab_core.evaluator import evaluate_condition
+from quantlab_core.historical_strategy import (
+    HistoricalStrategyDefinition,
+    historical_strategy_json_schema,
+)
 from quantlab_core.market_data import Candle, FeatureRow
 from quantlab_core.strategy import StrategyDefinition, load_strategy, strategy_json_schema
 
@@ -46,6 +50,16 @@ class StrategySchemaTests(unittest.TestCase):
             (root / "schemas" / "strategy-definition" / "v1.schema.json").read_text()
         )
         self.assertEqual(published, strategy_json_schema())
+
+    def test_published_historical_json_schema_matches_model(self) -> None:
+        root = Path(__file__).resolve().parents[1]
+        published = json.loads(
+            (root / "schemas" / "strategy-definition" / "v2.schema.json").read_text()
+        )
+        self.assertEqual(published, historical_strategy_json_schema())
+        strategy = HistoricalStrategyDefinition.model_validate(historical_strategy_record())
+        self.assertEqual(strategy.logical_asset, "WIN")
+        self.assertEqual(strategy.timeframe, "1m")
 
 
 if __name__ == "__main__":

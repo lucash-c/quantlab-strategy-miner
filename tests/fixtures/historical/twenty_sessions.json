@@ -1,0 +1,25 @@
+{
+  "schema_version": "historical-test-fixture/v1",
+  "sessions": [
+    {"trading_date": "2026-08-17", "physical_contract": "WINV26", "base_price": "100000,0"},
+    {"trading_date": "2026-08-18", "physical_contract": "WINV26", "base_price": "100100,0"},
+    {"trading_date": "2026-08-19", "physical_contract": "WINV26", "base_price": "100200,0"},
+    {"trading_date": "2026-08-20", "physical_contract": "WINV26", "base_price": "100300,0"},
+    {"trading_date": "2026-08-21", "physical_contract": "WINV26", "base_price": "100400,0"},
+    {"trading_date": "2026-08-24", "physical_contract": "WINV26", "base_price": "100500,0"},
+    {"trading_date": "2026-08-25", "physical_contract": "WINV26", "base_price": "100600,0"},
+    {"trading_date": "2026-08-26", "physical_contract": "WINV26", "base_price": "100700,0"},
+    {"trading_date": "2026-08-27", "physical_contract": "WINV26", "base_price": "100800,0"},
+    {"trading_date": "2026-08-28", "physical_contract": "WINV26", "base_price": "100900,0"},
+    {"trading_date": "2026-08-31", "physical_contract": "WINZ26", "base_price": "101000,25"},
+    {"trading_date": "2026-09-01", "physical_contract": "WINZ26", "base_price": "101100,25"},
+    {"trading_date": "2026-09-02", "physical_contract": "WINZ26", "base_price": "101200,25"},
+    {"trading_date": "2026-09-03", "physical_contract": "WINZ26", "base_price": "101300,25"},
+    {"trading_date": "2026-09-04", "physical_contract": "WINZ26", "base_price": "101400,25"},
+    {"trading_date": "2026-09-08", "physical_contract": "WINZ26", "base_price": "101500,25"},
+    {"trading_date": "2026-09-09", "physical_contract": "WINZ26", "base_price": "101600,25"},
+    {"trading_date": "2026-09-10", "physical_contract": "WINZ26", "base_price": "101700,25"},
+    {"trading_date": "2026-09-11", "physical_contract": "WINZ26", "base_price": "101800,25"},
+    {"trading_date": "2026-09-14", "physical_contract": "WINZ26", "base_price": "101900,25"}
+  ]
+}
