@@ -11,6 +11,7 @@ for source in (
     ROOT / "packages" / "core" / "src",
     ROOT / "packages" / "data" / "src",
     ROOT / "packages" / "backtest" / "src",
+    ROOT / "packages" / "mining" / "src",
     ROOT / "apps" / "cli" / "src",
 ):
     sys.path.insert(0, str(source))

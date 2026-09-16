@@ -8,6 +8,7 @@ members = [
     "quantlab-cli",
     "quantlab-core",
     "quantlab-data",
+    "quantlab-mining",
     "quantlab-strategy-miner-workspace",
 ]
 
@@ -105,6 +106,7 @@ dependencies = [
     { name = "quantlab-backtest" },
     { name = "quantlab-core" },
     { name = "quantlab-data" },
+    { name = "quantlab-mining" },
 ]
 
 [package.metadata]
@@ -112,6 +114,7 @@ requires-dist = [
     { name = "quantlab-backtest", editable = "packages/backtest" },
     { name = "quantlab-core", editable = "packages/core" },
     { name = "quantlab-data", editable = "packages/data" },
+    { name = "quantlab-mining", editable = "packages/mining" },
 ]
 
 [[package]]
@@ -141,6 +144,23 @@ requires-dist = [
 ]
 
 [[package]]
+name = "quantlab-mining"
+version = "0.1.0"
+source = { editable = "packages/mining" }
+dependencies = [
+    { name = "quantlab-backtest" },
+    { name = "quantlab-core" },
+    { name = "quantlab-data" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "quantlab-backtest", editable = "packages/backtest" },
+    { name = "quantlab-core", editable = "packages/core" },
+    { name = "quantlab-data", editable = "packages/data" },
+]
+
+[[package]]
 name = "quantlab-strategy-miner-workspace"
 version = "0.1.0"
 source = { virtual = "." }
@@ -149,6 +169,7 @@ dependencies = [
     { name = "quantlab-cli" },
     { name = "quantlab-core" },
     { name = "quantlab-data" },
+    { name = "quantlab-mining" },
 ]
 
 [package.dev-dependencies]
@@ -162,6 +183,7 @@ requires-dist = [
     { name = "quantlab-cli", editable = "apps/cli" },
     { name = "quantlab-core", editable = "packages/core" },
     { name = "quantlab-data", editable = "packages/data" },
+    { name = "quantlab-mining", editable = "packages/mining" },
 ]
 
 [package.metadata.requires-dev]
