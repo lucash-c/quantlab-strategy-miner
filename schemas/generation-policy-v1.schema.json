@@ -1,0 +1,97 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "generation-policy/v1",
+      "default": "generation-policy/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "candidate_budget": {
+      "default": 10000,
+      "maximum": 50000,
+      "minimum": 1,
+      "title": "Candidate Budget",
+      "type": "integer"
+    },
+    "expansion_limit": {
+      "default": 1000000,
+      "maximum": 1000000,
+      "minimum": 1,
+      "title": "Expansion Limit",
+      "type": "integer"
+    },
+    "max_conditions": {
+      "default": 3,
+      "maximum": 3,
+      "minimum": 1,
+      "title": "Max Conditions",
+      "type": "integer"
+    },
+    "max_ast_depth": {
+      "default": 2,
+      "maximum": 2,
+      "minimum": 1,
+      "title": "Max Ast Depth",
+      "type": "integer"
+    },
+    "max_features": {
+      "default": 6,
+      "maximum": 6,
+      "minimum": 1,
+      "title": "Max Features",
+      "type": "integer"
+    },
+    "max_variable_dimensions": {
+      "default": 12,
+      "maximum": 12,
+      "minimum": 1,
+      "title": "Max Variable Dimensions",
+      "type": "integer"
+    },
+    "max_cross_conditions": {
+      "default": 1,
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Max Cross Conditions",
+      "type": "integer"
+    },
+    "max_time_filters": {
+      "default": 1,
+      "maximum": 1,
+      "minimum": 1,
+      "title": "Max Time Filters",
+      "type": "integer"
+    },
+    "max_grid_values": {
+      "default": 32,
+      "maximum": 32,
+      "minimum": 1,
+      "title": "Max Grid Values",
+      "type": "integer"
+    },
+    "max_templates": {
+      "default": 32,
+      "maximum": 32,
+      "minimum": 1,
+      "title": "Max Templates",
+      "type": "integer"
+    },
+    "min_period": {
+      "default": 1,
+      "maximum": 1000,
+      "minimum": 1,
+      "title": "Min Period",
+      "type": "integer"
+    },
+    "max_period": {
+      "default": 1000,
+      "maximum": 1000,
+      "minimum": 1,
+      "title": "Max Period",
+      "type": "integer"
+    }
+  },
+  "title": "GenerationPolicyV1",
+  "type": "object"
+}

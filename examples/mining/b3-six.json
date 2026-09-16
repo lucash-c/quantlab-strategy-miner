@@ -1,0 +1,169 @@
+{
+  "schema_version": "mining-search-space/v1",
+  "logical_asset": "WIN",
+  "timeframes": [
+    "1m"
+  ],
+  "directions": [
+    "BUY",
+    "SELL"
+  ],
+  "templates": [
+    {
+      "template_id": "TREND.CLOSE",
+      "base": {
+        "kind": "trend_close",
+        "grids": {
+          "average": [
+            "sma_close"
+          ],
+          "period": [
+            9
+          ],
+          "operator": [
+            "COMPARE"
+          ]
+        },
+        "direction_grids": {}
+      },
+      "confirmations": [
+        {
+          "kind": "volume",
+          "grids": {
+            "mode": [
+              "RELATIVE"
+            ],
+            "period": [
+              20
+            ],
+            "include_current": [
+              false
+            ],
+            "threshold": [
+              "1.5"
+            ]
+          },
+          "direction_grids": {}
+        },
+        {
+          "kind": "vwap_context",
+          "grids": {
+            "mode": [
+              "CLOSE"
+            ],
+            "operator": [
+              "COMPARE"
+            ]
+          },
+          "direction_grids": {}
+        }
+      ]
+    },
+    {
+      "template_id": "TREND.PAIR",
+      "base": {
+        "kind": "trend_pair",
+        "grids": {
+          "average": [
+            "ema_close"
+          ],
+          "short_period": [
+            9
+          ],
+          "long_period": [
+            21
+          ],
+          "operator": [
+            "CROSS"
+          ]
+        },
+        "direction_grids": {}
+      },
+      "confirmations": [
+        {
+          "kind": "volume",
+          "grids": {
+            "mode": [
+              "RELATIVE"
+            ],
+            "period": [
+              20
+            ],
+            "include_current": [
+              false
+            ],
+            "threshold": [
+              "1.5"
+            ]
+          },
+          "direction_grids": {}
+        }
+      ]
+    },
+    {
+      "template_id": "BREAKOUT",
+      "base": {
+        "kind": "breakout_previous",
+        "grids": {
+          "period": [
+            5
+          ],
+          "include_current": [
+            false
+          ]
+        },
+        "direction_grids": {}
+      },
+      "confirmations": [
+        {
+          "kind": "volume",
+          "grids": {
+            "mode": [
+              "RELATIVE"
+            ],
+            "period": [
+              20
+            ],
+            "include_current": [
+              false
+            ],
+            "threshold": [
+              "1.5"
+            ]
+          },
+          "direction_grids": {}
+        },
+        {
+          "kind": "volatility",
+          "grids": {
+            "mode": [
+              "ATR_THRESHOLD"
+            ],
+            "period": [
+              14
+            ],
+            "threshold": [
+              "0"
+            ]
+          },
+          "direction_grids": {}
+        }
+      ]
+    }
+  ],
+  "stops": [
+    "100"
+  ],
+  "targets": [
+    "100"
+  ],
+  "time_windows": [
+    {
+      "start": "09:15",
+      "end": "11:30",
+      "start_inclusive": true,
+      "end_inclusive": false
+    }
+  ],
+  "constraints": "closed-template-constraints/v1"
+}

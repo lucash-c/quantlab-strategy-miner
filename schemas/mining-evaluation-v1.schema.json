@@ -1,0 +1,159 @@
+{
+  "$defs": {
+    "CostModelV3": {
+      "discriminator": {
+        "mapping": {
+          "FIXED_PER_SIDE": "#/$defs/FixedPerSideCostModelV3",
+          "NONE": "#/$defs/NoCostModelV3"
+        },
+        "propertyName": "type"
+      },
+      "oneOf": [
+        {
+          "$ref": "#/$defs/NoCostModelV3"
+        },
+        {
+          "$ref": "#/$defs/FixedPerSideCostModelV3"
+        }
+      ]
+    },
+    "FixedPerSideCostModelV3": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "FIXED_PER_SIDE",
+          "title": "Type",
+          "type": "string"
+        },
+        "version": {
+          "const": "1.0.0",
+          "title": "Version",
+          "type": "string"
+        },
+        "points_per_side": {
+          "title": "Points Per Side",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "version",
+        "points_per_side"
+      ],
+      "title": "FixedPerSideCostModelV3",
+      "type": "object"
+    },
+    "FixedPointsSlippageModelV3": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "FIXED_POINTS",
+          "title": "Type",
+          "type": "string"
+        },
+        "version": {
+          "const": "1.0.0",
+          "title": "Version",
+          "type": "string"
+        },
+        "points_per_side": {
+          "title": "Points Per Side",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "version",
+        "points_per_side"
+      ],
+      "title": "FixedPointsSlippageModelV3",
+      "type": "object"
+    },
+    "NoCostModelV3": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "NONE",
+          "title": "Type",
+          "type": "string"
+        },
+        "version": {
+          "const": "1.0.0",
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "version"
+      ],
+      "title": "NoCostModelV3",
+      "type": "object"
+    },
+    "NoSlippageModelV3": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "NONE",
+          "title": "Type",
+          "type": "string"
+        },
+        "version": {
+          "const": "1.0.0",
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "version"
+      ],
+      "title": "NoSlippageModelV3",
+      "type": "object"
+    },
+    "SlippageModelV3": {
+      "discriminator": {
+        "mapping": {
+          "FIXED_POINTS": "#/$defs/FixedPointsSlippageModelV3",
+          "NONE": "#/$defs/NoSlippageModelV3"
+        },
+        "propertyName": "type"
+      },
+      "oneOf": [
+        {
+          "$ref": "#/$defs/NoSlippageModelV3"
+        },
+        {
+          "$ref": "#/$defs/FixedPointsSlippageModelV3"
+        }
+      ]
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "mining-evaluation/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "cost_model": {
+      "$ref": "#/$defs/CostModelV3"
+    },
+    "slippage_model": {
+      "$ref": "#/$defs/SlippageModelV3"
+    },
+    "max_sessions": {
+      "default": 19,
+      "minimum": 1,
+      "title": "Max Sessions",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "schema_version",
+    "cost_model",
+    "slippage_model"
+  ],
+  "title": "EvaluationConfigV1",
+  "type": "object"
+}

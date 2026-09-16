@@ -1,0 +1,207 @@
+{
+  "$defs": {
+    "AtomGrid": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "trend_close",
+            "trend_pair",
+            "vwap_context",
+            "breakout_previous",
+            "momentum",
+            "candle_context",
+            "volume",
+            "volatility"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "grids": {
+          "additionalProperties": {
+            "$ref": "#/$defs/Grid"
+          },
+          "title": "Grids",
+          "type": "object"
+        },
+        "direction_grids": {
+          "additionalProperties": {
+            "additionalProperties": {
+              "$ref": "#/$defs/Grid"
+            },
+            "type": "object"
+          },
+          "propertyNames": {
+            "enum": [
+              "BUY",
+              "SELL"
+            ]
+          },
+          "title": "Direction Grids",
+          "type": "object"
+        }
+      },
+      "required": [
+        "kind",
+        "grids"
+      ],
+      "title": "AtomGrid",
+      "type": "object"
+    },
+    "Grid": {
+      "items": {
+        "anyOf": [
+          {
+            "type": "integer"
+          },
+          {
+            "type": "boolean"
+          },
+          {
+            "type": "string"
+          }
+        ]
+      },
+      "type": "array"
+    },
+    "TemplateEntry": {
+      "additionalProperties": false,
+      "properties": {
+        "template_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+          "title": "Template Id",
+          "type": "string"
+        },
+        "base": {
+          "$ref": "#/$defs/AtomGrid"
+        },
+        "confirmations": {
+          "items": {
+            "$ref": "#/$defs/AtomGrid"
+          },
+          "title": "Confirmations",
+          "type": "array"
+        }
+      },
+      "required": [
+        "template_id",
+        "base",
+        "confirmations"
+      ],
+      "title": "TemplateEntry",
+      "type": "object"
+    },
+    "TimeRangeV3": {
+      "additionalProperties": false,
+      "properties": {
+        "start": {
+          "title": "Start",
+          "type": "string"
+        },
+        "end": {
+          "title": "End",
+          "type": "string"
+        },
+        "start_inclusive": {
+          "title": "Start Inclusive",
+          "type": "boolean"
+        },
+        "end_inclusive": {
+          "title": "End Inclusive",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "start",
+        "end",
+        "start_inclusive",
+        "end_inclusive"
+      ],
+      "title": "TimeRangeV3",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "mining-search-space/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "logical_asset": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "title": "Logical Asset",
+      "type": "string"
+    },
+    "timeframes": {
+      "items": {
+        "enum": [
+          "1m",
+          "2m",
+          "5m",
+          "15m"
+        ],
+        "type": "string"
+      },
+      "title": "Timeframes",
+      "type": "array"
+    },
+    "directions": {
+      "items": {
+        "enum": [
+          "BUY",
+          "SELL"
+        ],
+        "type": "string"
+      },
+      "title": "Directions",
+      "type": "array"
+    },
+    "templates": {
+      "items": {
+        "$ref": "#/$defs/TemplateEntry"
+      },
+      "title": "Templates",
+      "type": "array"
+    },
+    "stops": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Stops",
+      "type": "array"
+    },
+    "targets": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Targets",
+      "type": "array"
+    },
+    "time_windows": {
+      "items": {
+        "$ref": "#/$defs/TimeRangeV3"
+      },
+      "title": "Time Windows",
+      "type": "array"
+    },
+    "constraints": {
+      "const": "closed-template-constraints/v1",
+      "title": "Constraints",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "logical_asset",
+    "timeframes",
+    "directions",
+    "templates",
+    "stops",
+    "targets",
+    "time_windows",
+    "constraints"
+  ],
+  "title": "MiningSearchSpaceV1",
+  "type": "object"
+}

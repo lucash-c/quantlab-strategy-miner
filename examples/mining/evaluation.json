@@ -1,0 +1,14 @@
+{
+  "schema_version": "mining-evaluation/v1",
+  "max_sessions": 19,
+  "cost_model": {
+    "type": "FIXED_PER_SIDE",
+    "version": "1.0.0",
+    "points_per_side": "1"
+  },
+  "slippage_model": {
+    "type": "FIXED_POINTS",
+    "version": "1.0.0",
+    "points_per_side": "1"
+  }
+}
