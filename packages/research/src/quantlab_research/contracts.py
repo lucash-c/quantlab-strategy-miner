@@ -103,6 +103,16 @@ class MetricGateV1(StrictModel):
     metric: str
     operator: Literal["GT", "GTE", "LT", "LTE", "EQ", "NE"]
     threshold: int | str | RationalThresholdV1
+    recorded_criterion_id: str | None = Field(default=None, alias="criterion_id", exclude=True)
+
+    @model_validator(mode="after")
+    def verify_recorded_id(self) -> MetricGateV1:
+        if (
+            self.recorded_criterion_id is not None
+            and self.recorded_criterion_id != self.criterion_id
+        ):
+            raise ValueError("criterion_id does not match its canonical semantics")
+        return self
 
     def canonical_record(self) -> dict:
         value = (

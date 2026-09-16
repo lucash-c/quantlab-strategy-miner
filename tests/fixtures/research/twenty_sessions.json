@@ -1,0 +1,18 @@
+{
+  "schema_version": "synthetic-research-fixture/v1",
+  "synthetic_not_real_b3": true,
+  "first_weekday": "2026-08-03",
+  "sessions": 20,
+  "contracts": ["WINV26", "WINZ26"],
+  "contract_switch_after_sessions": 10,
+  "minutes": 131,
+  "ticks_per_minute": 2,
+  "first_segment_minutes": 60,
+  "first_segment_points_per_minute": 1,
+  "discovery_second_segment_points_per_minute": 1,
+  "validation_second_segment_points_per_minute": -1,
+  "second_tick_offset_points": 2,
+  "first_session_quantity": 100,
+  "other_session_quantity": 1,
+  "note": "Fixed ZIP timestamps; thresholds only in test policies; neither calendar nor real sessions fabricated."
+}
