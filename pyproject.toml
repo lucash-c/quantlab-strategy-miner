@@ -9,6 +9,7 @@ dependencies = [
   "quantlab-core",
   "quantlab-data",
   "quantlab-mining",
+  "quantlab-research",
 ]
 
 [dependency-groups]
@@ -20,6 +21,7 @@ quantlab-cli = { workspace = true }
 quantlab-core = { workspace = true }
 quantlab-data = { workspace = true }
 quantlab-mining = { workspace = true }
+quantlab-research = { workspace = true }
 
 [tool.uv.workspace]
 members = ["apps/cli", "packages/*"]
