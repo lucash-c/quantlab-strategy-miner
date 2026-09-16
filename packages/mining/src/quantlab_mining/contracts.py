@@ -103,8 +103,15 @@ class MiningSearchSpaceV1(StrictModel):
         for entry in record["templates"]:
             entry.pop("template_id")
             for atom in [entry["base"], *entry["confirmations"]]:
+                atom["direction_grids"] = {
+                    direction: grids
+                    for direction, grids in atom["direction_grids"].items()
+                    if direction in record["directions"]
+                }
                 for grids in [atom["grids"], *atom["direction_grids"].values()]:
                     for key, values in grids.items():
+                        if key in {"threshold", "lower", "upper"}:
+                            values = [decimal_text(value) for value in values]
                         grids[key] = sorted(
                             {canonical_json_bytes(v): v for v in values}.values(),
                             key=canonical_json_bytes,

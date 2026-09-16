@@ -20,12 +20,22 @@ from quantlab_mining.contracts import (
     CANONICALIZATION_VERSION,
     GENERATOR_VERSION,
     TEMPLATE_REGISTRY_VERSION,
+    AtomGrid,
     GenerationPolicyV1,
     MiningSearchSpaceV1,
     identity,
 )
 from quantlab_mining.contradictions import contradiction
 from quantlab_mining.templates import StrategyBuilder, bindings, validate_search
+
+
+def _parameter_bindings(atoms: list[AtomGrid], direction: str, index: int = 0):
+    if index == len(atoms):
+        yield ()
+        return
+    for concrete in bindings(atoms[index], direction):
+        for suffix in _parameter_bindings(atoms, direction, index + 1):
+            yield (concrete, *suffix)
 
 
 @dataclass(frozen=True)
@@ -60,7 +70,7 @@ def preflight(
         for entry in space.templates:
             for direction in space.directions:
                 atom_grids = [entry.base, *entry.confirmations]
-                for parameters in itertools.product(*(bindings(a, direction) for a in atom_grids)):
+                for parameters in _parameter_bindings(atom_grids, direction):
                     if (
                         entry.base.kind == "trend_pair"
                         and parameters[0]["short_period"] >= parameters[0]["long_period"]
@@ -142,7 +152,22 @@ def preflight(
         "rejection_reasons": dict(sorted(rejected.items())),
     }
     if unique_count > policy.candidate_budget:
+        dimensions = {
+            entry.template_id: {
+                direction: [
+                    {key: len(values) for key, values in atom.effective(direction).items()}
+                    for atom in (entry.base, *entry.confirmations)
+                ]
+                for direction in space.directions
+            }
+            for entry in space.templates
+        }
         raise ContractError(
-            f"SEARCH_SPACE_EXCEEDS_BUDGET: U={unique_count}, budget={policy.candidate_budget}"
+            f"SEARCH_SPACE_EXCEEDS_BUDGET: counts={manifest['counts']}, "
+            f"budget={policy.candidate_budget}; dimensions: "
+            f"timeframes={len(space.timeframes)}, directions={len(space.directions)}, "
+            f"stops={len(space.stops)}, targets={len(space.targets)}, "
+            f"windows={len(space.time_windows)}, templates={len(space.templates)}; "
+            f"parameter_grids={dimensions}"
         )
     return CandidatePlan(database, manifest)

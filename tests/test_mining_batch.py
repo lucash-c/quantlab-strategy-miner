@@ -170,3 +170,35 @@ class BatchTests(unittest.TestCase):
             self.assertEqual(a["candidate_set_id"], b["candidate_set_id"])
             self.assertEqual(set(a["evaluation_ids"]), set(b["evaluation_ids"]))
             self.assertNotEqual(a["evaluation_ids"], b["evaluation_ids"])
+
+    def test_selective_invalidation_does_not_rebuild_unrelated_features(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            sources = self.sources(root)[:1]
+            record = search_record()
+            record["templates"][0]["confirmations"] = [
+                {
+                    "kind": "volume",
+                    "grids": {
+                        "mode": ["RELATIVE"],
+                        "period": [2],
+                        "include_current": [False],
+                        "threshold": ["1.5"],
+                    },
+                }
+            ]
+            self.execute(root, sources, "first", space=MiningSearchSpaceV1.model_validate(record))
+            record["templates"][0]["confirmations"][0]["grids"]["period"] = [3]
+            self.execute(root, sources, "changed", space=MiningSearchSpaceV1.model_validate(record))
+            operations = json.loads((root / "changed.operational.json").read_text())[
+                "feature_operations"
+            ]["1m"]["operations"]
+            self.assertEqual(sorted(row["status"] for row in operations), ["BUILT", "CACHE_HIT"])
+            record["templates"][0]["confirmations"][0]["grids"]["threshold"] = ["2"]
+            self.execute(
+                root, sources, "threshold", space=MiningSearchSpaceV1.model_validate(record)
+            )
+            operations = json.loads((root / "threshold.operational.json").read_text())[
+                "feature_operations"
+            ]["1m"]["operations"]
+            self.assertTrue(all(row["status"] == "CACHE_HIT" for row in operations))

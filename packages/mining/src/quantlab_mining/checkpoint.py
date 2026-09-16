@@ -104,6 +104,10 @@ def result_digest(
 
 
 def validate_completed(db: sqlite3.Connection, evaluations: dict[str, str]) -> int:
+    if db.execute("SELECT count(*) FROM audit WHERE kind NOT IN ('ledger','journal')").fetchone()[
+        0
+    ]:
+        raise ContractError("corrupt checkpoint audit kind")
     count = 0
     for cid, eid, metrics, digest, ledgers, journals in db.execute(
         "SELECT * FROM results ORDER BY id"

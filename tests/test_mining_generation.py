@@ -99,6 +99,16 @@ class GenerationTests(unittest.TestCase):
             with self.assertRaises(ValidationError):
                 GenerationPolicyV1(candidate_budget=50_001)
 
+    def test_decimal_grid_spelling_does_not_change_semantic_universe(self):
+        record = search_record()
+        record["templates"][0]["confirmations"] = [
+            {"kind": "volume", "grids": {"mode": ["RAW"], "threshold": ["1.500"]}}
+        ]
+        a = MiningSearchSpaceV1.model_validate(record)
+        record["templates"][0]["confirmations"][0]["grids"]["threshold"] = ["1.5"]
+        b = MiningSearchSpaceV1.model_validate(record)
+        self.assertEqual(a.search_space_id, b.search_space_id)
+
 
 class EquivalenceTests(unittest.TestCase):
     a = {"type": "candle_field", "name": "close"}

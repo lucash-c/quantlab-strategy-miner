@@ -150,6 +150,12 @@ def export_batch(
             "export_version": EXPORT_VERSION,
             "pyarrow_version": PYARROW_VERSION,
             "audit_shard_rows": AUDIT_SHARD_ROWS,
+            "backtested_candidates": completed,
+            "failed_candidates": 0,
+            "candidate_budget": records["generation-policy.json"]["candidate_budget"],
+            "feature_registry_version": records["feature-registry.json"]["schema_version"],
+            "strategy_schema_version": "strategy-definition/v3",
+            "engines": records["engine-versions.json"],
             "artifacts": artifacts,
         }
         manifest["schema_version"] = "candidate-batch-manifest/v1"

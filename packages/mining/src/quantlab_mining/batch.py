@@ -19,7 +19,7 @@ from quantlab_core.canonical import canonical_json_bytes, write_canonical_json
 from quantlab_core.condition_engine_v2 import CONDITION_ENGINE_V2_VERSION
 from quantlab_core.errors import ContractError
 from quantlab_core.feature_engine_v2 import FEATURE_ENGINE_V2_VERSION, mathematical_policy_record
-from quantlab_core.feature_specs import FeatureSpec
+from quantlab_core.feature_specs import FeatureSpec, feature_registry_record
 from quantlab_core.price import common_decimal_scale
 from quantlab_data.feature_cache_v2 import (
     FEATURE_CACHE_V2_VERSION,
@@ -173,7 +173,8 @@ def run_batch(
             "feature_index": feature_index,
         }
         records: dict[str, Any] = {
-            "search-space.json": space.semantic_record(),
+            "search-space.json": space.model_dump(mode="json"),
+            "search-space-semantic.json": space.semantic_record(),
             "generation-policy.json": policy.model_dump(mode="json"),
             "evaluation-config.json": evaluation.model_dump(mode="json"),
             "market-dataset-manifest.json": market.manifest,
@@ -181,6 +182,7 @@ def run_batch(
                 **ENGINE_VERSIONS,
                 "mathematical_policy": mathematical_policy_record(),
             },
+            "feature-registry.json": feature_registry_record(),
         }
         durations = []
         with closing(sqlite3.connect(checkpoint)) as db:
