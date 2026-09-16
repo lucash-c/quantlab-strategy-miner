@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import re
 import sqlite3
 import tempfile
 from collections.abc import Callable, Iterator
@@ -38,6 +39,14 @@ class SessionEvaluationCache:
         self._writer = single_writer(self.database)
         self._writer.__enter__()
         self.db = sqlite3.connect(self.database)
+        try:
+            self._initialize()
+        except (sqlite3.DatabaseError, ContractError) as exc:
+            self.close()
+            raise ContractError(f"invalid session-evaluation index: {exc}") from exc
+        self.verified_packs: set[str] = set()
+
+    def _initialize(self) -> None:
         if self.db.execute("PRAGMA quick_check").fetchone()[0] != "ok":
             raise ContractError("corrupt session-evaluation index")
         self.db.executescript("""
@@ -50,7 +59,6 @@ class SessionEvaluationCache:
                 record TEXT NOT NULL,
                 PRIMARY KEY(id,kind,ordinal));
         """)
-        self.verified_packs: set[str] = set()
 
     def close(self) -> None:
         self.db.close()
@@ -109,6 +117,8 @@ class SessionEvaluationCache:
         if pack is None:
             self.publish_pending(record["session"]["session_id"])
             return self.load(evaluation_id)
+        if re.fullmatch(r"[0-9a-f]{64}", pack) is None:
+            raise ContractError("invalid session pack locator")
         path = self.root / "packs" / (pack + ".jsonl")
         if pack not in self.verified_packs:
             if sha256_file(path) != pack:

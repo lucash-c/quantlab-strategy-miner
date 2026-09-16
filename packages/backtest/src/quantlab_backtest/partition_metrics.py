@@ -11,6 +11,7 @@ from quantlab_core.numeric import CanonicalRational
 from quantlab_core.price import rescale_units_exact
 from quantlab_core.strategy_v3 import StrategyDefinitionV3
 
+from quantlab_backtest.engine_v3 import BACKTEST_ENGINE_V3_VERSION
 from quantlab_backtest.metrics_v3 import MetricsAccumulatorV3
 from quantlab_backtest.models_v3 import ClosedTradeV3
 
@@ -153,7 +154,7 @@ def aggregate_partition(
         cost_model=strategy.cost_model.model_dump(mode="json"),
         slippage_model=strategy.slippage_model.model_dump(mode="json"),
     )
-    metrics_v3["backtest_engine_version"] = "3.0.0"
+    metrics_v3["backtest_engine_version"] = BACKTEST_ENGINE_V3_VERSION
     metrics_v3["journal_records"] = signal_count
     values = normalized_metrics(metrics_v3)
     n = len(session_rows)

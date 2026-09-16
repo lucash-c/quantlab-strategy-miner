@@ -6,6 +6,7 @@ from quantlab_data.session_catalog import SessionCatalog
 from quantlab_mining.contracts import identity
 
 from quantlab_research.contracts import SESSION_POLICY, SplitPolicyV1
+from quantlab_research.records import ResearchPartitionV1, ResearchSplitPlanV1
 
 
 def partition(sessions: tuple[TradingSession, ...], logical_asset: str) -> dict:
@@ -19,7 +20,7 @@ def partition(sessions: tuple[TradingSession, ...], logical_asset: str) -> dict:
         "empty_candles": "DO_NOT_FILL",
     }
     record["partition_id"] = identity("research-partition/v1", record)
-    return record
+    return ResearchPartitionV1.model_validate(record).model_dump(mode="json")
 
 
 def create_split(catalog: SessionCatalog, policy: SplitPolicyV1) -> tuple[dict, dict, dict]:
@@ -59,4 +60,4 @@ def create_split(catalog: SessionCatalog, policy: SplitPolicyV1) -> tuple[dict, 
         "excluded_sessions": [],
     }
     record["split_plan_id"] = identity("research-split-plan/v1", record)
-    return record, d, v
+    return ResearchSplitPlanV1.model_validate(record).model_dump(mode="json"), d, v
