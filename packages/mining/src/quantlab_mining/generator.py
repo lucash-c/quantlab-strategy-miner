@@ -48,6 +48,7 @@ def preflight(
     duplicate_count = 0
     unique_count = 0
     with closing(sqlite3.connect(database)) as db:
+        db.execute("PRAGMA journal_mode=WAL")
         db.executescript("""
             CREATE TABLE IF NOT EXISTS candidates(id TEXT PRIMARY KEY, strategy TEXT NOT NULL);
             CREATE TABLE IF NOT EXISTS provenance(
