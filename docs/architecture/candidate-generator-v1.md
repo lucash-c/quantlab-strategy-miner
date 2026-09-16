@@ -17,6 +17,10 @@ na configuração, sem gerar subconjuntos automaticamente.
 
 canonical_json: UTF-8, chaves ordenadas, sem espaços, um LF final.
 
+RATIONAL aceita somente inteiros nativos para numerador/denominador (nem float, nem bool),
+reduz pelo MDC, mantém denominador positivo e zero exclusivamente 0/1. Fricções decimal-text
+também normalizam grafias equivalentes e -0 antes de calcular escala e evaluation_id.
+
 | Identidade | Payload | Exclusões |
 |---|---|---|
 | search_space_id | Projeção semântica do universo solicitado | dataset, fricções, labels, caminhos, budget/segurança, relógio |

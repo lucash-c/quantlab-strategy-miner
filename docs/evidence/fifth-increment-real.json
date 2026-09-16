@@ -1,0 +1,916 @@
+{
+  "schema_version": "mining-real-evidence/v1",
+  "tests_total": 105,
+  "identities": {
+    "search_space_id": "sha256:4ea9e2010ee324e0bf5929f53228991434dfd830ff21be9311daae7209d159f4",
+    "generation_policy_id": "sha256:6c9c7057a182c72b72ea60ca2bf94e2f698ebfa423a9785721bf169f94630c8c",
+    "candidate_set_id": "sha256:0500b6d2bc90f29f26319cbbd7aaeed2b01f40f32e6de96bbc6fe4c3f5e7f137",
+    "dataset_id": "sha256:69261352d8f800de69edc7a2faccc1c717a1f24a4707b461ab757adfa13e3c45",
+    "run_id": "sha256:9615384cec30dd232839ce4fea9bc3e25dd311bddaff4c1f33c5ee5cfe259e5e"
+  },
+  "counts": {
+    "D": 0,
+    "R": 0,
+    "T": 6,
+    "U": 6,
+    "V": 6
+  },
+  "source": {
+    "entry": {
+      "compressed_size_bytes": 50762505,
+      "crc32": "da05c303",
+      "file_name": "10-09-2026_NEGOCIOSAVISTA_DRV.txt",
+      "sha256": "850fd8c81fb628d12fa111239e371088a4e8d3ef466806a5c7d07d3d5df012d7",
+      "size_bytes": 529161058
+    },
+    "file_name": "10-09-2026_NEGOCIOSAVISTA_DRV.zip",
+    "immutable_during_ingestion": true,
+    "sha256": "fbb243028b3af09f47fb0311f7ea29bd8d8128b218ab04f14b5227e7ea5c4b3f",
+    "size_bytes": 50762669
+  },
+  "source_rows": 7277116,
+  "global_actions": {
+    "0": 7277113,
+    "2": 3
+  },
+  "non_positive_prices_elsewhere": 242,
+  "selection": {
+    "canceled_new_events": 0,
+    "cancellation_events": 0,
+    "contract": "WINV26",
+    "event_temporal_range": {
+      "first_timestamp_utc": "2026-09-10T12:03:00.560000000Z",
+      "last_timestamp_utc": "2026-09-10T21:31:27.232000000Z"
+    },
+    "events": 6262194,
+    "imported_temporal_range": {
+      "first_timestamp_utc": "2026-09-10T12:03:00.560000000Z",
+      "last_timestamp_utc": "2026-09-10T21:31:27.232000000Z"
+    },
+    "matched_cancellation_keys": 0,
+    "new_events": 6262194,
+    "orphan_cancellations": 0,
+    "rejected_rows": 0,
+    "session_counts": {
+      "1": 6262194
+    },
+    "unique_cancellation_keys": 0,
+    "valid_trades": 6262194
+  },
+  "instrument_count": 474,
+  "market_sessions": [
+    {
+      "artifacts": {
+        "candles": {
+          "1m": {
+            "byte_sha256": "bbdc1cea8f74700f6db6b42138536f86d0c95ee8c40b98e109766ca97e2041fc",
+            "file": "candles.parquet",
+            "row_count": 563,
+            "semantic_sha256": "4b32ffd74951b85b2532d1b4133a7a9d6e9fe887a2ea3faab9b1c5ec914a0b51"
+          }
+        },
+        "trades": {
+          "byte_sha256": "dd1085ceaf10681309d6714bcb0dc13b8125dcee64fcbc837aea39a37148cfa1",
+          "file": "trades.parquet",
+          "row_count": 6262194,
+          "semantic_sha256": "763c3106f801dc88d1e838cdcf0d421a7b775e05095bbcf2c27de99d7a0c1d7b"
+        }
+      },
+      "cache": {
+        "candles": {
+          "1m": "00ef25c4cd119be9bbc3bb1c084a292852d9c5bb9bfef39a1c9db70bd2aec012"
+        },
+        "session": "ad8560db2ed83ea4b9b9da886a85ff795f5ee669211097d3da91d6e0efe14794"
+      },
+      "event_count": 6262194,
+      "first_event_ns_utc": 1789041780560000000,
+      "import_id": "sha256:6d02f5667d6dc277499af77055b7909e54571a5d7bff7c5910cbb16cb3160dc2",
+      "last_event_ns_utc": 1789075887232000000,
+      "logical_asset": "WIN",
+      "normalized_semantic_sha256": "08cd7f1b13d982188c541cca907f8b2a033ed04fd75fa0539ba5fcc54c339c8e",
+      "physical_contract": "WINV26",
+      "price_scale": 0,
+      "session_id": "sha256:ad8560db2ed83ea4b9b9da886a85ff795f5ee669211097d3da91d6e0efe14794",
+      "source_sha256": "fbb243028b3af09f47fb0311f7ea29bd8d8128b218ab04f14b5227e7ea5c4b3f",
+      "trading_date": "2026-09-10"
+    }
+  ],
+  "cost_model": {
+    "points_per_side": "1",
+    "type": "FIXED_PER_SIDE",
+    "version": "1.0.0"
+  },
+  "slippage_model": {
+    "points_per_side": "1",
+    "type": "FIXED_POINTS",
+    "version": "1.0.0"
+  },
+  "entry_window": {
+    "end": "11:30",
+    "end_inclusive": false,
+    "start": "09:15",
+    "start_inclusive": true
+  },
+  "results": [
+    {
+      "candidate_id": "sha256:07d8db999e57df5def4b01966441160eb91ad74fc6098430358c99b051ba1ac7",
+      "evaluation_id": "sha256:a5c5dd30169ac213bd4028c2d6d0325dc5facf194d56b492eb7f4745c72bcda9",
+      "status": "BACKTESTED",
+      "direction": "SELL",
+      "features": [
+        {
+          "feature_id": "f.10f096ce4865e1755c38df2f66fbfa477f6d115f96d4861d4055745c9498413c",
+          "inputs": [],
+          "name": "relative_volume",
+          "parameters": {
+            "include_current": false,
+            "period": 20
+          },
+          "version": "1.0.0"
+        },
+        {
+          "feature_id": "f.56b16d63916ff9aace061a6e26e40cda16011763212f140d40b8401e16cfe6c2",
+          "inputs": [],
+          "name": "atr_wilder",
+          "parameters": {
+            "period": 14
+          },
+          "version": "1.0.0"
+        },
+        {
+          "feature_id": "f.b07d18c0086a15798579b071fa3408a6588ccff907caa21a9e205ccf5c9a54b8",
+          "inputs": [],
+          "name": "rolling_low",
+          "parameters": {
+            "include_current": false,
+            "period": 5
+          },
+          "version": "1.0.0"
+        }
+      ],
+      "metrics": {
+        "average_loss": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "-1040"
+          }
+        },
+        "average_trade": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "-630"
+          }
+        },
+        "average_win": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "1010"
+          }
+        },
+        "backtest_engine_version": "3.0.0",
+        "breakeven": 0,
+        "cost_model": {
+          "points_per_side": "1",
+          "type": "FIXED_PER_SIDE",
+          "version": "1.0.0"
+        },
+        "costs_units": 100,
+        "engine_version": "3.0.0",
+        "gross_loss_units": 4000,
+        "gross_pnl_units": -2950,
+        "gross_profit_units": 1050,
+        "has_open_position": false,
+        "journal_records": 16,
+        "losses": 4,
+        "max_consecutive_losses": 2,
+        "max_drawdown_units": 3150,
+        "net_loss_units": 4160,
+        "net_pnl_units": -3150,
+        "net_profit_units": 1010,
+        "payoff_ratio": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "104",
+            "numerator": "101"
+          }
+        },
+        "price_representation": {
+          "decimal_scale": 1,
+          "type": "scaled_integer"
+        },
+        "profit_factor": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "416",
+            "numerator": "101"
+          }
+        },
+        "schema_version": "backtest-metrics/v3",
+        "slippage_impact_units": 100,
+        "slippage_model": {
+          "points_per_side": "1",
+          "type": "FIXED_POINTS",
+          "version": "1.0.0"
+        },
+        "trades": 5,
+        "win_rate": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "5",
+            "numerator": "1"
+          }
+        },
+        "wins": 1
+      }
+    },
+    {
+      "candidate_id": "sha256:15054470b8a5143604783120ccd02518e2bf066d9c11ea7b6a5cc3315837372e",
+      "evaluation_id": "sha256:99d061f4ea0a9232cff3c248474757ed69072ebc1a48bbe5201a3f2ebd3081d6",
+      "status": "BACKTESTED",
+      "direction": "SELL",
+      "features": [
+        {
+          "feature_id": "f.10f096ce4865e1755c38df2f66fbfa477f6d115f96d4861d4055745c9498413c",
+          "inputs": [],
+          "name": "relative_volume",
+          "parameters": {
+            "include_current": false,
+            "period": 20
+          },
+          "version": "1.0.0"
+        },
+        {
+          "feature_id": "f.6c9ba169713639b02da0109ee8fb3946a0e043c054149cdd0b84e3a15d1055bc",
+          "inputs": [],
+          "name": "sma_close",
+          "parameters": {
+            "period": 9
+          },
+          "version": "1.0.0"
+        },
+        {
+          "feature_id": "f.cbbbb92c32351acef6f907fa308453c75373a78425c322352e7c6d1df523046b",
+          "inputs": [],
+          "name": "session_trade_vwap",
+          "parameters": {},
+          "version": "1.0.0"
+        }
+      ],
+      "metrics": {
+        "average_loss": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "-1040"
+          }
+        },
+        "average_trade": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "-1040"
+          }
+        },
+        "average_win": {
+          "reason": "NO_WINS",
+          "status": "UNDEFINED",
+          "value": null
+        },
+        "backtest_engine_version": "3.0.0",
+        "breakeven": 0,
+        "cost_model": {
+          "points_per_side": "1",
+          "type": "FIXED_PER_SIDE",
+          "version": "1.0.0"
+        },
+        "costs_units": 100,
+        "engine_version": "3.0.0",
+        "gross_loss_units": 5000,
+        "gross_pnl_units": -5000,
+        "gross_profit_units": 0,
+        "has_open_position": false,
+        "journal_records": 5,
+        "losses": 5,
+        "max_consecutive_losses": 5,
+        "max_drawdown_units": 5200,
+        "net_loss_units": 5200,
+        "net_pnl_units": -5200,
+        "net_profit_units": 0,
+        "payoff_ratio": {
+          "reason": "NO_WINS",
+          "status": "UNDEFINED",
+          "value": null
+        },
+        "price_representation": {
+          "decimal_scale": 1,
+          "type": "scaled_integer"
+        },
+        "profit_factor": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "0"
+          }
+        },
+        "schema_version": "backtest-metrics/v3",
+        "slippage_impact_units": 100,
+        "slippage_model": {
+          "points_per_side": "1",
+          "type": "FIXED_POINTS",
+          "version": "1.0.0"
+        },
+        "trades": 5,
+        "win_rate": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "0"
+          }
+        },
+        "wins": 0
+      }
+    },
+    {
+      "candidate_id": "sha256:369d14a5fefc3083cf36c8cca5198df7dbc6ddfa8bbdad9476fbacf79f93a386",
+      "evaluation_id": "sha256:2f01b21b2aef16c45b5eb1c81447b8df6077335873d24593a965f963218dad83",
+      "status": "BACKTESTED",
+      "direction": "BUY",
+      "features": [
+        {
+          "feature_id": "f.10f096ce4865e1755c38df2f66fbfa477f6d115f96d4861d4055745c9498413c",
+          "inputs": [],
+          "name": "relative_volume",
+          "parameters": {
+            "include_current": false,
+            "period": 20
+          },
+          "version": "1.0.0"
+        },
+        {
+          "feature_id": "f.9c7b278b405e18a2012d13963f22a8b4d980f0b0944d8d614b22d45cf05e940a",
+          "inputs": [],
+          "name": "ema_close",
+          "parameters": {
+            "period": 9
+          },
+          "version": "1.0.0"
+        },
+        {
+          "feature_id": "f.be3fa72e526ae39202596618a5afabe33b2ae66845207f51796f1008bb42cd68",
+          "inputs": [],
+          "name": "ema_close",
+          "parameters": {
+            "period": 21
+          },
+          "version": "1.0.0"
+        }
+      ],
+      "metrics": {
+        "average_loss": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "-1040"
+          }
+        },
+        "average_trade": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "-1040"
+          }
+        },
+        "average_win": {
+          "reason": "NO_WINS",
+          "status": "UNDEFINED",
+          "value": null
+        },
+        "backtest_engine_version": "3.0.0",
+        "breakeven": 0,
+        "cost_model": {
+          "points_per_side": "1",
+          "type": "FIXED_PER_SIDE",
+          "version": "1.0.0"
+        },
+        "costs_units": 20,
+        "engine_version": "3.0.0",
+        "gross_loss_units": 1000,
+        "gross_pnl_units": -1000,
+        "gross_profit_units": 0,
+        "has_open_position": false,
+        "journal_records": 1,
+        "losses": 1,
+        "max_consecutive_losses": 1,
+        "max_drawdown_units": 1040,
+        "net_loss_units": 1040,
+        "net_pnl_units": -1040,
+        "net_profit_units": 0,
+        "payoff_ratio": {
+          "reason": "NO_WINS",
+          "status": "UNDEFINED",
+          "value": null
+        },
+        "price_representation": {
+          "decimal_scale": 1,
+          "type": "scaled_integer"
+        },
+        "profit_factor": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "0"
+          }
+        },
+        "schema_version": "backtest-metrics/v3",
+        "slippage_impact_units": 20,
+        "slippage_model": {
+          "points_per_side": "1",
+          "type": "FIXED_POINTS",
+          "version": "1.0.0"
+        },
+        "trades": 1,
+        "win_rate": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "0"
+          }
+        },
+        "wins": 0
+      }
+    },
+    {
+      "candidate_id": "sha256:6ed3b64ab531da799d5ed8496c4cdcf03a9f52058527018c93376536eda2ef0c",
+      "evaluation_id": "sha256:688c6e04705b6268d58b36dc510f3964f51faa83cafe4f4c51a83c932b410cd1",
+      "status": "BACKTESTED",
+      "direction": "BUY",
+      "features": [
+        {
+          "feature_id": "f.10f096ce4865e1755c38df2f66fbfa477f6d115f96d4861d4055745c9498413c",
+          "inputs": [],
+          "name": "relative_volume",
+          "parameters": {
+            "include_current": false,
+            "period": 20
+          },
+          "version": "1.0.0"
+        },
+        {
+          "feature_id": "f.6c9ba169713639b02da0109ee8fb3946a0e043c054149cdd0b84e3a15d1055bc",
+          "inputs": [],
+          "name": "sma_close",
+          "parameters": {
+            "period": 9
+          },
+          "version": "1.0.0"
+        },
+        {
+          "feature_id": "f.cbbbb92c32351acef6f907fa308453c75373a78425c322352e7c6d1df523046b",
+          "inputs": [],
+          "name": "session_trade_vwap",
+          "parameters": {},
+          "version": "1.0.0"
+        }
+      ],
+      "metrics": {
+        "average_loss": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "-1040"
+          }
+        },
+        "average_trade": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "2",
+            "numerator": "-1055"
+          }
+        },
+        "average_win": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "1010"
+          }
+        },
+        "backtest_engine_version": "3.0.0",
+        "breakeven": 0,
+        "cost_model": {
+          "points_per_side": "1",
+          "type": "FIXED_PER_SIDE",
+          "version": "1.0.0"
+        },
+        "costs_units": 240,
+        "engine_version": "3.0.0",
+        "gross_loss_units": 9000,
+        "gross_pnl_units": -5850,
+        "gross_profit_units": 3150,
+        "has_open_position": false,
+        "journal_records": 41,
+        "losses": 9,
+        "max_consecutive_losses": 7,
+        "max_drawdown_units": 7310,
+        "net_loss_units": 9360,
+        "net_pnl_units": -6330,
+        "net_profit_units": 3030,
+        "payoff_ratio": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "104",
+            "numerator": "101"
+          }
+        },
+        "price_representation": {
+          "decimal_scale": 1,
+          "type": "scaled_integer"
+        },
+        "profit_factor": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "312",
+            "numerator": "101"
+          }
+        },
+        "schema_version": "backtest-metrics/v3",
+        "slippage_impact_units": 240,
+        "slippage_model": {
+          "points_per_side": "1",
+          "type": "FIXED_POINTS",
+          "version": "1.0.0"
+        },
+        "trades": 12,
+        "win_rate": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "4",
+            "numerator": "1"
+          }
+        },
+        "wins": 3
+      }
+    },
+    {
+      "candidate_id": "sha256:8a845e31d4df219b51676b28fd8b166c19844dce322621d285d8a1f7331fc973",
+      "evaluation_id": "sha256:912ff19046bd7197b58d6e6af025d216cbec535ef965e4e48a61bedb632d7e90",
+      "status": "BACKTESTED",
+      "direction": "SELL",
+      "features": [
+        {
+          "feature_id": "f.10f096ce4865e1755c38df2f66fbfa477f6d115f96d4861d4055745c9498413c",
+          "inputs": [],
+          "name": "relative_volume",
+          "parameters": {
+            "include_current": false,
+            "period": 20
+          },
+          "version": "1.0.0"
+        },
+        {
+          "feature_id": "f.9c7b278b405e18a2012d13963f22a8b4d980f0b0944d8d614b22d45cf05e940a",
+          "inputs": [],
+          "name": "ema_close",
+          "parameters": {
+            "period": 9
+          },
+          "version": "1.0.0"
+        },
+        {
+          "feature_id": "f.be3fa72e526ae39202596618a5afabe33b2ae66845207f51796f1008bb42cd68",
+          "inputs": [],
+          "name": "ema_close",
+          "parameters": {
+            "period": 21
+          },
+          "version": "1.0.0"
+        }
+      ],
+      "metrics": {
+        "average_loss": {
+          "reason": "NO_LOSSES",
+          "status": "UNDEFINED",
+          "value": null
+        },
+        "average_trade": {
+          "reason": "NO_TRADES",
+          "status": "UNDEFINED",
+          "value": null
+        },
+        "average_win": {
+          "reason": "NO_WINS",
+          "status": "UNDEFINED",
+          "value": null
+        },
+        "backtest_engine_version": "3.0.0",
+        "breakeven": 0,
+        "cost_model": {
+          "points_per_side": "1",
+          "type": "FIXED_PER_SIDE",
+          "version": "1.0.0"
+        },
+        "costs_units": 0,
+        "engine_version": "3.0.0",
+        "gross_loss_units": 0,
+        "gross_pnl_units": 0,
+        "gross_profit_units": 0,
+        "has_open_position": false,
+        "journal_records": 3,
+        "losses": 0,
+        "max_consecutive_losses": 0,
+        "max_drawdown_units": 0,
+        "net_loss_units": 0,
+        "net_pnl_units": 0,
+        "net_profit_units": 0,
+        "payoff_ratio": {
+          "reason": "NO_WINS",
+          "status": "UNDEFINED",
+          "value": null
+        },
+        "price_representation": {
+          "decimal_scale": 1,
+          "type": "scaled_integer"
+        },
+        "profit_factor": {
+          "reason": "NO_LOSSES",
+          "status": "UNDEFINED",
+          "value": null
+        },
+        "schema_version": "backtest-metrics/v3",
+        "slippage_impact_units": 0,
+        "slippage_model": {
+          "points_per_side": "1",
+          "type": "FIXED_POINTS",
+          "version": "1.0.0"
+        },
+        "trades": 0,
+        "win_rate": {
+          "reason": "NO_TRADES",
+          "status": "UNDEFINED",
+          "value": null
+        },
+        "wins": 0
+      }
+    },
+    {
+      "candidate_id": "sha256:edac089fffccae36ec0b4966f4f1d90108635a2e6118353c8015ea938d2e22c1",
+      "evaluation_id": "sha256:3ab2c3f1b981884065fb93071940f32f2b8fe858ae04f13241fa1cf5bc852df8",
+      "status": "BACKTESTED",
+      "direction": "BUY",
+      "features": [
+        {
+          "feature_id": "f.10f096ce4865e1755c38df2f66fbfa477f6d115f96d4861d4055745c9498413c",
+          "inputs": [],
+          "name": "relative_volume",
+          "parameters": {
+            "include_current": false,
+            "period": 20
+          },
+          "version": "1.0.0"
+        },
+        {
+          "feature_id": "f.56b16d63916ff9aace061a6e26e40cda16011763212f140d40b8401e16cfe6c2",
+          "inputs": [],
+          "name": "atr_wilder",
+          "parameters": {
+            "period": 14
+          },
+          "version": "1.0.0"
+        },
+        {
+          "feature_id": "f.8f0ea39fe0287281460032f1117c05db7af8c4274d952feb7f7d1d7a335ec7fb",
+          "inputs": [],
+          "name": "rolling_high",
+          "parameters": {
+            "include_current": false,
+            "period": 5
+          },
+          "version": "1.0.0"
+        }
+      ],
+      "metrics": {
+        "average_loss": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "-1040"
+          }
+        },
+        "average_trade": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "-630"
+          }
+        },
+        "average_win": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "1010"
+          }
+        },
+        "backtest_engine_version": "3.0.0",
+        "breakeven": 0,
+        "cost_model": {
+          "points_per_side": "1",
+          "type": "FIXED_PER_SIDE",
+          "version": "1.0.0"
+        },
+        "costs_units": 200,
+        "engine_version": "3.0.0",
+        "gross_loss_units": 8000,
+        "gross_pnl_units": -5900,
+        "gross_profit_units": 2100,
+        "has_open_position": false,
+        "journal_records": 31,
+        "losses": 8,
+        "max_consecutive_losses": 8,
+        "max_drawdown_units": 8320,
+        "net_loss_units": 8320,
+        "net_pnl_units": -6300,
+        "net_profit_units": 2020,
+        "payoff_ratio": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "104",
+            "numerator": "101"
+          }
+        },
+        "price_representation": {
+          "decimal_scale": 1,
+          "type": "scaled_integer"
+        },
+        "profit_factor": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "416",
+            "numerator": "101"
+          }
+        },
+        "schema_version": "backtest-metrics/v3",
+        "slippage_impact_units": 200,
+        "slippage_model": {
+          "points_per_side": "1",
+          "type": "FIXED_POINTS",
+          "version": "1.0.0"
+        },
+        "trades": 10,
+        "win_rate": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "5",
+            "numerator": "1"
+          }
+        },
+        "wins": 2
+      }
+    }
+  ],
+  "total_trades": 33,
+  "zero_trade_candidates": 1,
+  "feature_series": 8,
+  "cold_feature_built": 8,
+  "warm_feature_cache_hits": 8,
+  "resume_feature_cache_hits": 8,
+  "operational_benchmark": {
+    "clean": {
+      "artifact_bytes": 395529,
+      "average_backtest_seconds": "45.46740918333429",
+      "backtest_seconds": [
+        "46.90798439999344",
+        "44.91108510000049",
+        "47.33979420000105",
+        "44.76769979999517",
+        "44.9948973999999",
+        "43.88299420001567"
+      ],
+      "cache_bytes": 409960226,
+      "executed": 6,
+      "materialization_seconds": "805.4794139000005",
+      "peak_memory": {
+        "reason": "NOT_MEASURED_RELIABLY",
+        "value": null
+      },
+      "reused": 0,
+      "run_id": "sha256:c4af23af205ff3972e048aab74b7936d1d8cc8ccd048c9dce216d506b8398091",
+      "schema_version": "candidate-batch-operational/v1",
+      "total_seconds": "1078.5081772000121"
+    },
+    "resumed": {
+      "artifact_bytes": 395529,
+      "average_backtest_seconds": "46.26895346667152",
+      "backtest_seconds": [
+        "47.90059050000855",
+        "45.009959200018784",
+        "45.896310699987225"
+      ],
+      "cache_bytes": 409960226,
+      "executed": 3,
+      "materialization_seconds": "6.012433399999281",
+      "peak_memory": {
+        "reason": "NOT_MEASURED_RELIABLY",
+        "value": null
+      },
+      "reused": 3,
+      "run_id": "sha256:c4af23af205ff3972e048aab74b7936d1d8cc8ccd048c9dce216d506b8398091",
+      "schema_version": "candidate-batch-operational/v1",
+      "total_seconds": "145.02870819999953"
+    },
+    "warm": {
+      "artifact_bytes": 395529,
+      "average_backtest_seconds": "44.111161500002105",
+      "backtest_seconds": [
+        "43.888192500016885",
+        "43.833525299996836",
+        "43.926781999995",
+        "44.48429469999974",
+        "44.29878670000471",
+        "44.235387799999444"
+      ],
+      "cache_bytes": 409960226,
+      "executed": 6,
+      "materialization_seconds": "5.977198699984001",
+      "peak_memory": {
+        "reason": "NOT_MEASURED_RELIABLY",
+        "value": null
+      },
+      "reused": 0,
+      "run_id": "sha256:c4af23af205ff3972e048aab74b7936d1d8cc8ccd048c9dce216d506b8398091",
+      "schema_version": "candidate-batch-operational/v1",
+      "total_seconds": "270.8873934999865"
+    }
+  },
+  "path_wall_seconds": {
+    "clean": "1078.5155355999887",
+    "resumed": "285.7253733999969",
+    "warm": "270.8943262999819"
+  },
+  "projections": {
+    "100": {
+      "basis": "warm materialization + mean tick backtest * N",
+      "guarantee": false,
+      "seconds": "4417.093348700195"
+    },
+    "1000": {
+      "basis": "warm materialization + mean tick backtest * N",
+      "guarantee": false,
+      "seconds": "44117.13869870209"
+    },
+    "10000": {
+      "basis": "warm materialization + mean tick backtest * N",
+      "guarantee": false,
+      "seconds": "441117.592198721"
+    }
+  },
+  "final_artifact_bytes": 398682,
+  "cache_bytes": 409960226,
+  "scientific_artifact_hashes": {
+    "batch-manifest.json": "a252379c02e2d73f3f79baf9aaac3e7d6459ffc508ab2dc731012c2513107fb4",
+    "candidate-generation-manifest.json": "e2957ee76a5d268ad70b01eff1f5057de6a1802e6f99d805dda2b45ef8ed8c1f",
+    "candidate-provenance.jsonl": "69b085dc15b84b512cede2d2bd0c4ee952ac236d6b075a9162ddba5fc0892476",
+    "candidates.jsonl": "85024a3da06d2ab6eecae54d6d517dd682ff9f1c2cdb3e5cb883e04354ea6645",
+    "engine-versions.json": "443389df05f11088a980588cc960d0fa88ef08e737e15d02b42d54512659c1a8",
+    "evaluation-config.json": "c7251a176e4ebbd724855bd1f886fec6de3ef96c28157e8ff84cca920a602ae6",
+    "feature-index.jsonl": "99a790af9797d137ec334962c88d81ee220a4e90cd3bea4d81ea88d7a56daef0",
+    "feature-registry.json": "3bd0ba9e112fc8139e238303f2a10c8a7185702a5673142565392445e71acfb2",
+    "generation-policy.json": "66724ba81b43fd74390c8c22b86b293f09dcd3f81895c9b75c1724d50294c685",
+    "market-dataset-manifest.json": "eafad279001fa8c76a06d76f7b4db751220362a47a51a2bb87cf3f7fff2c1dc3",
+    "results.parquet": "9243eac84afe959927b2c751c162e79cc65ea68f1d43bc240ce4730267ca990c",
+    "search-space-semantic.json": "90601aaa6dd86bf6f0454dc366ff5f0c84754dc4277693bfb703ccfcbb08dfa2",
+    "search-space.json": "4aa357e623e06e9f742092e37e28516a8d8c3ec584913292d62f202b6bf4ac21",
+    "audit/ledger-00000.jsonl": "4a78561784f251113384400ffd63327874482605d2c8047a3350f0550b96b744",
+    "audit/signal-journal-00000.jsonl": "20159bc8e3592d04efd18c6d0e96d3fd2d0a0298da01883e5360882a74105275"
+  },
+  "original_byte_identical_paths": true,
+  "final_exports_equal": true,
+  "export_note": "Final contract/registry metadata re-exported from verified complete checkpoints; candidate/evaluation IDs, metrics and v3 ledger/journal unchanged; original benchmark measures actual six backtests on each path."
+}
