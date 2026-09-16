@@ -8,6 +8,14 @@ from quantlab_core.price import common_decimal_scale
 
 
 class CanonicalRationalTests(unittest.TestCase):
+    def test_float_and_boolean_cannot_enter_rational_even_as_zero(self):
+        for numerator, denominator in ((0.0, 1), (0, 1.0), (True, 1), (0, True)):
+            with (
+                self.subTest(numerator=numerator, denominator=denominator),
+                self.assertRaisesRegex(ContractError, "exact integers"),
+            ):
+                CanonicalRational(numerator, denominator)
+
     def test_equivalent_fractions_have_one_representation(self) -> None:
         expected = CanonicalRational(-1, 2)
         for value in (
@@ -16,9 +24,7 @@ class CanonicalRationalTests(unittest.TestCase):
             CanonicalRational(-50, 100),
         ):
             self.assertEqual(value, expected)
-            self.assertEqual(
-                value.to_record(), {"numerator": "-1", "denominator": "2"}
-            )
+            self.assertEqual(value.to_record(), {"numerator": "-1", "denominator": "2"})
         self.assertEqual(
             CanonicalRational(0, 500).to_record(),
             {"numerator": "0", "denominator": "1"},

@@ -91,6 +91,7 @@ def run_batch(
     on_progress: Callable[[dict], None] | None = None,
 ) -> dict:
     started = time.perf_counter()
+    evaluation = evaluation.canonicalized()
     if output.exists():
         raise ContractError("output directory already exists; refusing to overwrite")
     if stop_after is not None and stop_after < 1:

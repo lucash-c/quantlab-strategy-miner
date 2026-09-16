@@ -23,6 +23,8 @@ class CanonicalRational:
     denominator: int = 1
 
     def __post_init__(self) -> None:
+        if type(self.numerator) is not int or type(self.denominator) is not int:
+            raise ContractError("rational numerator and denominator must be native exact integers")
         if self.denominator == 0:
             raise ContractError("rational denominator cannot be zero")
         numerator = self.numerator
@@ -112,4 +114,3 @@ def checked_int64(value: int, field: str) -> int:
     if not _INT64_MIN <= value <= _INT64_MAX:
         raise ContractError(f"{field} exceeds signed 64-bit range")
     return value
-

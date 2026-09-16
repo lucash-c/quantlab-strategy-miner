@@ -167,6 +167,16 @@ class EvaluationConfigV1(StrictModel):
     slippage_model: SlippageModelV3
     max_sessions: int = Field(default=19, ge=1)
 
+    def canonicalized(self) -> EvaluationConfigV1:
+        updates = {}
+        for name in ("cost_model", "slippage_model"):
+            model = getattr(self, name)
+            if hasattr(model, "points_per_side"):
+                updates[name] = model.model_copy(
+                    update={"points_per_side": decimal_text(model.points_per_side)}
+                )
+        return self.model_copy(update=updates)
+
 
 def load_contract(path: Path, model: type[StrictModel]) -> Any:
     def reject(value: str) -> None:

@@ -171,6 +171,37 @@ class BatchTests(unittest.TestCase):
             self.assertEqual(set(a["evaluation_ids"]), set(b["evaluation_ids"]))
             self.assertNotEqual(a["evaluation_ids"], b["evaluation_ids"])
 
+    def test_friction_zero_and_decimal_spellings_have_one_evaluation(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            sources = self.sources(root)[:1]
+            manifests = []
+            for name, value in (("zero", "0"), ("negative-zero", "-0.000")):
+                config = evaluation()
+                config = config.model_copy(
+                    update={
+                        "cost_model": config.cost_model.model_copy(
+                            update={"points_per_side": value}
+                        ),
+                        "slippage_model": config.slippage_model.model_copy(
+                            update={"points_per_side": value}
+                        ),
+                    }
+                )
+                manifests.append(
+                    run_batch(
+                        small_search(),
+                        GenerationPolicyV1(candidate_budget=160),
+                        config,
+                        sources,
+                        cache_root=root / "cache",
+                        checkpoint=root / (name + ".sqlite"),
+                        output=root / name,
+                    )
+                )
+            self.assertEqual(manifests[0], manifests[1])
+            self.assert_files_equal(root / "zero", root / "negative-zero")
+
     def test_selective_invalidation_does_not_rebuild_unrelated_features(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
