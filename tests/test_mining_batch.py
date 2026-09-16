@@ -202,3 +202,49 @@ class BatchTests(unittest.TestCase):
                 "feature_operations"
             ]["1m"]["operations"]
             self.assertTrue(all(row["status"] == "CACHE_HIT" for row in operations))
+
+    def test_all_six_families_run_through_existing_backtest_v3(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            record = search_record()
+            bases = [
+                {
+                    "kind": "trend_close",
+                    "grids": {"average": ["sma_close"], "period": [2], "operator": ["COMPARE"]},
+                },
+                {
+                    "kind": "trend_pair",
+                    "grids": {
+                        "average": ["ema_close"],
+                        "short_period": [2],
+                        "long_period": [3],
+                        "operator": ["CROSS"],
+                    },
+                },
+                {"kind": "vwap_context", "grids": {"mode": ["CLOSE"], "operator": ["COMPARE"]}},
+                {"kind": "breakout_previous", "grids": {"period": [2], "include_current": [False]}},
+                {
+                    "kind": "momentum",
+                    "grids": {"feature": ["point_change"], "period": [1]},
+                    "direction_grids": {"BUY": {"threshold": ["0"]}, "SELL": {"threshold": ["0"]}},
+                },
+                {"kind": "candle_context", "grids": {"mode": ["DIRECTION"]}},
+            ]
+            record["templates"] = [
+                {"template_id": base["kind"], "base": base, "confirmations": []} for base in bases
+            ]
+            manifest = self.execute(
+                root,
+                self.sources(root)[:2],
+                "all-families",
+                space=MiningSearchSpaceV1.model_validate(record),
+            )
+            self.assertEqual(manifest["counts"]["U"], 12)
+            results = pq.read_table(root / "all-families/results.parquet").to_pylist()
+            self.assertTrue(all(row["status"] == "BACKTESTED" for row in results))
+            self.assertTrue(
+                all(
+                    json.loads(row["metrics_json"])["schema_version"] == "backtest-metrics/v3"
+                    for row in results
+                )
+            )
