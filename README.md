@@ -154,3 +154,31 @@ uv run python scripts\run_feature_b3_regression.py `
   --input C:\caminho\10-09-2026_NEGOCIOSAVISTA_DRV.zip `
   --output artifacts\fourth-increment-real-regression
 ```
+
+## Candidate Generator v1
+
+O quinto incremento gera todos os candidatos de um espaço explícito e limitado, sem score,
+ranking ou filtro por performance. Consulte [arquitetura e identidades](docs/architecture/candidate-generator-v1.md).
+
+Preflight da fixture com 160 candidatos, sem acessar dados de mercado:
+
+```powershell
+uv run quantlab-miner plan-mining --search-space examples/mining/fixture-160.json --policy examples/mining/policy-160.json
+```
+
+Batch e resume (reutilize o mesmo checkpoint; output deve ser um diretório novo/inexistente):
+
+```powershell
+uv run quantlab-miner run-mining --search-space examples/mining/b3-six.json --policy examples/mining/policy-six.json --evaluation examples/mining/evaluation.json --catalog caminho/historical-sources.json --cache artifacts/mining-cache --checkpoint artifacts/mining-state.sqlite --output artifacts/mining-batch
+```
+
+Aceites persistentes separados da suíte comum/CI:
+
+```powershell
+uv run python scripts/acceptance_mining_fixture.py --work artifacts/mining-fixture-acceptance
+uv run python scripts/acceptance_mining_real.py --zip C:/caminho/10-09-2026_NEGOCIOSAVISTA_DRV.zip --work artifacts/mining-real-acceptance
+```
+
+Ambos comparam clean, cache aquecido e interrupção/resume byte a byte. O segundo mede seis
+backtests completos de WINV26. Budget é limite de geração, não promessa de velocidade.
+O ZIP grande não é versionado nem executado na suíte rápida.
