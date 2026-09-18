@@ -1,0 +1,1587 @@
+{
+  "schema_version": "research-sixth-fixture-evidence/v1",
+  "synthetic": true,
+  "timeframes": [
+    "1m",
+    "2m",
+    "5m",
+    "15m"
+  ],
+  "performance_thresholds": "FIXTURES_ONLY_NOT_PRODUCTION_DEFAULTS",
+  "split": {
+    "discovery": {
+      "count": 13,
+      "first_date": "2026-08-03",
+      "last_date": "2026-08-19",
+      "partition_id": "sha256:5adfedcf645b71f3680d28e4439fc218f3f1a7ddbdb994aed4c48bf68484c678",
+      "session_ids": [
+        "sha256:dba4a4e9d0dbf0eaeb296589a98706a635555676c303d13f58cfd15d086afc11",
+        "sha256:25aed2502174a143946f63c47abf6471596bf16f8df50167b51ed66e6bc3a212",
+        "sha256:599e232f26540f9232cdcb62f91c2ec926bb85dc31f46678c40f305dbb049eb1",
+        "sha256:06bf24c6284c4f73cf032780b15e039e6bfbd5954deb2052f76c5dff6d63f05d",
+        "sha256:68daff4a97bbdc4ca46a1be20aec1d9874c081579bb3d0fc1bbe9a8b99bd52a3",
+        "sha256:ee39eb30b0c618190edb3badcd14237bb60cb0cf47cf0502b04534abd614d735",
+        "sha256:e65dd1aeaedd3775104c135c0b136cf9b82798139c14a3c6f0cd11a44666ea64",
+        "sha256:cf59b8abc610f7036c942c6f2d4a0a1b8628f395efc98d4eb7e62fc26f846b30",
+        "sha256:a4fa8028277f5ed51c677790b7f50dcc891f8ae4612175c8756dbed908739ee5",
+        "sha256:d42cc6f28c32ad46c367cbb48d85dfc24f8c386891ef6f55bde4325036ea974b",
+        "sha256:82e265b329ef9dc89c5077557c7bcb7a525378158b9cfdd9fd9b7da63142fb15",
+        "sha256:93219f16e0f23ba0c80cf7436f5d9da9def7ecc551d95aa8e60b83e2c1a279eb",
+        "sha256:c7a30bb3f87ec6c47974d315ffaffea9ca7c86319bb0eabbfe1ed82d14b3418b"
+      ]
+    },
+    "excluded_sessions": [],
+    "historical_dataset_id": "sha256:91e83a7765cfb52edacb4e20ddef641e6c00ba6bbf12a52b37026dc437b766f2",
+    "method": "CHRONOLOGICAL_TAIL_HOLDOUT",
+    "ordered_session_ids": [
+      "sha256:dba4a4e9d0dbf0eaeb296589a98706a635555676c303d13f58cfd15d086afc11",
+      "sha256:25aed2502174a143946f63c47abf6471596bf16f8df50167b51ed66e6bc3a212",
+      "sha256:599e232f26540f9232cdcb62f91c2ec926bb85dc31f46678c40f305dbb049eb1",
+      "sha256:06bf24c6284c4f73cf032780b15e039e6bfbd5954deb2052f76c5dff6d63f05d",
+      "sha256:68daff4a97bbdc4ca46a1be20aec1d9874c081579bb3d0fc1bbe9a8b99bd52a3",
+      "sha256:ee39eb30b0c618190edb3badcd14237bb60cb0cf47cf0502b04534abd614d735",
+      "sha256:e65dd1aeaedd3775104c135c0b136cf9b82798139c14a3c6f0cd11a44666ea64",
+      "sha256:cf59b8abc610f7036c942c6f2d4a0a1b8628f395efc98d4eb7e62fc26f846b30",
+      "sha256:a4fa8028277f5ed51c677790b7f50dcc891f8ae4612175c8756dbed908739ee5",
+      "sha256:d42cc6f28c32ad46c367cbb48d85dfc24f8c386891ef6f55bde4325036ea974b",
+      "sha256:82e265b329ef9dc89c5077557c7bcb7a525378158b9cfdd9fd9b7da63142fb15",
+      "sha256:93219f16e0f23ba0c80cf7436f5d9da9def7ecc551d95aa8e60b83e2c1a279eb",
+      "sha256:c7a30bb3f87ec6c47974d315ffaffea9ca7c86319bb0eabbfe1ed82d14b3418b",
+      "sha256:75e42bc8522a823a4d573dd400b47fae06d5d1c8fecbfba634bd19d1157a9f08",
+      "sha256:c55c60698fab0feedf5d37647cb8eec824493d4eecdc3dbb05bf17b175463bf1",
+      "sha256:6c31e6e6a791b9176b6a5f28b1ef6a0fc7f8426c6cc17699bb6071b6377c0108",
+      "sha256:2d3b4e16ae51ec9a014ab7107802674c5d4f760da5826211cac812df3d8961ba",
+      "sha256:521f05db3919e7210465bd5a638e3d95c89da1e1e361732ab7f6158a4a55659b",
+      "sha256:93562fbc84007059cca25e544d5784981a48ac3f381e668cbbed203b27cc4114"
+    ],
+    "policy": {
+      "insufficient_sessions": "ERROR",
+      "method": "CHRONOLOGICAL_TAIL_HOLDOUT",
+      "min_discovery_sessions": 13,
+      "min_validation_sessions": 6,
+      "schema_version": "research-split-policy/v1",
+      "validation_sessions": 6
+    },
+    "schema_version": "research-split-plan/v1",
+    "split_plan_id": "sha256:4420fc9014915b468ddd26915b6e1f691e328fd3eb2d41ecdf75445447c4f9aa",
+    "validation": {
+      "count": 6,
+      "first_date": "2026-08-20",
+      "last_date": "2026-08-27",
+      "partition_id": "sha256:0640d7262b4690709e51cb549fd2c052299c46301baf4299bce40920f5fea606",
+      "session_ids": [
+        "sha256:75e42bc8522a823a4d573dd400b47fae06d5d1c8fecbfba634bd19d1157a9f08",
+        "sha256:c55c60698fab0feedf5d37647cb8eec824493d4eecdc3dbb05bf17b175463bf1",
+        "sha256:6c31e6e6a791b9176b6a5f28b1ef6a0fc7f8426c6cc17699bb6071b6377c0108",
+        "sha256:2d3b4e16ae51ec9a014ab7107802674c5d4f760da5826211cac812df3d8961ba",
+        "sha256:521f05db3919e7210465bd5a638e3d95c89da1e1e361732ab7f6158a4a55659b",
+        "sha256:93562fbc84007059cca25e544d5784981a48ac3f381e668cbbed203b27cc4114"
+      ]
+    }
+  },
+  "ids": {
+    "split_plan_id": "sha256:4420fc9014915b468ddd26915b6e1f691e328fd3eb2d41ecdf75445447c4f9aa",
+    "discovery_partition_id": "sha256:5adfedcf645b71f3680d28e4439fc218f3f1a7ddbdb994aed4c48bf68484c678",
+    "validation_partition_id": "sha256:0640d7262b4690709e51cb549fd2c052299c46301baf4299bce40920f5fea606",
+    "research_protocol_id": "sha256:21c9901e706d938c8f1d3aec2f7405db1d026aa141b4aa706c4fc1880385e765",
+    "discovery_freeze_id": "sha256:42c273b130076d4ca8af3c0b7ad728abf52391bf2eca17283ce0a03c9ce16ad2",
+    "discovery_pass_set_id": "sha256:959e0ff6e9727fff68727afdfee2bf8a68b7520f63eff4bab4f93e9bcdb6711f",
+    "validation_experiment_id": "sha256:556b3529ac3c76bfc4c14a04ecbfe270d6dc92dbdbaaf5b659c6ff8ff2a93c8b"
+  },
+  "cases": {
+    "A": {
+      "candidate_id": "sha256:40066b6cd7b32d68d63ad33b1ff68b61a75e13c84356f745f92e108bb43ec760",
+      "result": "DISCOVERY_PASS_VALIDATION_PASS"
+    },
+    "B": {
+      "candidate_id": "sha256:02b7553e16324d1bf55620d5c7ceef3eba9e8fb186623e6d639e9863501571f1",
+      "result": "DISCOVERY_PASS_VALIDATION_FAIL"
+    },
+    "C": {
+      "count": 32,
+      "validation_access": 0
+    },
+    "D": {
+      "zero_trade_discovery_candidates": 16
+    },
+    "E": {
+      "gate": "profit_factor GTE 1; EXCLUSIVELY_FIXTURE",
+      "candidates": 48,
+      "undefined_failures": 32,
+      "reason": "UNDEFINED_METRIC",
+      "undefined_reason": "NO_LOSSES",
+      "validation_backtested": 0,
+      "empty_discovery_pass_set_id": "sha256:a67fe0671dc9c3bdabe48fd6aeedee75dd5f09801a1fc74e62ff8e237b2865e0",
+      "criterion_id": "sha256:32e8e1264fab296bed2f1d984f98aac2c4e6be35e0edd735b14a39c65b550ce1"
+    },
+    "F": {
+      "concentrated_candidates": 8,
+      "profitable_share": "1/1"
+    }
+  },
+  "prefreeze_validation_reads": {
+    "candles": 0,
+    "features": 0,
+    "session_evaluation": 0,
+    "ticks": 0
+  },
+  "selection_pressure": {
+    "candidate_groups": [
+      {
+        "candidates": 6,
+        "direction": "BUY",
+        "discovery_backtested": 6,
+        "discovery_passed": 4,
+        "timeframe": "15m",
+        "validation_backtested": 4,
+        "validation_passed": 1
+      },
+      {
+        "candidates": 6,
+        "direction": "SELL",
+        "discovery_backtested": 6,
+        "discovery_passed": 0,
+        "timeframe": "15m",
+        "validation_backtested": 0,
+        "validation_passed": 0
+      },
+      {
+        "candidates": 6,
+        "direction": "BUY",
+        "discovery_backtested": 6,
+        "discovery_passed": 4,
+        "timeframe": "1m",
+        "validation_backtested": 4,
+        "validation_passed": 1
+      },
+      {
+        "candidates": 6,
+        "direction": "SELL",
+        "discovery_backtested": 6,
+        "discovery_passed": 0,
+        "timeframe": "1m",
+        "validation_backtested": 0,
+        "validation_passed": 0
+      },
+      {
+        "candidates": 6,
+        "direction": "BUY",
+        "discovery_backtested": 6,
+        "discovery_passed": 4,
+        "timeframe": "2m",
+        "validation_backtested": 4,
+        "validation_passed": 1
+      },
+      {
+        "candidates": 6,
+        "direction": "SELL",
+        "discovery_backtested": 6,
+        "discovery_passed": 0,
+        "timeframe": "2m",
+        "validation_backtested": 0,
+        "validation_passed": 0
+      },
+      {
+        "candidates": 6,
+        "direction": "BUY",
+        "discovery_backtested": 6,
+        "discovery_passed": 4,
+        "timeframe": "5m",
+        "validation_backtested": 4,
+        "validation_passed": 1
+      },
+      {
+        "candidates": 6,
+        "direction": "SELL",
+        "discovery_backtested": 6,
+        "discovery_passed": 0,
+        "timeframe": "5m",
+        "validation_backtested": 0,
+        "validation_passed": 0
+      }
+    ],
+    "counts": {
+      "candidate_set": 48,
+      "discovery_backtested": 48,
+      "discovery_failed_gate": 32,
+      "discovery_passed": 16,
+      "validation_backtested": 16,
+      "validation_failed_gate": 12,
+      "validation_not_run": 32,
+      "validation_passed": 4
+    },
+    "family_counts_may_overlap": true,
+    "family_groups": [
+      {
+        "candidates": 48,
+        "discovery_backtested": 48,
+        "discovery_passed": 16,
+        "family": "candle_context",
+        "validation_backtested": 16,
+        "validation_passed": 4
+      }
+    ],
+    "order": "CANDIDATE_ID_NOT_PERFORMANCE"
+  },
+  "metrics_examples": {
+    "discovery": {
+      "active_session_rate": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "1"
+        }
+      },
+      "active_sessions": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "13"
+        }
+      },
+      "average_loss": {
+        "reason": "NO_LOSSES",
+        "status": "UNDEFINED",
+        "value": null
+      },
+      "average_trade": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "5"
+        }
+      },
+      "average_win": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "5"
+        }
+      },
+      "best_session_net_pnl": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "15"
+        }
+      },
+      "breakeven": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "0"
+        }
+      },
+      "costs": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "0"
+        }
+      },
+      "flat_sessions": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "0"
+        }
+      },
+      "gross_pnl": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "195"
+        }
+      },
+      "largest_profitable_session_share": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "13",
+          "numerator": "1"
+        }
+      },
+      "largest_trade_count_session_share": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "13",
+          "numerator": "1"
+        }
+      },
+      "losing_sessions": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "0"
+        }
+      },
+      "losses": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "0"
+        }
+      },
+      "max_consecutive_losses": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "0"
+        }
+      },
+      "max_drawdown": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "0"
+        }
+      },
+      "net_pnl": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "195"
+        }
+      },
+      "net_pnl_per_session": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "15"
+        }
+      },
+      "payoff_ratio": {
+        "reason": "NO_LOSSES",
+        "status": "UNDEFINED",
+        "value": null
+      },
+      "positive_session_rate": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "1"
+        }
+      },
+      "profit_factor": {
+        "reason": "NO_LOSSES",
+        "status": "UNDEFINED",
+        "value": null
+      },
+      "profitable_sessions": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "13"
+        }
+      },
+      "slippage_impact": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "0"
+        }
+      },
+      "total_sessions": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "13"
+        }
+      },
+      "trades": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "39"
+        }
+      },
+      "trades_per_session": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "3"
+        }
+      },
+      "win_rate": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "1"
+        }
+      },
+      "wins": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "39"
+        }
+      },
+      "worst_session_net_pnl": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "15"
+        }
+      }
+    },
+    "validation": {
+      "active_session_rate": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "1"
+        }
+      },
+      "active_sessions": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "6"
+        }
+      },
+      "average_loss": {
+        "reason": "NO_LOSSES",
+        "status": "UNDEFINED",
+        "value": null
+      },
+      "average_trade": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "5"
+        }
+      },
+      "average_win": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "5"
+        }
+      },
+      "best_session_net_pnl": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "15"
+        }
+      },
+      "breakeven": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "0"
+        }
+      },
+      "costs": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "0"
+        }
+      },
+      "flat_sessions": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "0"
+        }
+      },
+      "gross_pnl": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "90"
+        }
+      },
+      "largest_profitable_session_share": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "6",
+          "numerator": "1"
+        }
+      },
+      "largest_trade_count_session_share": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "6",
+          "numerator": "1"
+        }
+      },
+      "losing_sessions": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "0"
+        }
+      },
+      "losses": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "0"
+        }
+      },
+      "max_consecutive_losses": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "0"
+        }
+      },
+      "max_drawdown": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "0"
+        }
+      },
+      "net_pnl": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "90"
+        }
+      },
+      "net_pnl_per_session": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "15"
+        }
+      },
+      "payoff_ratio": {
+        "reason": "NO_LOSSES",
+        "status": "UNDEFINED",
+        "value": null
+      },
+      "positive_session_rate": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "1"
+        }
+      },
+      "profit_factor": {
+        "reason": "NO_LOSSES",
+        "status": "UNDEFINED",
+        "value": null
+      },
+      "profitable_sessions": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "6"
+        }
+      },
+      "slippage_impact": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "0"
+        }
+      },
+      "total_sessions": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "6"
+        }
+      },
+      "trades": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "18"
+        }
+      },
+      "trades_per_session": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "3"
+        }
+      },
+      "win_rate": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "1"
+        }
+      },
+      "wins": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "18"
+        }
+      },
+      "worst_session_net_pnl": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "15"
+        }
+      }
+    },
+    "concentration": {
+      "active_session_rate": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "13",
+          "numerator": "1"
+        }
+      },
+      "active_sessions": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "1"
+        }
+      },
+      "average_loss": {
+        "reason": "NO_LOSSES",
+        "status": "UNDEFINED",
+        "value": null
+      },
+      "average_trade": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "5"
+        }
+      },
+      "average_win": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "5"
+        }
+      },
+      "best_session_net_pnl": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "55"
+        }
+      },
+      "breakeven": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "0"
+        }
+      },
+      "costs": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "0"
+        }
+      },
+      "flat_sessions": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "12"
+        }
+      },
+      "gross_pnl": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "55"
+        }
+      },
+      "largest_profitable_session_share": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "1"
+        }
+      },
+      "largest_trade_count_session_share": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "1"
+        }
+      },
+      "losing_sessions": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "0"
+        }
+      },
+      "losses": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "0"
+        }
+      },
+      "max_consecutive_losses": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "0"
+        }
+      },
+      "max_drawdown": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "0"
+        }
+      },
+      "net_pnl": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "55"
+        }
+      },
+      "net_pnl_per_session": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "13",
+          "numerator": "55"
+        }
+      },
+      "payoff_ratio": {
+        "reason": "NO_LOSSES",
+        "status": "UNDEFINED",
+        "value": null
+      },
+      "positive_session_rate": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "13",
+          "numerator": "1"
+        }
+      },
+      "profit_factor": {
+        "reason": "NO_LOSSES",
+        "status": "UNDEFINED",
+        "value": null
+      },
+      "profitable_sessions": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "1"
+        }
+      },
+      "slippage_impact": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "0"
+        }
+      },
+      "total_sessions": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "13"
+        }
+      },
+      "trades": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "11"
+        }
+      },
+      "trades_per_session": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "13",
+          "numerator": "11"
+        }
+      },
+      "win_rate": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "1"
+        }
+      },
+      "wins": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "11"
+        }
+      },
+      "worst_session_net_pnl": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "0"
+        }
+      }
+    },
+    "comparison": {
+      "active_session_rate_delta": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "0"
+        }
+      },
+      "active_sessions_delta": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "-7"
+        }
+      },
+      "average_trade_delta": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "0"
+        }
+      },
+      "max_consecutive_losses_delta": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "0"
+        }
+      },
+      "max_drawdown_delta": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "0"
+        }
+      },
+      "net_pnl_per_session_delta": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "0"
+        }
+      },
+      "profit_factor_delta": {
+        "reason": "SOURCE_METRIC_UNDEFINED",
+        "sources": [
+          {
+            "partition": "DISCOVERY",
+            "reason": "NO_LOSSES"
+          },
+          {
+            "partition": "VALIDATION",
+            "reason": "NO_LOSSES"
+          }
+        ],
+        "status": "UNDEFINED",
+        "value": null
+      },
+      "profit_factor_ratio": {
+        "reason": "SOURCE_METRIC_UNDEFINED",
+        "sources": [
+          {
+            "partition": "DISCOVERY",
+            "reason": "NO_LOSSES"
+          },
+          {
+            "partition": "VALIDATION",
+            "reason": "NO_LOSSES"
+          }
+        ],
+        "status": "UNDEFINED",
+        "value": null
+      },
+      "trades_delta": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "-21"
+        }
+      },
+      "trades_per_session_delta": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "0"
+        }
+      },
+      "trades_per_session_ratio": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "1"
+        }
+      },
+      "win_rate_delta": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "0"
+        }
+      }
+    }
+  },
+  "partition_examples": {
+    "D": "sha256:49fd37d99ea6610b45f98543a8240346000a756cb93b09b8bb927e8185b67f39",
+    "V": "sha256:aedf4b3e1bbc78dc0b8db092625bbd1085bfce54cfc0d4485246db0a3a5b0479",
+    "D_fp": "sha256:89666b4b375beaa54a201877285fc3b800ed1d1204dff5fb61831ea30508916b",
+    "V_fp": "sha256:350d31b544fabf838dd83681a49c76181065d5625d8ef695b3809674f3c990dd"
+  },
+  "discovery_session_rows_example": [
+    {
+      "session_id": "sha256:dba4a4e9d0dbf0eaeb296589a98706a635555676c303d13f58cfd15d086afc11",
+      "date": "2026-08-03",
+      "contract": "WINV26",
+      "CSE": "sha256:edd3db5307b037715002ccc13ccfb713de9114a74303de371026eb361548dc8d",
+      "CSE_fp": "sha256:ea6b1755f376e61467ec88d2eb86a978c39cf8f48f71dc212d17880531dce2e4",
+      "trades": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "3"
+        }
+      },
+      "net": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "15"
+        }
+      }
+    },
+    {
+      "session_id": "sha256:25aed2502174a143946f63c47abf6471596bf16f8df50167b51ed66e6bc3a212",
+      "date": "2026-08-04",
+      "contract": "WINV26",
+      "CSE": "sha256:cbd8cf9e1df94d735de506cdba120681b4fab4f38e7ee872c66a4f872aae98f4",
+      "CSE_fp": "sha256:ac2585a95b7badb65fdfee8e4709bcd48ebe553b866d9ca9c4821179358a79c9",
+      "trades": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "3"
+        }
+      },
+      "net": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "15"
+        }
+      }
+    },
+    {
+      "session_id": "sha256:599e232f26540f9232cdcb62f91c2ec926bb85dc31f46678c40f305dbb049eb1",
+      "date": "2026-08-05",
+      "contract": "WINV26",
+      "CSE": "sha256:9afa283313420546f1df29b3f5c36f9d8a6a9a1a287b0f9417e2208ccd66efe7",
+      "CSE_fp": "sha256:f5bcb46cf13f4e8f1ba1b702e430af90af113abc13709a6afb896ea3b80bc9cc",
+      "trades": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "3"
+        }
+      },
+      "net": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "15"
+        }
+      }
+    },
+    {
+      "session_id": "sha256:06bf24c6284c4f73cf032780b15e039e6bfbd5954deb2052f76c5dff6d63f05d",
+      "date": "2026-08-06",
+      "contract": "WINV26",
+      "CSE": "sha256:d99bd6fe42635093a7105fab18e19a9b3166004fdd7ff424c2232108b2044579",
+      "CSE_fp": "sha256:5d2a59b385cbb45192108921c0432a3d975a31b2992d147132b22ae8cbfb0a77",
+      "trades": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "3"
+        }
+      },
+      "net": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "15"
+        }
+      }
+    },
+    {
+      "session_id": "sha256:68daff4a97bbdc4ca46a1be20aec1d9874c081579bb3d0fc1bbe9a8b99bd52a3",
+      "date": "2026-08-07",
+      "contract": "WINV26",
+      "CSE": "sha256:f00aae8f34f524f38b431110890ed5bda1e936d341f44927efd2486ac38acf1b",
+      "CSE_fp": "sha256:785bdf28a1f2a926678447b37ad264d8c88bfa1361a2b675254a784f31f37e57",
+      "trades": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "3"
+        }
+      },
+      "net": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "15"
+        }
+      }
+    },
+    {
+      "session_id": "sha256:ee39eb30b0c618190edb3badcd14237bb60cb0cf47cf0502b04534abd614d735",
+      "date": "2026-08-10",
+      "contract": "WINV26",
+      "CSE": "sha256:808346b9bcd1cdee512e24584884d256dfd518aec63750580ecccd5ed7893531",
+      "CSE_fp": "sha256:7bf7bb30d7661222e08256f3051e0c048483da1167abed69011f89ad85d48c4b",
+      "trades": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "3"
+        }
+      },
+      "net": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "15"
+        }
+      }
+    },
+    {
+      "session_id": "sha256:e65dd1aeaedd3775104c135c0b136cf9b82798139c14a3c6f0cd11a44666ea64",
+      "date": "2026-08-11",
+      "contract": "WINV26",
+      "CSE": "sha256:d9bdec07a23f571a2d2772b79f2ad5f78e5de8bba7ba2cb07f223f3d7aa82a38",
+      "CSE_fp": "sha256:dadef96ccee3e6ae03edb0c6f232297ab7bd5a454c8bd075201c94f09d62f83c",
+      "trades": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "3"
+        }
+      },
+      "net": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "15"
+        }
+      }
+    },
+    {
+      "session_id": "sha256:cf59b8abc610f7036c942c6f2d4a0a1b8628f395efc98d4eb7e62fc26f846b30",
+      "date": "2026-08-12",
+      "contract": "WINV26",
+      "CSE": "sha256:3a47894453a4e5c97259681e860497eb5d8a5742ae251189d218f49b68845a80",
+      "CSE_fp": "sha256:a74e20ffe09fe37ef905f58c74ed6957abc485ecf1f6c76268e80fabb7167b08",
+      "trades": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "3"
+        }
+      },
+      "net": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "15"
+        }
+      }
+    },
+    {
+      "session_id": "sha256:a4fa8028277f5ed51c677790b7f50dcc891f8ae4612175c8756dbed908739ee5",
+      "date": "2026-08-13",
+      "contract": "WINV26",
+      "CSE": "sha256:46e666104c68239f108b12b6738e707c30ce7d9e6582f4bbe5cf48f418d21f6f",
+      "CSE_fp": "sha256:260bad119338a2d51eeda534aa7fb1e43b1cc71df798b0526cdbca04ddd7a845",
+      "trades": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "3"
+        }
+      },
+      "net": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "15"
+        }
+      }
+    },
+    {
+      "session_id": "sha256:d42cc6f28c32ad46c367cbb48d85dfc24f8c386891ef6f55bde4325036ea974b",
+      "date": "2026-08-14",
+      "contract": "WINV26",
+      "CSE": "sha256:3d4adec6b97f0ba5db77ec1dd3f4881a98ab75c90cd28928a6efefc709f1e1ef",
+      "CSE_fp": "sha256:497ca993e1976225c6bdd6f3f555390485efb0a67eafb8907c22cff4e4bbdc5a",
+      "trades": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "3"
+        }
+      },
+      "net": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "15"
+        }
+      }
+    },
+    {
+      "session_id": "sha256:82e265b329ef9dc89c5077557c7bcb7a525378158b9cfdd9fd9b7da63142fb15",
+      "date": "2026-08-17",
+      "contract": "WINZ26",
+      "CSE": "sha256:453c557d11b0d179baa7564e583252078729fb621208df2251491d321047550c",
+      "CSE_fp": "sha256:c1b00bd92bdd9f2c065c9b8f2a0c75a156db19ba1b42ea55bbc50af66b0c7a15",
+      "trades": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "3"
+        }
+      },
+      "net": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "15"
+        }
+      }
+    },
+    {
+      "session_id": "sha256:93219f16e0f23ba0c80cf7436f5d9da9def7ecc551d95aa8e60b83e2c1a279eb",
+      "date": "2026-08-18",
+      "contract": "WINZ26",
+      "CSE": "sha256:ad199a8a378648f9df0ea1bb485d305bf1856395d2de10a80192941d9afc508c",
+      "CSE_fp": "sha256:b8b548e6b32750e86dc7af6ea6cc716d8d6ac05143d38d6483861113cd96acbf",
+      "trades": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "3"
+        }
+      },
+      "net": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "15"
+        }
+      }
+    },
+    {
+      "session_id": "sha256:c7a30bb3f87ec6c47974d315ffaffea9ca7c86319bb0eabbfe1ed82d14b3418b",
+      "date": "2026-08-19",
+      "contract": "WINZ26",
+      "CSE": "sha256:3ac4c86c6ed2ae2872767572a85017fa399212f54c238bd0321ed77367334e58",
+      "CSE_fp": "sha256:0260b46c10637890ade66db1120caae30007ac0abdb4f6deb929bb3dd6c96627",
+      "trades": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "3"
+        }
+      },
+      "net": {
+        "reason": null,
+        "status": "DEFINED",
+        "value": {
+          "denominator": "1",
+          "numerator": "15"
+        }
+      }
+    }
+  ],
+  "clean_warm_resume_byte_identical": true,
+  "scientific_artifact_hashes": {
+    "audit/discovery-journal-00000.jsonl": "b7256a6decb1d05bb6aa1852e331605abc41baf42998c267c0b9a4af687b47b7",
+    "audit/discovery-journal-00001.jsonl": "ff3e0577778d1655bacab472638187a6fe7693b885e718f8a8386fe2471da2fc",
+    "audit/discovery-ledger-00000.jsonl": "ef1618f51bf371f1cbd06e415986e98b9a4df45eea4180a2a8e4ea0db1f0e457",
+    "audit/validation-journal-00000.jsonl": "91b5ad0fe311fa6a45036038df501fced396b2621fbfd68cdd89cd55237f6dec",
+    "audit/validation-ledger-00000.jsonl": "5cbb7fc8ac1db48edd1b16edf48d7ebc2efcaf2ba256161ef1673a08fed92772",
+    "candidate-provenance.jsonl": "8f59b706c8ad1d33436f139023eae70a81b3b1ead5c6e988abaf57f4f80f827f",
+    "candidate-session-evaluations.parquet": "967fc0f46fa15c46e1e10fc608009827ba8c8349cc4d5a04e3de5bae9ad24877",
+    "candidates.jsonl": "7bdb01e23acda1bdbb1119fd28eef221a99442f4cce34a37a6d6c5837ca508c1",
+    "discovery-freeze.json": "451132d76d1f8994a06c0c20111c21fdd9caad2a7ce9593334a396fd6aff599d",
+    "discovery-gate-policy.json": "ac675dfdd99d8b02bf5cd01532b3dd51b088cfedb7dd4308b7943d2972063106",
+    "discovery-gate-results.jsonl": "dd4685b95cb7a377ff66d9b2a6bf1a304a2deb4106fd39f75774bf69e6d3f5f3",
+    "discovery-gate-results.parquet": "ae17fd8dc52643702f3af63e077e9a8d4edf0eac3002f1f71b27b39be85fc693",
+    "discovery-partition.json": "aa8caafe85cef02d6f4d70fe66581ee8ea511be7b7d9e5748333e5649de2411b",
+    "discovery-pass-set.json": "b7d5760cd10a3a453f25f11bce061bb3817934e82f1041c8acb0a55ba44341eb",
+    "discovery-results.jsonl": "b1d3f5090e1b7d38b426377d5a6e449ca4254fbbe04f5738429282ac4850542d",
+    "discovery-results.parquet": "5224f9cc0a0ff274ad9c0e4123d9e124d3d8678031cdb19c20fd4cf80097e256",
+    "discovery-validation-comparison.parquet": "89be66550be539324a18e1b4235cda26f41249cb9dab484fae08332e9767c8dd",
+    "feature-registry.json": "3bd0ba9e112fc8139e238303f2a10c8a7185702a5673142565392445e71acfb2",
+    "generation-manifest.json": "fd1f4541ef42ee122157ded8677690dc74220a035099d277555bdbc63480b32f",
+    "metric-registry.json": "d0ed2b7fdd7e82df2588d9dce7029930f49cf4300035bea9e47a756ca5f14b42",
+    "provenance.json": "da3c8f91195b7b7a743a08e4c6f39edb88cd7fe0cf5bca9e991c4455a84a6a1c",
+    "research-protocol.json": "88da93cb3da686ec3edce78d284b25728fde6faa6b5d25a19429950874c472cc",
+    "selection-pressure.json": "c9aed88b547397dad49d8f84bdcaf2485174986bab0e59715e779684760b91c2",
+    "split-plan.json": "6b6a050203e44869de3e1171a437b6201c851286b0a02e5acb569093fabcaab7",
+    "status.jsonl": "83c3d82e925b038e7c07cf917cfd6d0461ebe95b79794efa1a3b3ab6df30c8f6",
+    "validation-experiment.json": "4531a033166a76273e952c40f1028a765f759c3fe85a6273d98818760a528a62",
+    "validation-gate-policy.json": "c91b8e8191266820c7c8c1f14d7dc4ff14af268dafc74d6b96d6db8f1cc22eb0",
+    "validation-gate-results.parquet": "8ca7564b9b8d088659ef9385f536d4422a9e594ee9c9380702d5c7b2326fbd75",
+    "validation-manifest.json": "bfd7c87c99c9ffaee7983e6e165f494edc8007f46b7d33c736c30d39beacdb68",
+    "validation-partition.json": "c2f7ba5f613715342af303d7c4b8e0db03d84703c8b530b72264e604e2ebeec2",
+    "validation-results.parquet": "cec8fa6184a1072e587626c8c999f93ec6a1c984d3928defbc8db872ad296da9"
+  },
+  "operational": {
+    "clean": {
+      "artifact_bytes": 29863332,
+      "cache_bytes": 70041929,
+      "export_seconds": "1.1726734000258148",
+      "schema_version": "research-operational/v1",
+      "stages": {
+        "DISCOVERY": {
+          "aggregation_seconds": "5.655935499991756",
+          "evaluation_seconds": "14.215347199933603",
+          "gates_seconds": "0.49150400003418326",
+          "session_evaluations_built": 624,
+          "session_evaluations_reused": 0
+        },
+        "VALIDATION": {
+          "aggregation_seconds": "1.0872531001223251",
+          "evaluation_seconds": "2.7042259998852387",
+          "gates_seconds": "0.12508990010246634",
+          "session_evaluations_built": 96,
+          "session_evaluations_reused": 0
+        }
+      },
+      "total_seconds": "37.559166299994104",
+      "validation_experiment_id": "sha256:556b3529ac3c76bfc4c14a04ecbfe270d6dc92dbdbaaf5b659c6ff8ff2a93c8b"
+    },
+    "covered": {
+      "artifact_bytes": 34561244,
+      "cache_bytes": 82288471,
+      "export_seconds": "1.167742699966766",
+      "schema_version": "research-operational/v1",
+      "stages": {
+        "DISCOVERY": {
+          "aggregation_seconds": "3.995660999964457",
+          "evaluation_seconds": "2.433000700606499",
+          "gates_seconds": "0.45674189989222214",
+          "session_evaluations_built": 0,
+          "session_evaluations_reused": 624
+        },
+        "VALIDATION": {
+          "aggregation_seconds": "1.9155130999279208",
+          "evaluation_seconds": "4.2182896005688235",
+          "gates_seconds": "0.32332600018708035",
+          "session_evaluations_built": 192,
+          "session_evaluations_reused": 96
+        }
+      },
+      "total_seconds": "23.70902599999681",
+      "validation_experiment_id": "sha256:628ff291b2fac6a951d20ebdb7ae5eb8fd637c1b3983e73ca948db707d52c3fe"
+    },
+    "resumed": {
+      "artifact_bytes": 29863332,
+      "cache_bytes": 70041929,
+      "export_seconds": "1.046496900031343",
+      "schema_version": "research-operational/v1",
+      "stages": {
+        "DISCOVERY": {
+          "aggregation_seconds": "3.917134600225836",
+          "evaluation_seconds": "2.4256904993671924",
+          "gates_seconds": "0.352687899954617",
+          "session_evaluations_built": 0,
+          "session_evaluations_reused": 624
+        },
+        "VALIDATION": {
+          "aggregation_seconds": "0.7932655999902636",
+          "evaluation_seconds": "0.4914675001637079",
+          "gates_seconds": "0.13090990000637248",
+          "session_evaluations_built": 0,
+          "session_evaluations_reused": 96
+        }
+      },
+      "total_seconds": "16.34536710003158",
+      "validation_experiment_id": "sha256:556b3529ac3c76bfc4c14a04ecbfe270d6dc92dbdbaaf5b659c6ff8ff2a93c8b"
+    },
+    "rolling": {
+      "artifact_bytes": 32495131,
+      "cache_bytes": 86342727,
+      "export_seconds": "1.126061299990397",
+      "schema_version": "research-operational/v1",
+      "stages": {
+        "DISCOVERY": {
+          "aggregation_seconds": "3.337231300130952",
+          "evaluation_seconds": "2.2492244993918575",
+          "gates_seconds": "0.37476219999371096",
+          "session_evaluations_built": 0,
+          "session_evaluations_reused": 624
+        },
+        "VALIDATION": {
+          "aggregation_seconds": "1.6969740997301415",
+          "evaluation_seconds": "1.9110587002942339",
+          "gates_seconds": "0.3116578998742625",
+          "session_evaluations_built": 48,
+          "session_evaluations_reused": 240
+        }
+      },
+      "total_seconds": "20.88245229999302",
+      "validation_experiment_id": "sha256:d44c973385bd91da042562fad6356fa55826f913343788fd0b257fc6d77e307b"
+    },
+    "warm": {
+      "artifact_bytes": 29863332,
+      "cache_bytes": 70041929,
+      "export_seconds": "1.108185799967032",
+      "schema_version": "research-operational/v1",
+      "stages": {
+        "DISCOVERY": {
+          "aggregation_seconds": "3.8963544998550788",
+          "evaluation_seconds": "2.535638500296045",
+          "gates_seconds": "0.4148451997898519",
+          "session_evaluations_built": 0,
+          "session_evaluations_reused": 624
+        },
+        "VALIDATION": {
+          "aggregation_seconds": "0.8134396999957971",
+          "evaluation_seconds": "0.47591809986624867",
+          "gates_seconds": "0.12070010008756071",
+          "session_evaluations_built": 0,
+          "session_evaluations_reused": 96
+        }
+      },
+      "total_seconds": "16.92999300005613",
+      "validation_experiment_id": "sha256:556b3529ac3c76bfc4c14a04ecbfe270d6dc92dbdbaaf5b659c6ff8ff2a93c8b"
+    }
+  },
+  "interrupted_operational": {
+    "cache_bytes": 70041929,
+    "schema_version": "research-operational/v1",
+    "stages": {
+      "DISCOVERY": {
+        "aggregation_seconds": "3.757016400282737",
+        "evaluation_seconds": "2.4670333006069995",
+        "gates_seconds": "0.35740060033276677",
+        "session_evaluations_built": 0,
+        "session_evaluations_reused": 624
+      },
+      "VALIDATION": {
+        "aggregation_seconds": "0.0",
+        "evaluation_seconds": "0.04961869993712753",
+        "gates_seconds": "0.0",
+        "session_evaluations_built": 0,
+        "session_evaluations_reused": 3
+      }
+    },
+    "total_seconds": "13.700224800035357"
+  },
+  "rolling_split": {
+    "discovery": {
+      "count": 13,
+      "first_date": "2026-08-04",
+      "last_date": "2026-08-20",
+      "partition_id": "sha256:412074a33af5f8570a39884e46e6e1db77d06d1574cc17abfd01deed6f293949",
+      "session_ids": [
+        "sha256:25aed2502174a143946f63c47abf6471596bf16f8df50167b51ed66e6bc3a212",
+        "sha256:599e232f26540f9232cdcb62f91c2ec926bb85dc31f46678c40f305dbb049eb1",
+        "sha256:06bf24c6284c4f73cf032780b15e039e6bfbd5954deb2052f76c5dff6d63f05d",
+        "sha256:68daff4a97bbdc4ca46a1be20aec1d9874c081579bb3d0fc1bbe9a8b99bd52a3",
+        "sha256:ee39eb30b0c618190edb3badcd14237bb60cb0cf47cf0502b04534abd614d735",
+        "sha256:e65dd1aeaedd3775104c135c0b136cf9b82798139c14a3c6f0cd11a44666ea64",
+        "sha256:cf59b8abc610f7036c942c6f2d4a0a1b8628f395efc98d4eb7e62fc26f846b30",
+        "sha256:a4fa8028277f5ed51c677790b7f50dcc891f8ae4612175c8756dbed908739ee5",
+        "sha256:d42cc6f28c32ad46c367cbb48d85dfc24f8c386891ef6f55bde4325036ea974b",
+        "sha256:82e265b329ef9dc89c5077557c7bcb7a525378158b9cfdd9fd9b7da63142fb15",
+        "sha256:93219f16e0f23ba0c80cf7436f5d9da9def7ecc551d95aa8e60b83e2c1a279eb",
+        "sha256:c7a30bb3f87ec6c47974d315ffaffea9ca7c86319bb0eabbfe1ed82d14b3418b",
+        "sha256:75e42bc8522a823a4d573dd400b47fae06d5d1c8fecbfba634bd19d1157a9f08"
+      ]
+    },
+    "excluded_sessions": [],
+    "historical_dataset_id": "sha256:4be118354b3f8bf7fb64d1dc9d6a3e54430e7937b1dfa774fc7b09ff9b5718bc",
+    "method": "CHRONOLOGICAL_TAIL_HOLDOUT",
+    "ordered_session_ids": [
+      "sha256:25aed2502174a143946f63c47abf6471596bf16f8df50167b51ed66e6bc3a212",
+      "sha256:599e232f26540f9232cdcb62f91c2ec926bb85dc31f46678c40f305dbb049eb1",
+      "sha256:06bf24c6284c4f73cf032780b15e039e6bfbd5954deb2052f76c5dff6d63f05d",
+      "sha256:68daff4a97bbdc4ca46a1be20aec1d9874c081579bb3d0fc1bbe9a8b99bd52a3",
+      "sha256:ee39eb30b0c618190edb3badcd14237bb60cb0cf47cf0502b04534abd614d735",
+      "sha256:e65dd1aeaedd3775104c135c0b136cf9b82798139c14a3c6f0cd11a44666ea64",
+      "sha256:cf59b8abc610f7036c942c6f2d4a0a1b8628f395efc98d4eb7e62fc26f846b30",
+      "sha256:a4fa8028277f5ed51c677790b7f50dcc891f8ae4612175c8756dbed908739ee5",
+      "sha256:d42cc6f28c32ad46c367cbb48d85dfc24f8c386891ef6f55bde4325036ea974b",
+      "sha256:82e265b329ef9dc89c5077557c7bcb7a525378158b9cfdd9fd9b7da63142fb15",
+      "sha256:93219f16e0f23ba0c80cf7436f5d9da9def7ecc551d95aa8e60b83e2c1a279eb",
+      "sha256:c7a30bb3f87ec6c47974d315ffaffea9ca7c86319bb0eabbfe1ed82d14b3418b",
+      "sha256:75e42bc8522a823a4d573dd400b47fae06d5d1c8fecbfba634bd19d1157a9f08",
+      "sha256:c55c60698fab0feedf5d37647cb8eec824493d4eecdc3dbb05bf17b175463bf1",
+      "sha256:6c31e6e6a791b9176b6a5f28b1ef6a0fc7f8426c6cc17699bb6071b6377c0108",
+      "sha256:2d3b4e16ae51ec9a014ab7107802674c5d4f760da5826211cac812df3d8961ba",
+      "sha256:521f05db3919e7210465bd5a638e3d95c89da1e1e361732ab7f6158a4a55659b",
+      "sha256:93562fbc84007059cca25e544d5784981a48ac3f381e668cbbed203b27cc4114",
+      "sha256:eeb5903e3aa997c2175de45e1185ab23578be165d15c377c9344603554612c9e"
+    ],
+    "policy": {
+      "insufficient_sessions": "ERROR",
+      "method": "CHRONOLOGICAL_TAIL_HOLDOUT",
+      "min_discovery_sessions": 13,
+      "min_validation_sessions": 6,
+      "schema_version": "research-split-policy/v1",
+      "validation_sessions": 6
+    },
+    "schema_version": "research-split-plan/v1",
+    "split_plan_id": "sha256:3f33ac2f55274672b6ab6b2cfeaaa110320ee5ee3cfa538ecde011470605dfc3",
+    "validation": {
+      "count": 6,
+      "first_date": "2026-08-21",
+      "last_date": "2026-08-28",
+      "partition_id": "sha256:ca6971804bb7c21facca5d45f34efa13b6a5e041d9a5b534e6edaebff3e205a0",
+      "session_ids": [
+        "sha256:c55c60698fab0feedf5d37647cb8eec824493d4eecdc3dbb05bf17b175463bf1",
+        "sha256:6c31e6e6a791b9176b6a5f28b1ef6a0fc7f8426c6cc17699bb6071b6377c0108",
+        "sha256:2d3b4e16ae51ec9a014ab7107802674c5d4f760da5826211cac812df3d8961ba",
+        "sha256:521f05db3919e7210465bd5a638e3d95c89da1e1e361732ab7f6158a4a55659b",
+        "sha256:93562fbc84007059cca25e544d5784981a48ac3f381e668cbbed203b27cc4114",
+        "sha256:eeb5903e3aa997c2175de45e1185ab23578be165d15c377c9344603554612c9e"
+      ]
+    }
+  },
+  "rolling_provenance": {
+    "exposure_assurance": "NOT_GLOBALLY_TRACKED",
+    "known_prior_holdout_overlap": true,
+    "overlapping_validation_sessions": [
+      "sha256:2d3b4e16ae51ec9a014ab7107802674c5d4f760da5826211cac812df3d8961ba",
+      "sha256:521f05db3919e7210465bd5a638e3d95c89da1e1e361732ab7f6158a4a55659b",
+      "sha256:6c31e6e6a791b9176b6a5f28b1ef6a0fc7f8426c6cc17699bb6071b6377c0108",
+      "sha256:93562fbc84007059cca25e544d5784981a48ac3f381e668cbbed203b27cc4114",
+      "sha256:c55c60698fab0feedf5d37647cb8eec824493d4eecdc3dbb05bf17b175463bf1"
+    ],
+    "previous_experiment_id": "sha256:628ff291b2fac6a951d20ebdb7ae5eb8fd637c1b3983e73ca948db707d52c3fe",
+    "previous_validation_partition_id": "sha256:0640d7262b4690709e51cb549fd2c052299c46301baf4299bce40920f5fea606",
+    "schema_version": "research-provenance/v1",
+    "validation_partition_id": "sha256:ca6971804bb7c21facca5d45f34efa13b6a5e041d9a5b534e6edaebff3e205a0",
+    "warning": "Single holdout does not prove robustness or approve live trading"
+  },
+  "removed_session_cache_preserved": true
+}

@@ -1,0 +1,1957 @@
+{
+  "schema_version": "research-sixth-real-evidence/v1",
+  "oos": false,
+  "real_oos_pending": true,
+  "source_sha256": "fbb243028b3af09f47fb0311f7ea29bd8d8128b218ab04f14b5227e7ea5c4b3f",
+  "session_id": "sha256:ad8560db2ed83ea4b9b9da886a85ff795f5ee669211097d3da91d6e0efe14794",
+  "trading_date": "2026-09-10",
+  "physical_contract": "WINV26",
+  "event_count": 6262194,
+  "first_event_ns_utc": "1789041780560000000",
+  "last_event_ns_utc": "1789075887232000000",
+  "artifacts": {
+    "candles": {
+      "1m": {
+        "byte_sha256": "bbdc1cea8f74700f6db6b42138536f86d0c95ee8c40b98e109766ca97e2041fc",
+        "file": "candles.parquet",
+        "row_count": 563,
+        "semantic_sha256": "4b32ffd74951b85b2532d1b4133a7a9d6e9fe887a2ea3faab9b1c5ec914a0b51"
+      }
+    },
+    "trades": {
+      "byte_sha256": "dd1085ceaf10681309d6714bcb0dc13b8125dcee64fcbc837aea39a37148cfa1",
+      "file": "trades.parquet",
+      "row_count": 6262194,
+      "semantic_sha256": "763c3106f801dc88d1e838cdcf0d421a7b775e05095bbcf2c27de99d7a0c1d7b"
+    }
+  },
+  "generation": {
+    "candidate_set_id": "sha256:0500b6d2bc90f29f26319cbbd7aaeed2b01f40f32e6de96bbc6fe4c3f5e7f137",
+    "canonicalization_version": "candidate-canonicalization/v1",
+    "counts": {
+      "D": 0,
+      "R": 0,
+      "T": 6,
+      "U": 6,
+      "V": 6
+    },
+    "generation_policy_id": "sha256:6c9c7057a182c72b72ea60ca2bf94e2f698ebfa423a9785721bf169f94630c8c",
+    "generator_version": "1.0.0",
+    "rejection_reasons": {},
+    "schema_version": "candidate-generation-manifest/v1",
+    "search_space_id": "sha256:4ea9e2010ee324e0bf5929f53228991434dfd830ff21be9311daae7209d159f4",
+    "template_registry_version": "candidate-templates/v1"
+  },
+  "partition": {
+    "empty_candles": "DO_NOT_FILL",
+    "logical_asset": "WIN",
+    "partition_id": "sha256:793c6ecd374722c41b965240866e3add0b3ae3d77a1898ef85cc9e82377c6cd6",
+    "schema_version": "research-partition/v1",
+    "session_ids": [
+      "sha256:ad8560db2ed83ea4b9b9da886a85ff795f5ee669211097d3da91d6e0efe14794"
+    ],
+    "session_policy": "reset-no-overnight-last-tick-forbidden/v1",
+    "timezone": "B3_FIXED_UTC_MINUS_03",
+    "trading_dates": [
+      "2026-09-10"
+    ]
+  },
+  "paths": {
+    "clean": {
+      "candidate_session_evaluations_built": 6,
+      "candidate_session_evaluations_reused": 0,
+      "scientific_sha256": "f2152313418714be77c3146fa2ac0f54d17f0758ec3795ebe59059ea0a94b673",
+      "seconds": "293.60298540000804"
+    },
+    "warm": {
+      "candidate_session_evaluations_built": 0,
+      "candidate_session_evaluations_reused": 6,
+      "scientific_sha256": "f2152313418714be77c3146fa2ac0f54d17f0758ec3795ebe59059ea0a94b673",
+      "seconds": "0.055852899968158454"
+    }
+  },
+  "total_seconds": "300.92181610001717",
+  "cache_bytes": 412173128,
+  "market_cache_bytes": 410935225,
+  "session_cache_bytes": 1237903,
+  "artifact_bytes": 846712,
+  "byte_identical": true,
+  "baseline_equivalent": true,
+  "results": [
+    {
+      "candidate_id": "sha256:07d8db999e57df5def4b01966441160eb91ad74fc6098430358c99b051ba1ac7",
+      "session_evaluation_id": "sha256:f898abf22ca591adf99bbff536d4480b8494c79252716ab0ef0ca031fa4f5f06",
+      "session_result_fingerprint": "sha256:b0c35e40f8b9955251313bd6a7b0202cfe07fbe8f3a3ce0b42e6608aed547f1a",
+      "partition_evaluation_id": "sha256:2ec09357fb86be495b63d14ffca578f719f882588aff9a79ba9058f64123fb63",
+      "partition_result_fingerprint": "sha256:19b196c35588af0fd9e4cbb0553ce75e337828290ea61b57dbb25ada5f5ded16",
+      "ledger_fingerprint": "93c795318caa2eb4d2f575cf3df0c5e7e55ac6f3b57baedd6131a4102f3cf3d9",
+      "journal_fingerprint": "cc5f9457a24a9630a0e489ee44bb79f195e1bb18a0b37128dc9746d933825790",
+      "metrics": {
+        "active_session_rate": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "1"
+          }
+        },
+        "active_sessions": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "1"
+          }
+        },
+        "average_loss": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "-104"
+          }
+        },
+        "average_trade": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "-63"
+          }
+        },
+        "average_win": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "101"
+          }
+        },
+        "best_session_net_pnl": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "-315"
+          }
+        },
+        "breakeven": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "0"
+          }
+        },
+        "costs": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "10"
+          }
+        },
+        "flat_sessions": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "0"
+          }
+        },
+        "gross_pnl": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "-295"
+          }
+        },
+        "largest_profitable_session_share": {
+          "reason": "NO_PROFITABLE_SESSIONS",
+          "status": "UNDEFINED",
+          "value": null
+        },
+        "largest_trade_count_session_share": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "1"
+          }
+        },
+        "losing_sessions": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "1"
+          }
+        },
+        "losses": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "4"
+          }
+        },
+        "max_consecutive_losses": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "2"
+          }
+        },
+        "max_drawdown": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "315"
+          }
+        },
+        "net_pnl": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "-315"
+          }
+        },
+        "net_pnl_per_session": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "-315"
+          }
+        },
+        "payoff_ratio": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "104",
+            "numerator": "101"
+          }
+        },
+        "positive_session_rate": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "0"
+          }
+        },
+        "profit_factor": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "416",
+            "numerator": "101"
+          }
+        },
+        "profitable_sessions": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "0"
+          }
+        },
+        "slippage_impact": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "10"
+          }
+        },
+        "total_sessions": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "1"
+          }
+        },
+        "trades": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "5"
+          }
+        },
+        "trades_per_session": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "5"
+          }
+        },
+        "win_rate": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "5",
+            "numerator": "1"
+          }
+        },
+        "wins": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "1"
+          }
+        },
+        "worst_session_net_pnl": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "-315"
+          }
+        }
+      },
+      "backtest_metrics": {
+        "average_loss": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "-1040"
+          }
+        },
+        "average_trade": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "-630"
+          }
+        },
+        "average_win": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "1010"
+          }
+        },
+        "backtest_engine_version": "3.0.0",
+        "breakeven": 0,
+        "cost_model": {
+          "points_per_side": "1",
+          "type": "FIXED_PER_SIDE",
+          "version": "1.0.0"
+        },
+        "costs_units": 100,
+        "engine_version": "3.0.0",
+        "gross_loss_units": 4000,
+        "gross_pnl_units": -2950,
+        "gross_profit_units": 1050,
+        "has_open_position": false,
+        "journal_records": 16,
+        "losses": 4,
+        "max_consecutive_losses": 2,
+        "max_drawdown_units": 3150,
+        "net_loss_units": 4160,
+        "net_pnl_units": -3150,
+        "net_profit_units": 1010,
+        "payoff_ratio": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "104",
+            "numerator": "101"
+          }
+        },
+        "price_representation": {
+          "decimal_scale": 1,
+          "type": "scaled_integer"
+        },
+        "profit_factor": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "416",
+            "numerator": "101"
+          }
+        },
+        "schema_version": "backtest-metrics/v3",
+        "slippage_impact_units": 100,
+        "slippage_model": {
+          "points_per_side": "1",
+          "type": "FIXED_POINTS",
+          "version": "1.0.0"
+        },
+        "trades": 5,
+        "win_rate": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "5",
+            "numerator": "1"
+          }
+        },
+        "wins": 1
+      }
+    },
+    {
+      "candidate_id": "sha256:15054470b8a5143604783120ccd02518e2bf066d9c11ea7b6a5cc3315837372e",
+      "session_evaluation_id": "sha256:b14c37523c43946c8afc454a2a2663e23b439cb22f3e2e78a9bbf828c07b6c44",
+      "session_result_fingerprint": "sha256:ff9c4fba814bdd0378cc6dbe26a0745c3c7983b147ddbd1c8694f88c607fb82c",
+      "partition_evaluation_id": "sha256:c68496505caa17491180959f503f8f16bf8db69887269e48ead3e64015020f68",
+      "partition_result_fingerprint": "sha256:72810c076ac0ccaca771aca1e7a67be2591a622106231ec9e529203466d531c6",
+      "ledger_fingerprint": "c9284ab208f6265e3fa68484ac63562773e390b58c36b4aa651444e8a44a79cf",
+      "journal_fingerprint": "3d2f8e3a6ee1153e3e74023b4cdf2e48440435028d84a9259536743a4603567e",
+      "metrics": {
+        "active_session_rate": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "1"
+          }
+        },
+        "active_sessions": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "1"
+          }
+        },
+        "average_loss": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "-104"
+          }
+        },
+        "average_trade": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "-104"
+          }
+        },
+        "average_win": {
+          "reason": "NO_WINS",
+          "status": "UNDEFINED",
+          "value": null
+        },
+        "best_session_net_pnl": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "-520"
+          }
+        },
+        "breakeven": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "0"
+          }
+        },
+        "costs": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "10"
+          }
+        },
+        "flat_sessions": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "0"
+          }
+        },
+        "gross_pnl": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "-500"
+          }
+        },
+        "largest_profitable_session_share": {
+          "reason": "NO_PROFITABLE_SESSIONS",
+          "status": "UNDEFINED",
+          "value": null
+        },
+        "largest_trade_count_session_share": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "1"
+          }
+        },
+        "losing_sessions": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "1"
+          }
+        },
+        "losses": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "5"
+          }
+        },
+        "max_consecutive_losses": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "5"
+          }
+        },
+        "max_drawdown": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "520"
+          }
+        },
+        "net_pnl": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "-520"
+          }
+        },
+        "net_pnl_per_session": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "-520"
+          }
+        },
+        "payoff_ratio": {
+          "reason": "NO_WINS",
+          "status": "UNDEFINED",
+          "value": null
+        },
+        "positive_session_rate": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "0"
+          }
+        },
+        "profit_factor": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "0"
+          }
+        },
+        "profitable_sessions": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "0"
+          }
+        },
+        "slippage_impact": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "10"
+          }
+        },
+        "total_sessions": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "1"
+          }
+        },
+        "trades": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "5"
+          }
+        },
+        "trades_per_session": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "5"
+          }
+        },
+        "win_rate": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "0"
+          }
+        },
+        "wins": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "0"
+          }
+        },
+        "worst_session_net_pnl": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "-520"
+          }
+        }
+      },
+      "backtest_metrics": {
+        "average_loss": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "-1040"
+          }
+        },
+        "average_trade": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "-1040"
+          }
+        },
+        "average_win": {
+          "reason": "NO_WINS",
+          "status": "UNDEFINED",
+          "value": null
+        },
+        "backtest_engine_version": "3.0.0",
+        "breakeven": 0,
+        "cost_model": {
+          "points_per_side": "1",
+          "type": "FIXED_PER_SIDE",
+          "version": "1.0.0"
+        },
+        "costs_units": 100,
+        "engine_version": "3.0.0",
+        "gross_loss_units": 5000,
+        "gross_pnl_units": -5000,
+        "gross_profit_units": 0,
+        "has_open_position": false,
+        "journal_records": 5,
+        "losses": 5,
+        "max_consecutive_losses": 5,
+        "max_drawdown_units": 5200,
+        "net_loss_units": 5200,
+        "net_pnl_units": -5200,
+        "net_profit_units": 0,
+        "payoff_ratio": {
+          "reason": "NO_WINS",
+          "status": "UNDEFINED",
+          "value": null
+        },
+        "price_representation": {
+          "decimal_scale": 1,
+          "type": "scaled_integer"
+        },
+        "profit_factor": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "0"
+          }
+        },
+        "schema_version": "backtest-metrics/v3",
+        "slippage_impact_units": 100,
+        "slippage_model": {
+          "points_per_side": "1",
+          "type": "FIXED_POINTS",
+          "version": "1.0.0"
+        },
+        "trades": 5,
+        "win_rate": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "0"
+          }
+        },
+        "wins": 0
+      }
+    },
+    {
+      "candidate_id": "sha256:369d14a5fefc3083cf36c8cca5198df7dbc6ddfa8bbdad9476fbacf79f93a386",
+      "session_evaluation_id": "sha256:5659864c7c460376de73be376af31afb7c85d48a172b6590e4525ee311b2cc97",
+      "session_result_fingerprint": "sha256:0477db57afccdc5cbebc464e6c1155dd381200e025485275fb24a49a246a221f",
+      "partition_evaluation_id": "sha256:fb87747917c5cd9fd085d69c67014a0a18f162f86c68c074d1afa2a55882a3a7",
+      "partition_result_fingerprint": "sha256:e5fc62724c195d4739421caae678bd610d4e87ad382c54d20a27f45f00d881c3",
+      "ledger_fingerprint": "21a25843c2ecbb0a6212d43c3625797ca66c8446fccabc2159b93347ee652be8",
+      "journal_fingerprint": "16a307b6b3883b9d2310b04b13b939d566288c36e24a99b1c95c5e060d6940a3",
+      "metrics": {
+        "active_session_rate": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "1"
+          }
+        },
+        "active_sessions": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "1"
+          }
+        },
+        "average_loss": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "-104"
+          }
+        },
+        "average_trade": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "-104"
+          }
+        },
+        "average_win": {
+          "reason": "NO_WINS",
+          "status": "UNDEFINED",
+          "value": null
+        },
+        "best_session_net_pnl": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "-104"
+          }
+        },
+        "breakeven": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "0"
+          }
+        },
+        "costs": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "2"
+          }
+        },
+        "flat_sessions": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "0"
+          }
+        },
+        "gross_pnl": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "-100"
+          }
+        },
+        "largest_profitable_session_share": {
+          "reason": "NO_PROFITABLE_SESSIONS",
+          "status": "UNDEFINED",
+          "value": null
+        },
+        "largest_trade_count_session_share": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "1"
+          }
+        },
+        "losing_sessions": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "1"
+          }
+        },
+        "losses": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "1"
+          }
+        },
+        "max_consecutive_losses": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "1"
+          }
+        },
+        "max_drawdown": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "104"
+          }
+        },
+        "net_pnl": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "-104"
+          }
+        },
+        "net_pnl_per_session": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "-104"
+          }
+        },
+        "payoff_ratio": {
+          "reason": "NO_WINS",
+          "status": "UNDEFINED",
+          "value": null
+        },
+        "positive_session_rate": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "0"
+          }
+        },
+        "profit_factor": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "0"
+          }
+        },
+        "profitable_sessions": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "0"
+          }
+        },
+        "slippage_impact": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "2"
+          }
+        },
+        "total_sessions": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "1"
+          }
+        },
+        "trades": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "1"
+          }
+        },
+        "trades_per_session": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "1"
+          }
+        },
+        "win_rate": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "0"
+          }
+        },
+        "wins": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "0"
+          }
+        },
+        "worst_session_net_pnl": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "-104"
+          }
+        }
+      },
+      "backtest_metrics": {
+        "average_loss": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "-1040"
+          }
+        },
+        "average_trade": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "-1040"
+          }
+        },
+        "average_win": {
+          "reason": "NO_WINS",
+          "status": "UNDEFINED",
+          "value": null
+        },
+        "backtest_engine_version": "3.0.0",
+        "breakeven": 0,
+        "cost_model": {
+          "points_per_side": "1",
+          "type": "FIXED_PER_SIDE",
+          "version": "1.0.0"
+        },
+        "costs_units": 20,
+        "engine_version": "3.0.0",
+        "gross_loss_units": 1000,
+        "gross_pnl_units": -1000,
+        "gross_profit_units": 0,
+        "has_open_position": false,
+        "journal_records": 1,
+        "losses": 1,
+        "max_consecutive_losses": 1,
+        "max_drawdown_units": 1040,
+        "net_loss_units": 1040,
+        "net_pnl_units": -1040,
+        "net_profit_units": 0,
+        "payoff_ratio": {
+          "reason": "NO_WINS",
+          "status": "UNDEFINED",
+          "value": null
+        },
+        "price_representation": {
+          "decimal_scale": 1,
+          "type": "scaled_integer"
+        },
+        "profit_factor": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "0"
+          }
+        },
+        "schema_version": "backtest-metrics/v3",
+        "slippage_impact_units": 20,
+        "slippage_model": {
+          "points_per_side": "1",
+          "type": "FIXED_POINTS",
+          "version": "1.0.0"
+        },
+        "trades": 1,
+        "win_rate": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "0"
+          }
+        },
+        "wins": 0
+      }
+    },
+    {
+      "candidate_id": "sha256:6ed3b64ab531da799d5ed8496c4cdcf03a9f52058527018c93376536eda2ef0c",
+      "session_evaluation_id": "sha256:4fc65de1aef7a05c862da7bdebea89c57d2615558a4fac7a63e3649974c5a7c7",
+      "session_result_fingerprint": "sha256:723496967d1c79f1bae6d6570af46f90e4c51514b0a5ba595f39740a70a3ea88",
+      "partition_evaluation_id": "sha256:ebcd935e8bded0f49f8926e4b1064d13e1e66f943ad1bcd533215945e214d630",
+      "partition_result_fingerprint": "sha256:4b76dcc11b257725f4b83292ad7f21da0157df95fcb2615c22895409474a0133",
+      "ledger_fingerprint": "c7bee8ab5ca0a2c01201a7caac58bc8d45fdb31d4b840043e7d09a7bfd8f2d9f",
+      "journal_fingerprint": "e465db5f3cc5c1078382d345cfa8a8de441904a4df53149d2749168ce01ab9b0",
+      "metrics": {
+        "active_session_rate": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "1"
+          }
+        },
+        "active_sessions": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "1"
+          }
+        },
+        "average_loss": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "-104"
+          }
+        },
+        "average_trade": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "4",
+            "numerator": "-211"
+          }
+        },
+        "average_win": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "101"
+          }
+        },
+        "best_session_net_pnl": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "-633"
+          }
+        },
+        "breakeven": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "0"
+          }
+        },
+        "costs": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "24"
+          }
+        },
+        "flat_sessions": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "0"
+          }
+        },
+        "gross_pnl": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "-585"
+          }
+        },
+        "largest_profitable_session_share": {
+          "reason": "NO_PROFITABLE_SESSIONS",
+          "status": "UNDEFINED",
+          "value": null
+        },
+        "largest_trade_count_session_share": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "1"
+          }
+        },
+        "losing_sessions": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "1"
+          }
+        },
+        "losses": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "9"
+          }
+        },
+        "max_consecutive_losses": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "7"
+          }
+        },
+        "max_drawdown": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "731"
+          }
+        },
+        "net_pnl": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "-633"
+          }
+        },
+        "net_pnl_per_session": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "-633"
+          }
+        },
+        "payoff_ratio": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "104",
+            "numerator": "101"
+          }
+        },
+        "positive_session_rate": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "0"
+          }
+        },
+        "profit_factor": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "312",
+            "numerator": "101"
+          }
+        },
+        "profitable_sessions": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "0"
+          }
+        },
+        "slippage_impact": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "24"
+          }
+        },
+        "total_sessions": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "1"
+          }
+        },
+        "trades": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "12"
+          }
+        },
+        "trades_per_session": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "12"
+          }
+        },
+        "win_rate": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "4",
+            "numerator": "1"
+          }
+        },
+        "wins": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "3"
+          }
+        },
+        "worst_session_net_pnl": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "-633"
+          }
+        }
+      },
+      "backtest_metrics": {
+        "average_loss": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "-1040"
+          }
+        },
+        "average_trade": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "2",
+            "numerator": "-1055"
+          }
+        },
+        "average_win": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "1010"
+          }
+        },
+        "backtest_engine_version": "3.0.0",
+        "breakeven": 0,
+        "cost_model": {
+          "points_per_side": "1",
+          "type": "FIXED_PER_SIDE",
+          "version": "1.0.0"
+        },
+        "costs_units": 240,
+        "engine_version": "3.0.0",
+        "gross_loss_units": 9000,
+        "gross_pnl_units": -5850,
+        "gross_profit_units": 3150,
+        "has_open_position": false,
+        "journal_records": 41,
+        "losses": 9,
+        "max_consecutive_losses": 7,
+        "max_drawdown_units": 7310,
+        "net_loss_units": 9360,
+        "net_pnl_units": -6330,
+        "net_profit_units": 3030,
+        "payoff_ratio": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "104",
+            "numerator": "101"
+          }
+        },
+        "price_representation": {
+          "decimal_scale": 1,
+          "type": "scaled_integer"
+        },
+        "profit_factor": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "312",
+            "numerator": "101"
+          }
+        },
+        "schema_version": "backtest-metrics/v3",
+        "slippage_impact_units": 240,
+        "slippage_model": {
+          "points_per_side": "1",
+          "type": "FIXED_POINTS",
+          "version": "1.0.0"
+        },
+        "trades": 12,
+        "win_rate": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "4",
+            "numerator": "1"
+          }
+        },
+        "wins": 3
+      }
+    },
+    {
+      "candidate_id": "sha256:8a845e31d4df219b51676b28fd8b166c19844dce322621d285d8a1f7331fc973",
+      "session_evaluation_id": "sha256:78f7b31ae3ae2a92ab342971df02c2ee7cd116ddb3ce271dc38a29e73a84d75c",
+      "session_result_fingerprint": "sha256:0a2b04dbe7c9090ea0fcd7d74f861b15c2ba7ce79c63da90b16c4dbd79d4c7fb",
+      "partition_evaluation_id": "sha256:8bfc76032810a4cf5c4a44f1d624817e9c1651c63c3395d5a3606967320d2bf8",
+      "partition_result_fingerprint": "sha256:ac36b4c1e9e2c366ceb3f9d463e4e8a596e807b1a451db7e2fe6243a633a3cf2",
+      "ledger_fingerprint": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "journal_fingerprint": "2e727b9db63a6803f3c6f1e480191c50c6a4f3a1fd711555579ad346c42d4094",
+      "metrics": {
+        "active_session_rate": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "0"
+          }
+        },
+        "active_sessions": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "0"
+          }
+        },
+        "average_loss": {
+          "reason": "NO_LOSSES",
+          "status": "UNDEFINED",
+          "value": null
+        },
+        "average_trade": {
+          "reason": "NO_TRADES",
+          "status": "UNDEFINED",
+          "value": null
+        },
+        "average_win": {
+          "reason": "NO_WINS",
+          "status": "UNDEFINED",
+          "value": null
+        },
+        "best_session_net_pnl": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "0"
+          }
+        },
+        "breakeven": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "0"
+          }
+        },
+        "costs": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "0"
+          }
+        },
+        "flat_sessions": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "1"
+          }
+        },
+        "gross_pnl": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "0"
+          }
+        },
+        "largest_profitable_session_share": {
+          "reason": "NO_PROFITABLE_SESSIONS",
+          "status": "UNDEFINED",
+          "value": null
+        },
+        "largest_trade_count_session_share": {
+          "reason": "NO_TRADES",
+          "status": "UNDEFINED",
+          "value": null
+        },
+        "losing_sessions": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "0"
+          }
+        },
+        "losses": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "0"
+          }
+        },
+        "max_consecutive_losses": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "0"
+          }
+        },
+        "max_drawdown": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "0"
+          }
+        },
+        "net_pnl": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "0"
+          }
+        },
+        "net_pnl_per_session": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "0"
+          }
+        },
+        "payoff_ratio": {
+          "reason": "NO_WINS",
+          "status": "UNDEFINED",
+          "value": null
+        },
+        "positive_session_rate": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "0"
+          }
+        },
+        "profit_factor": {
+          "reason": "NO_LOSSES",
+          "status": "UNDEFINED",
+          "value": null
+        },
+        "profitable_sessions": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "0"
+          }
+        },
+        "slippage_impact": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "0"
+          }
+        },
+        "total_sessions": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "1"
+          }
+        },
+        "trades": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "0"
+          }
+        },
+        "trades_per_session": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "0"
+          }
+        },
+        "win_rate": {
+          "reason": "NO_TRADES",
+          "status": "UNDEFINED",
+          "value": null
+        },
+        "wins": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "0"
+          }
+        },
+        "worst_session_net_pnl": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "0"
+          }
+        }
+      },
+      "backtest_metrics": {
+        "average_loss": {
+          "reason": "NO_LOSSES",
+          "status": "UNDEFINED",
+          "value": null
+        },
+        "average_trade": {
+          "reason": "NO_TRADES",
+          "status": "UNDEFINED",
+          "value": null
+        },
+        "average_win": {
+          "reason": "NO_WINS",
+          "status": "UNDEFINED",
+          "value": null
+        },
+        "backtest_engine_version": "3.0.0",
+        "breakeven": 0,
+        "cost_model": {
+          "points_per_side": "1",
+          "type": "FIXED_PER_SIDE",
+          "version": "1.0.0"
+        },
+        "costs_units": 0,
+        "engine_version": "3.0.0",
+        "gross_loss_units": 0,
+        "gross_pnl_units": 0,
+        "gross_profit_units": 0,
+        "has_open_position": false,
+        "journal_records": 3,
+        "losses": 0,
+        "max_consecutive_losses": 0,
+        "max_drawdown_units": 0,
+        "net_loss_units": 0,
+        "net_pnl_units": 0,
+        "net_profit_units": 0,
+        "payoff_ratio": {
+          "reason": "NO_WINS",
+          "status": "UNDEFINED",
+          "value": null
+        },
+        "price_representation": {
+          "decimal_scale": 1,
+          "type": "scaled_integer"
+        },
+        "profit_factor": {
+          "reason": "NO_LOSSES",
+          "status": "UNDEFINED",
+          "value": null
+        },
+        "schema_version": "backtest-metrics/v3",
+        "slippage_impact_units": 0,
+        "slippage_model": {
+          "points_per_side": "1",
+          "type": "FIXED_POINTS",
+          "version": "1.0.0"
+        },
+        "trades": 0,
+        "win_rate": {
+          "reason": "NO_TRADES",
+          "status": "UNDEFINED",
+          "value": null
+        },
+        "wins": 0
+      }
+    },
+    {
+      "candidate_id": "sha256:edac089fffccae36ec0b4966f4f1d90108635a2e6118353c8015ea938d2e22c1",
+      "session_evaluation_id": "sha256:3c091aa7213927ae508b63204119e794b9b7f28044a97a237055ea56b33db619",
+      "session_result_fingerprint": "sha256:ad943546643a0fe256679ce2d5337ab27976912d18409574c370eb0087d564dc",
+      "partition_evaluation_id": "sha256:26ed94dcdb00b0d1c29fb499c89f6053132ed6a4ed10a721804bcbab67cb6f2a",
+      "partition_result_fingerprint": "sha256:1fcbb560a6a94258b28801938dea5e02fb9d92224b24f7f142ddf6372f16f461",
+      "ledger_fingerprint": "1874f521585d82e056234e5c2d5f6ddf08302e8d4dbc57c48c9f4fe649801abe",
+      "journal_fingerprint": "16c07613d54a8845ac07fdebb6970bc97dd8c61d01ef9218c98e8c480bbb00c3",
+      "metrics": {
+        "active_session_rate": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "1"
+          }
+        },
+        "active_sessions": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "1"
+          }
+        },
+        "average_loss": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "-104"
+          }
+        },
+        "average_trade": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "-63"
+          }
+        },
+        "average_win": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "101"
+          }
+        },
+        "best_session_net_pnl": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "-630"
+          }
+        },
+        "breakeven": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "0"
+          }
+        },
+        "costs": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "20"
+          }
+        },
+        "flat_sessions": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "0"
+          }
+        },
+        "gross_pnl": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "-590"
+          }
+        },
+        "largest_profitable_session_share": {
+          "reason": "NO_PROFITABLE_SESSIONS",
+          "status": "UNDEFINED",
+          "value": null
+        },
+        "largest_trade_count_session_share": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "1"
+          }
+        },
+        "losing_sessions": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "1"
+          }
+        },
+        "losses": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "8"
+          }
+        },
+        "max_consecutive_losses": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "8"
+          }
+        },
+        "max_drawdown": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "832"
+          }
+        },
+        "net_pnl": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "-630"
+          }
+        },
+        "net_pnl_per_session": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "-630"
+          }
+        },
+        "payoff_ratio": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "104",
+            "numerator": "101"
+          }
+        },
+        "positive_session_rate": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "0"
+          }
+        },
+        "profit_factor": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "416",
+            "numerator": "101"
+          }
+        },
+        "profitable_sessions": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "0"
+          }
+        },
+        "slippage_impact": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "20"
+          }
+        },
+        "total_sessions": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "1"
+          }
+        },
+        "trades": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "10"
+          }
+        },
+        "trades_per_session": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "10"
+          }
+        },
+        "win_rate": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "5",
+            "numerator": "1"
+          }
+        },
+        "wins": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "2"
+          }
+        },
+        "worst_session_net_pnl": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "-630"
+          }
+        }
+      },
+      "backtest_metrics": {
+        "average_loss": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "-1040"
+          }
+        },
+        "average_trade": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "-630"
+          }
+        },
+        "average_win": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "1",
+            "numerator": "1010"
+          }
+        },
+        "backtest_engine_version": "3.0.0",
+        "breakeven": 0,
+        "cost_model": {
+          "points_per_side": "1",
+          "type": "FIXED_PER_SIDE",
+          "version": "1.0.0"
+        },
+        "costs_units": 200,
+        "engine_version": "3.0.0",
+        "gross_loss_units": 8000,
+        "gross_pnl_units": -5900,
+        "gross_profit_units": 2100,
+        "has_open_position": false,
+        "journal_records": 31,
+        "losses": 8,
+        "max_consecutive_losses": 8,
+        "max_drawdown_units": 8320,
+        "net_loss_units": 8320,
+        "net_pnl_units": -6300,
+        "net_profit_units": 2020,
+        "payoff_ratio": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "104",
+            "numerator": "101"
+          }
+        },
+        "price_representation": {
+          "decimal_scale": 1,
+          "type": "scaled_integer"
+        },
+        "profit_factor": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "416",
+            "numerator": "101"
+          }
+        },
+        "schema_version": "backtest-metrics/v3",
+        "slippage_impact_units": 200,
+        "slippage_model": {
+          "points_per_side": "1",
+          "type": "FIXED_POINTS",
+          "version": "1.0.0"
+        },
+        "trades": 10,
+        "win_rate": {
+          "reason": null,
+          "status": "DEFINED",
+          "value": {
+            "denominator": "5",
+            "numerator": "1"
+          }
+        },
+        "wins": 2
+      }
+    }
+  ]
+}
