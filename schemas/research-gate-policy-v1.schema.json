@@ -1,0 +1,110 @@
+{
+  "$defs": {
+    "MetricGateV1": {
+      "additionalProperties": false,
+      "properties": {
+        "metric": {
+          "title": "Metric",
+          "type": "string"
+        },
+        "operator": {
+          "enum": [
+            "GT",
+            "GTE",
+            "LT",
+            "LTE",
+            "EQ",
+            "NE"
+          ],
+          "title": "Operator",
+          "type": "string"
+        },
+        "threshold": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "#/$defs/RationalThresholdV1"
+            }
+          ],
+          "title": "Threshold"
+        },
+        "criterion_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Criterion Id"
+        }
+      },
+      "required": [
+        "metric",
+        "operator",
+        "threshold"
+      ],
+      "title": "MetricGateV1",
+      "type": "object"
+    },
+    "RationalThresholdV1": {
+      "additionalProperties": false,
+      "properties": {
+        "numerator": {
+          "pattern": "^-?(0|[1-9]\\d*)$",
+          "title": "Numerator",
+          "type": "string"
+        },
+        "denominator": {
+          "pattern": "^[1-9]\\d*$",
+          "title": "Denominator",
+          "type": "string"
+        }
+      },
+      "required": [
+        "numerator",
+        "denominator"
+      ],
+      "title": "RationalThresholdV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "enum": [
+        "discovery-gate-policy/v1",
+        "validation-gate-policy/v1"
+      ],
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "criteria": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/MetricGateV1"
+      },
+      "title": "Criteria",
+      "type": "array"
+    },
+    "semantics": {
+      "const": "all-criteria-undefined-fails/v1",
+      "default": "all-criteria-undefined-fails/v1",
+      "title": "Semantics",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version"
+  ],
+  "title": "GatePolicyV1",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

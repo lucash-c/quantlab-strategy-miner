@@ -1,0 +1,8 @@
+{
+  "schema_version": "research-split-policy/v1",
+  "method": "CHRONOLOGICAL_TAIL_HOLDOUT",
+  "validation_sessions": 6,
+  "min_discovery_sessions": 13,
+  "min_validation_sessions": 6,
+  "insufficient_sessions": "ERROR"
+}

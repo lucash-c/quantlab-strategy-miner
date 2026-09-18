@@ -1,0 +1,144 @@
+{
+  "$defs": {
+    "PartitionBoundsV1": {
+      "additionalProperties": false,
+      "properties": {
+        "partition_id": {
+          "title": "Partition Id",
+          "type": "string"
+        },
+        "session_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Session Ids",
+          "type": "array"
+        },
+        "count": {
+          "minimum": 1,
+          "title": "Count",
+          "type": "integer"
+        },
+        "first_date": {
+          "title": "First Date",
+          "type": "string"
+        },
+        "last_date": {
+          "title": "Last Date",
+          "type": "string"
+        }
+      },
+      "required": [
+        "partition_id",
+        "session_ids",
+        "count",
+        "first_date",
+        "last_date"
+      ],
+      "title": "PartitionBoundsV1",
+      "type": "object"
+    },
+    "SplitPolicyV1": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "research-split-policy/v1",
+          "default": "research-split-policy/v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "method": {
+          "const": "CHRONOLOGICAL_TAIL_HOLDOUT",
+          "default": "CHRONOLOGICAL_TAIL_HOLDOUT",
+          "title": "Method",
+          "type": "string"
+        },
+        "validation_sessions": {
+          "default": 6,
+          "minimum": 1,
+          "title": "Validation Sessions",
+          "type": "integer"
+        },
+        "min_discovery_sessions": {
+          "default": 13,
+          "minimum": 1,
+          "title": "Min Discovery Sessions",
+          "type": "integer"
+        },
+        "min_validation_sessions": {
+          "default": 6,
+          "minimum": 1,
+          "title": "Min Validation Sessions",
+          "type": "integer"
+        },
+        "insufficient_sessions": {
+          "const": "ERROR",
+          "default": "ERROR",
+          "title": "Insufficient Sessions",
+          "type": "string"
+        }
+      },
+      "title": "SplitPolicyV1",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "research-split-plan/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "historical_dataset_id": {
+      "title": "Historical Dataset Id",
+      "type": "string"
+    },
+    "ordered_session_ids": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Ordered Session Ids",
+      "type": "array"
+    },
+    "method": {
+      "const": "CHRONOLOGICAL_TAIL_HOLDOUT",
+      "title": "Method",
+      "type": "string"
+    },
+    "policy": {
+      "$ref": "#/$defs/SplitPolicyV1"
+    },
+    "discovery": {
+      "$ref": "#/$defs/PartitionBoundsV1"
+    },
+    "validation": {
+      "$ref": "#/$defs/PartitionBoundsV1"
+    },
+    "excluded_sessions": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Excluded Sessions",
+      "type": "array"
+    },
+    "split_plan_id": {
+      "title": "Split Plan Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "historical_dataset_id",
+    "ordered_session_ids",
+    "method",
+    "policy",
+    "discovery",
+    "validation",
+    "excluded_sessions",
+    "split_plan_id"
+  ],
+  "title": "ResearchSplitPlanV1",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

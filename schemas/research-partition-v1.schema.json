@@ -1,0 +1,60 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "research-partition/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "logical_asset": {
+      "title": "Logical Asset",
+      "type": "string"
+    },
+    "session_ids": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Session Ids",
+      "type": "array"
+    },
+    "trading_dates": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Trading Dates",
+      "type": "array"
+    },
+    "session_policy": {
+      "const": "reset-no-overnight-last-tick-forbidden/v1",
+      "default": "reset-no-overnight-last-tick-forbidden/v1",
+      "title": "Session Policy",
+      "type": "string"
+    },
+    "timezone": {
+      "const": "B3_FIXED_UTC_MINUS_03",
+      "title": "Timezone",
+      "type": "string"
+    },
+    "empty_candles": {
+      "const": "DO_NOT_FILL",
+      "title": "Empty Candles",
+      "type": "string"
+    },
+    "partition_id": {
+      "title": "Partition Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "logical_asset",
+    "session_ids",
+    "trading_dates",
+    "timezone",
+    "empty_candles",
+    "partition_id"
+  ],
+  "title": "ResearchPartitionV1",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

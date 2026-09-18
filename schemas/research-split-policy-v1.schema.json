@@ -1,0 +1,44 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "research-split-policy/v1",
+      "default": "research-split-policy/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "method": {
+      "const": "CHRONOLOGICAL_TAIL_HOLDOUT",
+      "default": "CHRONOLOGICAL_TAIL_HOLDOUT",
+      "title": "Method",
+      "type": "string"
+    },
+    "validation_sessions": {
+      "default": 6,
+      "minimum": 1,
+      "title": "Validation Sessions",
+      "type": "integer"
+    },
+    "min_discovery_sessions": {
+      "default": 13,
+      "minimum": 1,
+      "title": "Min Discovery Sessions",
+      "type": "integer"
+    },
+    "min_validation_sessions": {
+      "default": 6,
+      "minimum": 1,
+      "title": "Min Validation Sessions",
+      "type": "integer"
+    },
+    "insufficient_sessions": {
+      "const": "ERROR",
+      "default": "ERROR",
+      "title": "Insufficient Sessions",
+      "type": "string"
+    }
+  },
+  "title": "SplitPolicyV1",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

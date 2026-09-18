@@ -108,6 +108,7 @@ dependencies = [
     { name = "quantlab-core" },
     { name = "quantlab-data" },
     { name = "quantlab-mining" },
+    { name = "quantlab-research" },
 ]
 
 [package.metadata]
@@ -116,6 +117,7 @@ requires-dist = [
     { name = "quantlab-core", editable = "packages/core" },
     { name = "quantlab-data", editable = "packages/data" },
     { name = "quantlab-mining", editable = "packages/mining" },
+    { name = "quantlab-research", editable = "packages/research" },
 ]
 
 [[package]]

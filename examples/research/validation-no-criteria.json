@@ -1,0 +1,5 @@
+{
+  "schema_version": "validation-gate-policy/v1",
+  "semantics": "all-criteria-undefined-fails/v1",
+  "criteria": []
+}

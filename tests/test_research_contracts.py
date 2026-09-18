@@ -170,6 +170,40 @@ class ResearchContractTests(unittest.TestCase):
         with self.assertRaises(ContractError):
             access.check("VALIDATION", "s14", "ticks", "other")
 
+    def test_published_contract_roundtrip_and_tampered_ids_rejected(self):
+        from quantlab_research.records import ResearchPartitionV1, ResearchSplitPlanV1
+
+        split, d, _ = create_split(catalog(), SplitPolicyV1())
+        self.assertEqual(ResearchSplitPlanV1.model_validate(split).model_dump(mode="json"), split)
+        self.assertEqual(ResearchPartitionV1.model_validate(d).model_dump(mode="json"), d)
+        with self.assertRaisesRegex(ValueError, "split_plan_id mismatch"):
+            ResearchSplitPlanV1.model_validate({**split, "split_plan_id": "tampered"})
+        p = policy([{"metric": "net_pnl", "operator": "GTE", "threshold": "0.500"}])
+        self.assertEqual(GatePolicyV1.model_validate(p.canonical_record()).policy_id, p.policy_id)
+        record = p.canonical_record()
+        record["criteria"][0]["criterion_id"] = "tampered"
+        with self.assertRaisesRegex(ValueError, "criterion_id"):
+            GatePolicyV1.model_validate(record)
+
+    def test_published_schemas_match_strict_models(self):
+        import json
+        from pathlib import Path
+
+        from quantlab_research.records import ResearchPartitionV1, ResearchSplitPlanV1
+
+        root = Path(__file__).resolve().parents[1]
+        for name, cls in (
+            ("research-split-policy-v1", SplitPolicyV1),
+            ("research-gate-policy-v1", GatePolicyV1),
+            ("research-split-plan-v1", ResearchSplitPlanV1),
+            ("research-partition-v1", ResearchPartitionV1),
+        ):
+            published = json.loads((root / "schemas" / (name + ".schema.json")).read_text())
+            self.assertEqual(
+                published.pop("$schema"), "https://json-schema.org/draft/2020-12/schema"
+            )
+            self.assertEqual(published, cls.model_json_schema())
+
 
 if __name__ == "__main__":
     unittest.main()

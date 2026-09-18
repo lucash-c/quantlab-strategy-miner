@@ -8,6 +8,7 @@ dependencies = [
   "quantlab-core",
   "quantlab-data",
   "quantlab-mining",
+  "quantlab-research",
 ]
 
 [project.scripts]
@@ -18,6 +19,7 @@ quantlab-backtest = { workspace = true }
 quantlab-core = { workspace = true }
 quantlab-data = { workspace = true }
 quantlab-mining = { workspace = true }
+quantlab-research = { workspace = true }
 
 [build-system]
 requires = ["hatchling"]
