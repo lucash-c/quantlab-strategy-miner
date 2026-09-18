@@ -392,6 +392,15 @@ def run_research(
                     write_canonical_json(temporary, protocol)
                     temporary.replace(protocol_path)
                 access = ResearchAccess(discovery, validation, observer)
+                freeze_path = state / "discovery-freeze"
+                if freeze_path.exists():
+                    validate_freeze(freeze_path)
+                elif db.execute(
+                    "SELECT 1 FROM research_refs WHERE stage='VALIDATION' LIMIT 1"
+                ).fetchone():
+                    raise ContractError(
+                        "missing discovery freeze for existing Validation checkpoint"
+                    )
                 ids = {cid for cid, _ in plan.candidates()}
                 _stage(
                     "DISCOVERY",

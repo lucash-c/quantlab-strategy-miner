@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import shutil
 import tempfile
 import unittest
 from pathlib import Path
@@ -77,6 +78,18 @@ class ResearchIntegrityTests(unittest.TestCase):
             with self.assertRaisesRegex(ContractError, "freeze artifact mismatch"):
                 execute(root, catalog, observer=events.append)
             self.assertFalse(any(e.get("stage") == "VALIDATION" for e in events))
+
+    def test_missing_freeze_cannot_reauthorize_existing_validation(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            catalog = prepared(root)
+            with self.assertRaises(ControlledInterruption):
+                execute(root, catalog, stop_after=1)
+            shutil.rmtree(root / "run.research/discovery-freeze")
+            events = []
+            with self.assertRaisesRegex(ContractError, "missing discovery freeze"):
+                execute(root, catalog, observer=events.append)
+            self.assertEqual(events, [])
 
 
 if __name__ == "__main__":
