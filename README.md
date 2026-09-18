@@ -14,7 +14,8 @@ CSV canonico v1
   -> ledger, metricas e prova de determinismo
 ```
 
-Candidate Generator, Strategy Score, LLM, interface, Monte Carlo, mineracao e ranking estao deliberadamente fora deste incremento.
+Esse fluxo descreve o primeiro slice. Os incrementos seguintes estão descritos abaixo;
+Strategy Score, LLM, interface, Monte Carlo e ranking continuam fora do escopo implementado.
 
 O segundo incremento acrescenta somente o adaptador do arquivo oficial B3 Negocio a Negocio -
 Listados, perfil `_DRV`. Para a amostra de 10/09/2026, `WINV26` e uma selecao explicita de
@@ -182,3 +183,42 @@ uv run python scripts/acceptance_mining_real.py --zip C:/caminho/10-09-2026_NEGO
 Ambos comparam clean, cache aquecido e interrupção/resume byte a byte. O segundo mede seis
 backtests completos de WINV26. Budget é limite de geração, não promessa de velocidade.
 O ZIP grande não é versionado nem executado na suíte rápida.
+
+## Discovery + Validation v1
+
+O sexto incremento usa holdout cronológico de sessões inteiras, com política inicial 13/6,
+gates explicitamente configurados, Discovery Freeze validado antes de qualquer avaliação
+Validation e cache de CandidateSessionEvaluation independente de Discovery/Validation.
+Não há score/ranking ou aprovação automática para operação real.
+Consulte a [arquitetura](docs/architecture/sixth-increment.md) e o
+[contrato normativo](docs/contracts/research-v1.md).
+
+O histórico de entrada é um `market-historical-dataset-manifest/v1` previamente preparado com
+os caches locais correspondentes. `plan-research` só lê metadata; não ingere/rebaixa o holdout
+ou consulta payload de mercado. Gates são obrigatórios em ambos os comandos. Os exemplos sem
+critérios significam exatamente PASS auditado como `NO_CRITERIA_CONFIGURED`, não uma regra
+de performance ou recomendação de uso em produção.
+
+```powershell
+uv run quantlab-miner plan-research --search-space examples/mining/b3-six.json --policy examples/mining/policy-six.json --evaluation examples/mining/evaluation.json --history caminho/market-manifest.json --split-policy examples/research/split-13-6.json --discovery-gate exemplos-do-usuario/discovery-gate.json --validation-gate exemplos-do-usuario/validation-gate.json
+uv run quantlab-miner run-research --search-space examples/mining/b3-six.json --policy examples/mining/policy-six.json --evaluation examples/mining/evaluation.json --history caminho/market-manifest.json --discovery-gate exemplos-do-usuario/discovery-gate.json --validation-gate exemplos-do-usuario/validation-gate.json --cache artifacts/research-cache --checkpoint artifacts/research.sqlite --output artifacts/research-run
+```
+
+Resume: mesmo checkpoint/cache/configuração e output ainda inexistente. Experimentos concluídos
+não são sobrescritos. Um novo protocolo exige checkpoint/output novos. `--previous-experiment`
+registra lineage e overlap de holdout como provenance, não altera resultados quantitativos.
+
+Aceites locais opt-in, separados do CI e sem download externo:
+
+```powershell
+uv run python scripts/acceptance_research_fixture.py --work artifacts/research-fixture-acceptance
+uv run python scripts/acceptance_research_real.py --input C:/caminho/10-09-2026_NEGOCIOSAVISTA_DRV.zip --cache artifacts/mining-real-acceptance/cache --baseline artifacts/mining-real-acceptance/clean-final --output artifacts/research-real-acceptance
+```
+
+A fixture gera 20 sessões sintéticas e candidatos nos quatro timeframes independentes; produz
+manifest preparado/configurações/evidência persistente, compara todos os bytes clean/warm/resume
+e valida rolling. Seus thresholds NÃO são defaults de produção.
+No aceite real, `--baseline` deve apontar ao export completo do quinto incremento; use
+`--session-cache artifacts/research-fresh-cache` para repetir backtests em cache de avaliações
+novo sem apagar o cache existente de mercado. O real é regressão de UMA sessão, NÃO OOS 13/6;
+o aceite OOS real depende do fornecimento dos pregões correspondentes.
