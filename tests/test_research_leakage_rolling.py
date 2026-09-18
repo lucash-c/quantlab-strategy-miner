@@ -14,7 +14,7 @@ from quantlab_research.runner import run_research
 from research_helpers import execution_config, prepare, research_search, test_gate
 
 
-def execute(root, catalog, name, *, empty=False, previous=None):
+def execute(root, catalog, name, *, empty=False, previous=None, observer=None):
     return run_research(
         research_search(),
         GenerationPolicyV1(candidate_budget=20),
@@ -27,6 +27,7 @@ def execute(root, catalog, name, *, empty=False, previous=None):
         checkpoint=root / f"{name}.sqlite",
         output=root / name,
         previous_experiment=previous,
+        observer=observer,
     )
 
 
@@ -118,6 +119,37 @@ class LeakageRollingTests(unittest.TestCase):
             self.assertEqual(
                 (root / "a/validation-results.parquet").read_bytes(),
                 (root / "b/validation-results.parquet").read_bytes(),
+            )
+
+    def test_rolling_previously_barred_candidates_may_need_session14(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            original, sources = prepare(root)
+            execute(root, original, "first")
+            first_split = json.loads((root / "first/split-plan.json").read_text())
+            previously_approved = set(
+                json.loads((root / "first/discovery-pass-set.json").read_text())["candidate_ids"]
+            )
+            market = build_market_history(
+                sources,
+                logical_asset="WIN",
+                cache_root=root / "cache",
+                timeframes=("1m",),
+                max_sessions=19,
+            )
+            events = []
+            execute(root, SessionCatalog(market.manifest), "rolling", observer=events.append)
+            moved = [
+                e
+                for e in events
+                if e["phase"] == "SESSION_BACKTESTED"
+                and e["stage"] == "DISCOVERY"
+                and e["session_id"] == first_split["validation"]["session_ids"][0]
+            ]
+            self.assertTrue(any(e["reused"] for e in moved))
+            self.assertTrue(any(not e["reused"] for e in moved))
+            self.assertTrue(
+                all(e["reused"] == (e["candidate_id"] in previously_approved) for e in moved)
             )
 
 
