@@ -83,14 +83,20 @@ def source_pool_record(
 def build_path_set(policy: MonteCarloPolicyV1, pool: dict[str, Any]) -> dict[str, Any]:
     sessions = pool["sessions"]
     if len(sessions) < policy.minimum_source_sessions:
-        return {
+        record = {
             "schema_version": "monte-carlo-path-set/v1",
             "status": "INSUFFICIENT_MONTE_CARLO_SOURCE",
             "monte_carlo_policy_id": policy.policy_id,
             "monte_carlo_source_pool_id": pool["monte_carlo_source_pool_id"],
+            "sampler_domain": SAMPLER_DOMAIN,
+            "sampler_version": SAMPLER_VERSION,
+            "seed": policy.seed,
+            "sampling_method": policy.sampling_method,
             "paths": [],
             "path_count": 0,
         }
+        record["monte_carlo_path_set_id"] = identity("monte-carlo-path-set/v1", record)
+        return record
     if (
         policy.sampling_method == "SESSION_PERMUTATION_WITHOUT_REPLACEMENT"
         and policy.path_length_sessions > len(sessions)

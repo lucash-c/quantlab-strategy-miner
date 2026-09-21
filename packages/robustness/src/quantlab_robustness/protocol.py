@@ -76,7 +76,8 @@ def workload_preflight(
     expected_feature_hits: int,
     expected_feature_builds: int,
 ) -> dict[str, Any]:
-    sampled_blocks = candidate_count * monte_carlo_paths * path_length
+    # Path definitions are sampled once and then shared by every candidate.
+    sampled_blocks = monte_carlo_paths * path_length
     combinations = candidate_count * (sensitivity_scenarios + stress_scenarios)
     counts = {
         "candidates": candidate_count,

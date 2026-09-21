@@ -62,6 +62,22 @@ class CandidateSelectionV1(StrictModel):
         return identity(self.schema_version, self.model_dump(mode="json"))
 
 
+class AuthorizedSessionUniverseV1(StrictModel):
+    schema_version: Literal["robustness-authorized-sessions/v1"]
+    dataset_id: str
+    session_ids: Annotated[tuple[str, ...], Field(strict=False)]
+
+    @model_validator(mode="after")
+    def nonempty_unique(self) -> AuthorizedSessionUniverseV1:
+        if not self.session_ids or len(set(self.session_ids)) != len(self.session_ids):
+            raise ValueError("authorized session_ids must be nonempty and unique")
+        return self
+
+    @property
+    def universe_id(self) -> str:
+        return identity(self.schema_version, self.model_dump(mode="json"))
+
+
 class WalkForwardPolicyV1(StrictModel):
     schema_version: Literal["walk-forward-policy/v1"]
     method: Literal["ROLLING_FIXED"]
@@ -310,11 +326,10 @@ class RobustnessGatePolicyV1(StrictModel):
             self.required_families
         ):
             raise ValueError("required_families must be a nonempty set")
-        required = set(self.required_families)
         for criterion in self.criteria:
             family = criterion.metric.split(".", 1)[0].upper()
-            if family not in required:
-                raise ValueError("gate criterion references a family that is not required")
+            if family not in ROBUSTNESS_FAMILIES:
+                raise ValueError("gate criterion references an unknown family")
         return self
 
     @property

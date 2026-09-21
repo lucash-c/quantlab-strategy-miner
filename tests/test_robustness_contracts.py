@@ -11,6 +11,7 @@ from quantlab_robustness.contracts import (
     RobustnessWorkloadPolicyV1,
 )
 from quantlab_robustness.exact import finite_decimal
+from quantlab_robustness.protocol import workload_preflight
 
 
 class RobustnessContractTests(unittest.TestCase):
@@ -60,3 +61,21 @@ class RobustnessContractTests(unittest.TestCase):
         )
         changed = policy.model_copy(update={"max_paths": 2000})
         self.assertNotEqual(policy.policy_id, changed.policy_id)
+        plan = workload_preflight(
+            policy=policy,
+            candidate_count=10,
+            fold_count=3,
+            monte_carlo_paths=100,
+            path_length=20,
+            sensitivity_scenarios=2,
+            stress_scenarios=3,
+            expected_cse_hits=5,
+            expected_cse_builds=50,
+            expected_feature_hits=7,
+            expected_feature_builds=50,
+        )
+        self.assertEqual(plan["scientific_counts"]["monte_carlo_sampled_blocks"], 2000)
+        self.assertEqual(plan["scientific_counts"]["candidate_scenario_combinations"], 50)
+        self.assertTrue(
+            plan["operational_estimates"]["excluded_from_scientific_fingerprints"]
+        )
