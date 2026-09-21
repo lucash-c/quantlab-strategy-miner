@@ -21,6 +21,15 @@ from quantlab_mining.generator import preflight
 from quantlab_research.contracts import GatePolicyV1, SplitPolicyV1
 from quantlab_research.runner import protocol_record, run_research
 from quantlab_research.split import create_split
+from quantlab_scoring.contracts import (
+    ResearchDiversityPolicyV1,
+    ResearchRankingPolicyV1,
+    ResearchScorePolicyV1,
+)
+from quantlab_scoring.contracts import (
+    load_policy as load_scoring_policy,
+)
+from quantlab_scoring.runner import run_scoring
 
 from quantlab_cli.b3_pipeline import run_b3_second_increment
 from quantlab_cli.feature_pipeline import run_fourth_increment
@@ -110,13 +119,33 @@ def _parser() -> argparse.ArgumentParser:
             research.add_argument(
                 "--stop-stage", choices=("DISCOVERY", "VALIDATION"), default="VALIDATION"
             )
+    scoring = subcommands.add_parser(
+        "score-research", help="score and rank a completed Research Experiment"
+    )
+    scoring.add_argument("--research", type=Path, required=True)
+    scoring.add_argument("--score-policy", type=Path, required=True)
+    scoring.add_argument("--ranking-policy", type=Path, required=True)
+    scoring.add_argument("--diversity-policy", type=Path, required=True)
+    scoring.add_argument("--top-n", type=int, required=True)
+    scoring.add_argument("--cache", type=Path, required=True)
+    scoring.add_argument("--output", type=Path, required=True)
     return parser
 
 
 def main(argv: list[str] | None = None) -> int:
     args = _parser().parse_args(argv)
     try:
-        if args.command in {"plan-research", "run-research"}:
+        if args.command == "score-research":
+            manifest = run_scoring(
+                args.research,
+                load_scoring_policy(args.score_policy, ResearchScorePolicyV1),
+                load_scoring_policy(args.ranking_policy, ResearchRankingPolicyV1),
+                load_scoring_policy(args.diversity_policy, ResearchDiversityPolicyV1),
+                top_n_value=args.top_n,
+                cache_root=args.cache,
+                output=args.output,
+            )
+        elif args.command in {"plan-research", "run-research"}:
             space = load_contract(args.search_space, MiningSearchSpaceV1)
             policy = load_contract(args.policy, GenerationPolicyV1)
             evaluation = load_contract(args.evaluation, EvaluationConfigV1).canonicalized()
@@ -221,7 +250,12 @@ def main(argv: list[str] | None = None) -> int:
     except (QuantLabError, OSError) as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 2
-    print(manifest.get("run_id", manifest.get("validation_experiment_id")))
+    print(
+        manifest.get(
+            "run_id",
+            manifest.get("validation_experiment_id", manifest.get("score_export_id")),
+        )
+    )
     return 0
 
 
