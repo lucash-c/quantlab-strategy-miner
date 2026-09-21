@@ -1,0 +1,105 @@
+{
+  "schema_version": "research-seventh-evidence/v1",
+  "date": "2026-09-21",
+  "source_validation_experiment_id": "sha256:556b3529ac3c76bfc4c14a04ecbfe270d6dc92dbdbaaf5b659c6ff8ff2a93c8b",
+  "real_oos": false,
+  "warning": "Numerical precision is not statistical precision; no 19-session real B3 OOS score exists yet",
+  "policies": {
+    "score_policy_id": "sha256:43088e265da86e649d3b75cbbea2ff48e9130330bf0ab11e4eb982bb6eb0f559",
+    "ranking_policy_id": "sha256:a1194d3a2b4d073c94e964cd2bc737cae5554f99102e20d4b396ba3aff9b277c",
+    "diversity_policy_id": "sha256:084e8af5ad8420c98a7b2ee5cf65828c03a631bae6aab6403b4c0669c782baf5"
+  },
+  "identities": {
+    "score_input_id": "sha256:d8c73763e1e5161e90dcee01055583d48f7f10b36612fe17658a6dc64278f800",
+    "score_set_id": "sha256:f1efb2e38164f2bd098647226ea838be639b69bd77aca15584b00544c56d8193",
+    "raw_ranking_id": "sha256:25971e38449b124c7465bce59d71f66e0bc444c757a4d37c23f86a8c53d1b902",
+    "diversified_ranking_id": "sha256:0725e6206726a060690fe460c58c8c21fcf36e2360f6df7b68b6eef35d521d2b",
+    "top_n_output_id": "sha256:bcbab0516e87f83bb95d73fbc750c053d1d705a232368de53d0a997fe637b555",
+    "score_export_id": "sha256:d6bd74f036bccb355afb1dc09519b0e99704dd1a2b42e022b2a1fc40f89449d4"
+  },
+  "selection_pressure": {
+    "candidate_set": 48,
+    "scored": 4,
+    "not_eligible": 44,
+    "not_scorable": 0,
+    "raw_ranked": 4,
+    "diversity_selected": 4,
+    "top_n_requested": 5,
+    "top_n_emitted": 4
+  },
+  "scored_candidates": [
+    {
+      "raw_rank": 1,
+      "candidate_id": "sha256:40066b6cd7b32d68d63ad33b1ff68b61a75e13c84356f745f92e108bb43ec760",
+      "strategy_score_id": "sha256:266ccd25081ac616c39924e456b6bdb24a4e427dfb4a2bd1d9d2cc1c1a1053b6",
+      "semantic_group_id": "sha256:56d77c3392d2c6e9b1ece1948bc7ec3a909bc3a748e50dd1e409d0023357bd20",
+      "score_exact": {"numerator": "100", "denominator": "1"},
+      "score_units": 1000000,
+      "rounding_adjustment": {"numerator": "0", "denominator": "1"}
+    },
+    {
+      "raw_rank": 2,
+      "candidate_id": "sha256:6f104385b156d516fec953136e96457c15f856a2cacf0ea0122796e600612b8c",
+      "strategy_score_id": "sha256:b75771bae07bc2e621b52aa006d47275f2ed20dfdbf388c9165e7ab884e2d592",
+      "semantic_group_id": "sha256:f6b5633b5ab7ece46ac20e3e99950872a1141578f000338cd3b446727998dbfe",
+      "score_exact": {"numerator": "997", "denominator": "10"},
+      "score_units": 997000,
+      "rounding_adjustment": {"numerator": "0", "denominator": "1"}
+    },
+    {
+      "raw_rank": 3,
+      "candidate_id": "sha256:58d3971e0479d37eb55d3fc554d2a18f8d7876212ca4e4c433ed85ca82d7033e",
+      "strategy_score_id": "sha256:b20e2d52c263aab44414f5fc4575d2f7794fd3c9e652f17c3f6993b23d04e2ca",
+      "semantic_group_id": "sha256:4ed0d016b86a756a32116dfa4cb427d427ca0b2eb6256998c419a84e39b81df1",
+      "score_exact": {"numerator": "197", "denominator": "2"},
+      "score_units": 985000,
+      "rounding_adjustment": {"numerator": "0", "denominator": "1"}
+    },
+    {
+      "raw_rank": 4,
+      "candidate_id": "sha256:aa2ce20e02fb5323cbccb71030f3063e8485571ab7e0c056040edb0febb285cd",
+      "strategy_score_id": "sha256:5e0d24b8ec87774197eb64a825c1e278c358163f47a39bccc078329265166402",
+      "semantic_group_id": "sha256:fb97144f19487c144cf0edb9ecdf2727c5732f4f15ef11681c601e983704715a",
+      "score_exact": {"numerator": "1639", "denominator": "18"},
+      "score_units": 910556,
+      "rounding_adjustment": {"numerator": "1", "denominator": "22500"}
+    }
+  ],
+  "distribution": {
+    "count": 4,
+    "minimum_score_units": 910556,
+    "maximum_score_units": 1000000,
+    "median_score_units": {"numerator": "991000", "denominator": "1"},
+    "nonzero_bucket": "[90,100]",
+    "nonzero_bucket_count": 4
+  },
+  "determinism": {
+    "clean_warm_resume_byte_identical": true,
+    "clean_built_reused": [48, 0],
+    "warm_built_reused": [0, 48],
+    "resume_interrupted_after": 17,
+    "resume_built_reused": [31, 17]
+  },
+  "manual_oracles": {
+    "A_all_max": {"exact_score": "100/1", "score_units": 1000000},
+    "B_midpoints_known_penalties": {"base": "50/1", "penalty": "5/1", "score_units": 450000},
+    "C_negative_pre_clamp": {"pre_clamp": "-10/1", "score_units": 0},
+    "D_above_max": {"pre_clamp": "101/1", "score_units": 1000000},
+    "E_half_even": {"0.5_units": 0, "1.5_units": 2},
+    "F_same_units_different_exact": "official tie breakers only"
+  },
+  "benchmark": [
+    {"candidates": 48, "score_seconds": "0.1683505999390036", "ranking_diversity_seconds": "0.0018325001001358032"},
+    {"candidates": 160, "score_seconds": "0.5561385999899358", "ranking_diversity_seconds": "0.0065246999729424715"},
+    {"candidates": 1000, "score_seconds": "3.404411700088531", "ranking_diversity_seconds": "0.04901269997935742"},
+    {"candidates": 10000, "score_seconds": "34.01270600000862", "ranking_diversity_seconds": "0.46651529998052865"}
+  ],
+  "verification": {
+    "tests": 178,
+    "previous_tests_preserved": 136,
+    "ruff": "PASS",
+    "market_replay": false,
+    "real_b3_regression_reference": "docs/evidence/sixth-increment-real.json",
+    "real_b3_ranked_as_oos": false
+  }
+}
