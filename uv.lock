@@ -111,6 +111,7 @@ dependencies = [
     { name = "quantlab-data" },
     { name = "quantlab-mining" },
     { name = "quantlab-research" },
+    { name = "quantlab-robustness" },
     { name = "quantlab-scoring" },
 ]
 
@@ -121,6 +122,7 @@ requires-dist = [
     { name = "quantlab-data", editable = "packages/data" },
     { name = "quantlab-mining", editable = "packages/mining" },
     { name = "quantlab-research", editable = "packages/research" },
+    { name = "quantlab-robustness", editable = "packages/robustness" },
     { name = "quantlab-scoring", editable = "packages/scoring" },
 ]
 

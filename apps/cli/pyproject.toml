@@ -9,6 +9,7 @@ dependencies = [
   "quantlab-data",
   "quantlab-mining",
   "quantlab-research",
+  "quantlab-robustness",
   "quantlab-scoring",
 ]
 
@@ -21,6 +22,7 @@ quantlab-core = { workspace = true }
 quantlab-data = { workspace = true }
 quantlab-mining = { workspace = true }
 quantlab-research = { workspace = true }
+quantlab-robustness = { workspace = true }
 quantlab-scoring = { workspace = true }
 
 [build-system]

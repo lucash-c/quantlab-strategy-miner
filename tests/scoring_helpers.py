@@ -171,7 +171,7 @@ def _write_records(path, records):
     pq.write_table(pa.Table.from_pylist(rows, schema=schema), path)
 
 
-def write_research_evidence(root: Path, *, timeframes=("1m",)):
+def write_research_evidence(root: Path, *, timeframes=("1m",), all_scored=False):
     root.mkdir(parents=True)
     candidates = []
     for index, role in enumerate(("A", "B", "C", "D")):
@@ -202,7 +202,7 @@ def write_research_evidence(root: Path, *, timeframes=("1m",)):
             "research-partition-result/v1", discovery
         )
         dresults.append(discovery)
-        discovery_pass = role != "C"
+        discovery_pass = all_scored or role != "C"
         dgate = {
             "candidate_id": candidate,
             "evaluation_id": discovery["partition_evaluation_id"],
@@ -227,7 +227,7 @@ def write_research_evidence(root: Path, *, timeframes=("1m",)):
             continue
         validation_metrics = evidence["validation"]["metrics"]
         comparison_metrics = evidence["comparison"]["metrics"]
-        if role == "D":
+        if role == "D" and not all_scored:
             validation_metrics = dict(validation_metrics)
             validation_metrics.update(
                 trades=defined(0),

@@ -15,7 +15,12 @@ from quantlab_research.contracts import GatePolicyV1
 
 
 def write_sources(
-    root: Path, *, validation_variant=False, discovery_variant=False, mixed_scale=False
+    root: Path,
+    *,
+    validation_variant=False,
+    discovery_variant=False,
+    mixed_scale=False,
+    session_count=None,
 ):
     specification = json.loads(
         (Path(__file__).parent / "fixtures/research/twenty_sessions.json").read_text()
@@ -23,7 +28,7 @@ def write_sources(
     root.mkdir(parents=True, exist_ok=True)
     day = date.fromisoformat(specification["first_weekday"])
     sources = []
-    for index in range(specification["sessions"]):
+    for index in range(session_count or specification["sessions"]):
         while day.weekday() >= 5:
             day += timedelta(days=1)
         contract = specification["contracts"][
@@ -134,7 +139,7 @@ def test_gate(*, validation=False, empty=False, criteria=None):
 
 
 def prepare(root: Path, *, count=19, timeframes=("1m",), **variants):
-    sources = write_sources(root / "sources", **variants)
+    sources = write_sources(root / "sources", session_count=max(count, 20), **variants)
     market = build_market_history(
         sources[:count],
         logical_asset="WIN",

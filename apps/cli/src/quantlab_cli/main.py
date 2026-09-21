@@ -21,6 +21,18 @@ from quantlab_mining.generator import preflight
 from quantlab_research.contracts import GatePolicyV1, SplitPolicyV1
 from quantlab_research.runner import protocol_record, run_research
 from quantlab_research.split import create_split
+from quantlab_robustness.contracts import (
+    AuthorizedSessionUniverseV1,
+    CandidateSelectionV1,
+    ExecutionStressPolicyV1,
+    MonteCarloPolicyV1,
+    RobustnessGatePolicyV1,
+    RobustnessWorkloadPolicyV1,
+    SensitivityPolicyV1,
+    WalkForwardPolicyV1,
+)
+from quantlab_robustness.contracts import load_policy as load_robustness_policy
+from quantlab_robustness.runner import run_robustness
 from quantlab_scoring.contracts import (
     ResearchDiversityPolicyV1,
     ResearchRankingPolicyV1,
@@ -129,13 +141,87 @@ def _parser() -> argparse.ArgumentParser:
     scoring.add_argument("--top-n", type=int, required=True)
     scoring.add_argument("--cache", type=Path, required=True)
     scoring.add_argument("--output", type=Path, required=True)
+    robustness = subcommands.add_parser(
+        "run-robustness", help="run deterministic post-score robustness analysis"
+    )
+    robustness.add_argument("--research", type=Path, required=True)
+    robustness.add_argument("--scores", type=Path, required=True)
+    robustness.add_argument("--history", type=Path, required=True)
+    robustness.add_argument("--authorized-sessions", type=Path, required=True)
+    robustness.add_argument("--evaluation", type=Path, required=True)
+    robustness.add_argument("--candidate-selection", type=Path, required=True)
+    robustness.add_argument("--walk-forward-policy", type=Path, required=True)
+    robustness.add_argument("--monte-carlo-policy", type=Path, required=True)
+    robustness.add_argument("--sensitivity-policy", type=Path, required=True)
+    robustness.add_argument("--stress-policy", type=Path, required=True)
+    robustness.add_argument("--workload-policy", type=Path, required=True)
+    robustness.add_argument("--robustness-gate-policy", type=Path)
+    robustness.add_argument("--diversity-policy", type=Path)
+    robustness.add_argument("--top-n", type=int)
+    robustness.add_argument(
+        "--required-families",
+        nargs="+",
+        required=True,
+        choices=("WALK_FORWARD", "MONTE_CARLO", "SENSITIVITY", "STRESS"),
+    )
+    robustness.add_argument("--cache", type=Path, required=True)
+    robustness.add_argument("--market-cache", type=Path, required=True)
+    robustness.add_argument("--checkpoint", type=Path, required=True)
+    robustness.add_argument("--output", type=Path, required=True)
+    robustness.add_argument("--stop-after", type=int)
     return parser
 
 
 def main(argv: list[str] | None = None) -> int:
     args = _parser().parse_args(argv)
     try:
-        if args.command == "score-research":
+        if args.command == "run-robustness":
+            if (args.diversity_policy is None) != (args.top_n is None):
+                raise QuantLabError("diversity-policy and top-n must be provided together")
+            manifest = run_robustness(
+                research_directory=args.research,
+                score_directory=args.scores,
+                catalog=load_session_catalog(args.history),
+                authorized=load_robustness_policy(
+                    args.authorized_sessions, AuthorizedSessionUniverseV1
+                ),
+                baseline_evaluation=load_contract(args.evaluation, EvaluationConfigV1),
+                candidate_selection=load_robustness_policy(
+                    args.candidate_selection, CandidateSelectionV1
+                ),
+                walk_forward_policy=load_robustness_policy(
+                    args.walk_forward_policy, WalkForwardPolicyV1
+                ),
+                monte_carlo_policy=load_robustness_policy(
+                    args.monte_carlo_policy, MonteCarloPolicyV1
+                ),
+                sensitivity_policy=load_robustness_policy(
+                    args.sensitivity_policy, SensitivityPolicyV1
+                ),
+                stress_policy=load_robustness_policy(args.stress_policy, ExecutionStressPolicyV1),
+                workload_policy=load_robustness_policy(
+                    args.workload_policy, RobustnessWorkloadPolicyV1
+                ),
+                required_families=list(args.required_families),
+                gate_policy=load_robustness_policy(
+                    args.robustness_gate_policy, RobustnessGatePolicyV1
+                )
+                if args.robustness_gate_policy
+                else None,
+                diversity_policy=load_scoring_policy(
+                    args.diversity_policy, ResearchDiversityPolicyV1
+                )
+                if args.diversity_policy
+                else None,
+                top_n=args.top_n,
+                market_cache_root=args.market_cache,
+                cache_root=args.cache,
+                checkpoint_path=args.checkpoint,
+                output=args.output,
+                stop_after=args.stop_after,
+                observer=lambda record: print(json.dumps(record), file=sys.stderr, flush=True),
+            )
+        elif args.command == "score-research":
             manifest = run_scoring(
                 args.research,
                 load_scoring_policy(args.score_policy, ResearchScorePolicyV1),
@@ -253,7 +339,10 @@ def main(argv: list[str] | None = None) -> int:
     print(
         manifest.get(
             "run_id",
-            manifest.get("validation_experiment_id", manifest.get("score_export_id")),
+            manifest.get(
+                "validation_experiment_id",
+                manifest.get("score_export_id", manifest.get("robustness_export_id")),
+            ),
         )
     )
     return 0
