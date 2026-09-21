@@ -1,0 +1,28 @@
+[project]
+name = "quantlab-robustness"
+version = "0.1.0"
+description = "Deterministic post-score robustness analysis"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "quantlab-backtest",
+  "quantlab-core",
+  "quantlab-data",
+  "quantlab-mining",
+  "quantlab-research",
+  "quantlab-scoring",
+]
+
+[tool.uv.sources]
+quantlab-backtest = { workspace = true }
+quantlab-core = { workspace = true }
+quantlab-data = { workspace = true }
+quantlab-mining = { workspace = true }
+quantlab-research = { workspace = true }
+quantlab-scoring = { workspace = true }
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/quantlab_robustness"]

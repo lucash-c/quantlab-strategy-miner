@@ -13,6 +13,7 @@ for source in (
     ROOT / "packages" / "backtest" / "src",
     ROOT / "packages" / "mining" / "src",
     ROOT / "packages" / "research" / "src",
+    ROOT / "packages" / "robustness" / "src",
     ROOT / "packages" / "scoring" / "src",
     ROOT / "apps" / "cli" / "src",
 ):

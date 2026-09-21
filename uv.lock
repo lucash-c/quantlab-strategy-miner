@@ -10,6 +10,7 @@ members = [
     "quantlab-data",
     "quantlab-mining",
     "quantlab-research",
+    "quantlab-robustness",
     "quantlab-scoring",
     "quantlab-strategy-miner-workspace",
 ]
@@ -186,6 +187,29 @@ requires-dist = [
 ]
 
 [[package]]
+name = "quantlab-robustness"
+version = "0.1.0"
+source = { editable = "packages/robustness" }
+dependencies = [
+    { name = "quantlab-backtest" },
+    { name = "quantlab-core" },
+    { name = "quantlab-data" },
+    { name = "quantlab-mining" },
+    { name = "quantlab-research" },
+    { name = "quantlab-scoring" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "quantlab-backtest", editable = "packages/backtest" },
+    { name = "quantlab-core", editable = "packages/core" },
+    { name = "quantlab-data", editable = "packages/data" },
+    { name = "quantlab-mining", editable = "packages/mining" },
+    { name = "quantlab-research", editable = "packages/research" },
+    { name = "quantlab-scoring", editable = "packages/scoring" },
+]
+
+[[package]]
 name = "quantlab-scoring"
 version = "0.1.0"
 source = { editable = "packages/scoring" }
@@ -213,6 +237,7 @@ dependencies = [
     { name = "quantlab-data" },
     { name = "quantlab-mining" },
     { name = "quantlab-research" },
+    { name = "quantlab-robustness" },
     { name = "quantlab-scoring" },
 ]
 
@@ -229,6 +254,7 @@ requires-dist = [
     { name = "quantlab-data", editable = "packages/data" },
     { name = "quantlab-mining", editable = "packages/mining" },
     { name = "quantlab-research", editable = "packages/research" },
+    { name = "quantlab-robustness", editable = "packages/robustness" },
     { name = "quantlab-scoring", editable = "packages/scoring" },
 ]
 
