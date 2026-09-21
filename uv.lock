@@ -10,6 +10,7 @@ members = [
     "quantlab-data",
     "quantlab-mining",
     "quantlab-research",
+    "quantlab-scoring",
     "quantlab-strategy-miner-workspace",
 ]
 
@@ -109,6 +110,7 @@ dependencies = [
     { name = "quantlab-data" },
     { name = "quantlab-mining" },
     { name = "quantlab-research" },
+    { name = "quantlab-scoring" },
 ]
 
 [package.metadata]
@@ -118,6 +120,7 @@ requires-dist = [
     { name = "quantlab-data", editable = "packages/data" },
     { name = "quantlab-mining", editable = "packages/mining" },
     { name = "quantlab-research", editable = "packages/research" },
+    { name = "quantlab-scoring", editable = "packages/scoring" },
 ]
 
 [[package]]
@@ -183,6 +186,23 @@ requires-dist = [
 ]
 
 [[package]]
+name = "quantlab-scoring"
+version = "0.1.0"
+source = { editable = "packages/scoring" }
+dependencies = [
+    { name = "quantlab-core" },
+    { name = "quantlab-data" },
+    { name = "quantlab-mining" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "quantlab-core", editable = "packages/core" },
+    { name = "quantlab-data", editable = "packages/data" },
+    { name = "quantlab-mining", editable = "packages/mining" },
+]
+
+[[package]]
 name = "quantlab-strategy-miner-workspace"
 version = "0.1.0"
 source = { virtual = "." }
@@ -193,6 +213,7 @@ dependencies = [
     { name = "quantlab-data" },
     { name = "quantlab-mining" },
     { name = "quantlab-research" },
+    { name = "quantlab-scoring" },
 ]
 
 [package.dev-dependencies]
@@ -208,6 +229,7 @@ requires-dist = [
     { name = "quantlab-data", editable = "packages/data" },
     { name = "quantlab-mining", editable = "packages/mining" },
     { name = "quantlab-research", editable = "packages/research" },
+    { name = "quantlab-scoring", editable = "packages/scoring" },
 ]
 
 [package.metadata.requires-dev]

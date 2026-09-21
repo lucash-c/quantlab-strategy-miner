@@ -1,0 +1,9 @@
+{
+  "schema_version": "research-diversity-policy/v1",
+  "algorithm": "ROUND_ROBIN_SEMANTIC_GROUP",
+  "semantic_group_version": "strategy-semantic-group/v1",
+  "max_per_semantic_group": 2,
+  "family_limit": null,
+  "timeframe_limit": null,
+  "direction_limit": null
+}

@@ -1,0 +1,10 @@
+{
+  "schema_version": "research-ranking-policy/v1",
+  "tie_breakers": [
+    {"field": "score_units", "direction": "DESC"},
+    {"field": "validation.net_pnl_per_session", "direction": "DESC"},
+    {"field": "validation.max_drawdown", "direction": "ASC"},
+    {"field": "validation.positive_session_rate", "direction": "DESC"},
+    {"field": "candidate_id", "direction": "ASC"}
+  ]
+}
