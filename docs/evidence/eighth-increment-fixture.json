@@ -1,0 +1,134 @@
+{
+  "schema_version": "robustness-eighth-evidence/v1",
+  "date": "2026-09-21",
+  "synthetic": true,
+  "real_b3_robustness_claim": false,
+  "warning": "Fixture thresholds and workload caps are not production defaults",
+  "timeframes": ["1m", "2m", "5m", "15m"],
+  "candidate_count": 4,
+  "identities": {
+    "robustness_candidate_set_id": "sha256:96bc9a4dd0aa26b83597ada03527611d9d815bbc0fdcb93ff2199e3bb2eeb9c0",
+    "robustness_protocol_id": "sha256:64518aac50234460a65c95c3a211a32dbfb2fd3c5e0867edfb4826d15d00e3af",
+    "workload_policy_id": "sha256:10288dd28fc80d3a9cb1aaa168e1efa42cb5bd1600d72f1d6f7f0711bcc0f16d",
+    "workload_plan_id": "sha256:9c326faf62e71e2ecb488c0e1690b1bdffb9c10f60672c211944934c97cd4df5",
+    "walk_forward_plan_id": "sha256:e16dcea6703c189f3b93ecbef1c1398f428a2f9ccb909f8d54c7bacf7ae4566c",
+    "monte_carlo_source_pool_id": "sha256:f1370b95338fc67b425117c1c384251ea2f81cea5b108acd13d61e75dc0cab9e",
+    "monte_carlo_path_set_id": "sha256:09b544f664235ca818a2aae74dafb12907f687f736ee98e3687f7ea9278d7214",
+    "robustness_qualified_set_id": "sha256:f555cb9b9a0fcc2410b40472269b918a6478c1cc0d549e7dd9d68ccdb500ccae",
+    "robustness_shortlist_id": "sha256:6941624af1826df29d6eed65d150570b27d02d10d12c38da2692ca078588ea6f",
+    "robustness_export_id": "sha256:c15fee3bc91704ad0b1e7e772ffaade6a7a6143c8a85f5fff857335959c668d2"
+  },
+  "workload_preflight": {
+    "status": "READY",
+    "candidates": 4,
+    "walk_forward_fold_count": 3,
+    "monte_carlo_paths": 12,
+    "monte_carlo_sampled_blocks": 72,
+    "sensitivity_requested_scenarios": 1,
+    "stress_scenarios": 1,
+    "candidate_scenario_combinations": 8,
+    "expected_cse_builds": 148,
+    "expected_feature_builds": 148
+  },
+  "walk_forward": {
+    "method": "ROLLING_FIXED",
+    "discovery_sessions": 13,
+    "validation_sessions": 6,
+    "step_sessions": 1,
+    "gap_sessions": 0,
+    "folds": 3,
+    "validation_session_slots": 18,
+    "unique_validation_sessions": 8,
+    "overlap_session_slots": 10,
+    "unique_session_fraction": {"numerator": "4", "denominator": "9"},
+    "discovery_gate_failed_in_fixture": true,
+    "validation_still_evaluated_for_every_fold": true
+  },
+  "monte_carlo": {
+    "method": "SESSION_BOOTSTRAP_WITH_REPLACEMENT",
+    "seed": "0000000000000000000000000000000000000000000000000000000000000001",
+    "sampler": "SHA256_COUNTER_REJECTION_V1",
+    "quantile": "NEAREST_RANK_V1",
+    "number_of_paths": 12,
+    "path_length_sessions": 6,
+    "market_replayed": false
+  },
+  "assessment_ids": {
+    "1m": "sha256:7350ce6f597c23e31b0b44b616faa207c3edf889e497d2752abc1abeccce0dcc",
+    "2m": "sha256:81f0d975f3cef50ec74f0fbd63c06a04c4d2e00c292e2e0ee1f9ba9b48a56d81",
+    "5m": "sha256:316b69b5ed8175493b11585d5ba06f3dfb9035c28a83e43671d42d17d7625321",
+    "15m": "sha256:a4e620bfcd56c02adb6b56a035b6cf94d7581f2cd7cfa05532a483711a32b078"
+  },
+  "family_result_ids": {
+    "walk_forward": [
+      "sha256:f13d865149b3823749ad8c89bc6a8cc20439edc872819fa71766deac344aadd1",
+      "sha256:c87e8154820397a6fd095cea4be0153dc66e785278524539e2341b65e55bde9c",
+      "sha256:4e9a595111f28e72b2b563c15b854e729fcba58890c1339ed0fe6022d76e36ad",
+      "sha256:09b2aec97cada68a4bf9ba53de73c4c0bd48d9af18b01e7c1cfa3b88814f95c6"
+    ],
+    "monte_carlo": [
+      "sha256:9697bf831cd020c34685e7c4a32f81e7cde24e3d57727594b98268ca2e744fcc",
+      "sha256:413d93f7b5c16b3991a2f24a0acb1411c3766f90e987fdd5d2d8a3b81b94f5d3",
+      "sha256:64a83a0783cbf45a7d5c20df921b5a5bedffb473eb14c75662d46ef9ccd22b9a",
+      "sha256:a5ccdcfe4c7c7d7a969d1de91861cffbc47a7cf75bce44b2800f6204bfb47fc6"
+    ],
+    "sensitivity": [
+      "sha256:103207330cfc775e2c69d7914ab09d7da5e423e94de95064fa302945385acb8b",
+      "sha256:83779f76d07490849907ece11ac813d02b6294d9ccdefee117e6e410545a3a78",
+      "sha256:f7e30325d00ca175026e2ac8147ec936ae7010b5c4bc546441014eed7397893a",
+      "sha256:bb4c012f8fa5eedece021f543fdcf831793a16eaf40518b4bcdc8c1c0b6fce0c"
+    ],
+    "stress": [
+      "sha256:edcabdfeb3f6749a75b1de2f6d7f490dd934b2c0a0e4b1e5e638de1d0cd3e501",
+      "sha256:245523d62fad4ed31951f9f965bc8d5326050d7a734be5f7407e61b8899f9b0c",
+      "sha256:72815ebeab92423c788afbb945c375a32b1b447c313e68bbe59a924607761680",
+      "sha256:3687190e9fa20b91886e84a399336f4465033e5cf56bf6f5feb6da0dac4851a6"
+    ]
+  },
+  "determinism": {
+    "clean_warm_resume_byte_identical": true,
+    "clean_family_built_reused": [16, 0],
+    "warm_family_built_reused": [0, 16],
+    "resume_family_built_reused": [11, 5],
+    "clean_cse_built_reused": [148, 96],
+    "warm_cse_built_reused": [0, 32],
+    "resume_cse_built_reused": [90, 80]
+  },
+  "seed_invalidation": {
+    "monte_carlo_results_changed": 4,
+    "walk_forward_results_changed": 0,
+    "sensitivity_results_changed": 0,
+    "stress_results_changed": 0,
+    "changed_seed_family_built_reused": [4, 12]
+  },
+  "ranking": {
+    "passed": 4,
+    "qualified": 4,
+    "top_n_requested": 10,
+    "top_n_emitted": 4,
+    "research_score_recomputed": false,
+    "original_raw_rank_recomputed": false,
+    "robustness_score": null,
+    "robustness_rating": null
+  },
+  "benchmark_seconds": {
+    "clean": "22.576833199942484",
+    "warm": "1.3420128000434488",
+    "resume_final_leg": "11.898742599994875",
+    "seed_change": "1.4796922999667004"
+  },
+  "real_b3_technical_regression": {
+    "oos": false,
+    "real_oos_pending": true,
+    "source_sha256": "fbb243028b3af09f47fb0311f7ea29bd8d8128b218ab04f14b5227e7ea5c4b3f",
+    "session_id": "sha256:ad8560db2ed83ea4b9b9da886a85ff795f5ee669211097d3da91d6e0efe14794",
+    "contract": "WINV26",
+    "events": 6262194,
+    "candles_1m": 563,
+    "candidates": 6,
+    "trades_by_candidate": [5, 5, 1, 12, 0, 10],
+    "clean_warm_byte_identical": true,
+    "increment_5_ledger_journal_metrics_equivalent": true,
+    "scientific_sha256": "f2152313418714be77c3146fa2ac0f54d17f0758ec3795ebe59059ea0a94b673"
+  }
+}

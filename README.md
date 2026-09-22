@@ -222,3 +222,28 @@ No aceite real, `--baseline` deve apontar ao export completo do quinto increment
 `--session-cache artifacts/research-fresh-cache` para repetir backtests em cache de avaliações
 novo sem apagar o cache existente de mercado. O real é regressão de UMA sessão, NÃO OOS 13/6;
 o aceite OOS real depende do fornecimento dos pregões correspondentes.
+
+## Robustness v1 pós-score
+
+O oitavo incremento avalia somente Strategies já congeladas e `SCORED`, usando Walk-Forward,
+Monte Carlo por sessões completas, Sensitivity OAT e Execution Stress. Não cria Robustness Score,
+não recalcula Score v1/ranking e não promove variantes. Consulte o
+[contrato normativo](docs/contracts/robustness-v1.md) e a
+[arquitetura](docs/architecture/eighth-increment.md).
+
+O comando exige uma lista cronológica explícita de sessões autorizadas e policies quantitativas
+completas. Os arquivos `examples/robustness/fixture-*.json` são exclusivamente fixtures de aceite,
+não defaults de produção:
+
+```powershell
+uv run quantlab-miner run-robustness --research caminho/research --scores caminho/scores --history caminho/market-manifest.json --authorized-sessions caminho/authorized-sessions.json --evaluation examples/mining/evaluation.json --candidate-selection examples/robustness/fixture-candidate-selection.json --walk-forward-policy examples/robustness/fixture-walk-forward.json --monte-carlo-policy examples/robustness/fixture-monte-carlo.json --sensitivity-policy examples/robustness/fixture-sensitivity.json --stress-policy examples/robustness/fixture-stress.json --workload-policy examples/robustness/fixture-workload.json --robustness-gate-policy examples/robustness/fixture-gate.json --diversity-policy examples/scoring/research-diversity-v1.json --top-n 10 --required-families WALK_FORWARD MONTE_CARLO SENSITIVITY STRESS --market-cache artifacts/market-cache --cache artifacts/robustness-cache --checkpoint artifacts/robustness.sqlite --output artifacts/robustness-run
+```
+
+Aceite científico sintético, com quatro timeframes e prova clean/warm/resume:
+
+```powershell
+uv run python scripts/acceptance_robustness_fixture.py --work artifacts/robustness-fixture-acceptance
+```
+
+O ZIP B3 de 10/09/2026 permanece apenas regressão técnica de uma sessão. O aceite estatístico real
+de Robustness continua pendente de histórico multissessão real suficiente.
