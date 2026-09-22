@@ -1,0 +1,72 @@
+{
+  "schema_version": "ninth-increment-precommitment/v1",
+  "status": "POLICIES_FROZEN_SOURCE_HASHES_PENDING",
+  "result_artifacts_observed": false,
+  "official_source_acquisition_authorized": true,
+  "official_source_only": true,
+  "source_substitution_forbidden": true,
+  "session_whitelist_path": "examples/acceptance/ninth-increment/session-whitelist-v1.json",
+  "logical_asset": "WIN",
+  "physical_contract": "WINV26",
+  "search_space_path": "examples/acceptance/ninth-increment/real-multisession-acceptance-v1.json",
+  "search_space_sha256": "02ec2a10cbc44d4e9158d8448ffe2a6c9abbab01d5023df032a1fc89cbcfca4a",
+  "search_space_id": "sha256:84d082226cbab5cc249600035b15da7c85addecf73293de6ba3f1c5ff0c800f3",
+  "search_space_origin": {
+    "path": "examples/mining/fixture-160.json",
+    "sha256": "02ec2a10cbc44d4e9158d8448ffe2a6c9abbab01d5023df032a1fc89cbcfca4a",
+    "semantically_identical": true
+  },
+  "policy_paths": {
+    "candidate_selection": "examples/acceptance/ninth-increment/candidate-selection-v1.json",
+    "monte_carlo": "examples/acceptance/ninth-increment/monte-carlo-policy-v1.json",
+    "robustness_quantitative_gate": "examples/acceptance/ninth-increment/quantitative-gate-v1.json",
+    "robustness_technical_gate": "examples/acceptance/ninth-increment/technical-gate-v1.json",
+    "sensitivity": "examples/acceptance/ninth-increment/sensitivity-policy-v1.json",
+    "stress": "examples/acceptance/ninth-increment/stress-policy-v1.json",
+    "walk_forward": "examples/acceptance/ninth-increment/walk-forward-policy-v1.json",
+    "workload": "examples/acceptance/ninth-increment/workload-policy-v1.json"
+  },
+  "policy_file_sha256": {
+    "candidate_selection": "6d7569064b95426fe16cc3c7692852e973921a3e42c78e4ffd209404077c857d",
+    "monte_carlo": "f8efe3b0416f5174dbaaff7f4829fb20546cb2cd228bec76b65e90ef7dd3c2bc",
+    "robustness_quantitative_gate": "d9910ec14ffc66a7721c0e39afeb2c38d7a22f25b946603c9a9e3b44131aa4f0",
+    "robustness_technical_gate": "468142286af92f55662e15b8cd841b135426cc17e9a5b99b7f2f632aaf07005f",
+    "sensitivity": "1293255f26590aea907cf4b6b27042c2c9570b2ccda5046cf6b2b98c1d24df8e",
+    "stress": "435793dd0370c871e29548344ec9e4801025c976e2c8d2e257e808a9e8a66935",
+    "walk_forward": "2af790995f5aac3edd723966803c23e7b176faa8844a38b730df118d4041a4dd",
+    "workload": "bd2ec2bfc322007a2196faadb287e227754438b85b062523e1cf7abd8c9ad09e"
+  },
+  "policy_ids": {
+    "candidate_selection": "sha256:08012d8846e550e2030556eabcc3c5dd9b5db73feb6aa0fc6cc9f88a22d9b80e",
+    "monte_carlo": "sha256:a6d3f79bc69e9050b805d695eeeaf1eae16de86887a2b517d101ac58bcdf7811",
+    "robustness_quantitative_gate": "sha256:a1196bb8333baad0ed7d29fbcd3a094d27a2c68e5f25c7b782597845ac093e1f",
+    "robustness_technical_gate": "sha256:783755d95253aa525c2ea50b22bb1fa98177f7559208a9ae7acabe46916325b8",
+    "sensitivity": "sha256:60bff3f679337db0e9efd09c9066beb57d9d574525f5c067e4c0839b82ade729",
+    "stress": "sha256:2a834d2438c9c8fe5861dfa3cea72e2bd4eda140fe68877f72d95f5c7d18c780",
+    "walk_forward": "sha256:a86a2a379482f6fcbe0ef1caf70f5ef4f99559f3a0f01b600394d504fe829af4",
+    "workload": "sha256:7ffde04b3965a3bca20b27e731221289db310d3b87945ebf10324cb85cd7ee1d"
+  },
+  "monte_carlo_seed": "0000000000000000000000000000000000000000000000000000000000000001",
+  "source_hashes": [],
+  "source_hashes_status": "PENDING_OFFICIAL_ACQUISITION",
+  "technical_gate_compatibility": {
+    "legacy_file": "examples/robustness/fixture-gate.json",
+    "legacy_semantics_unchanged": true,
+    "legacy_status_unchanged": "ROBUSTNESS_PASSED",
+    "quantitative_verdict_is_additive": true
+  },
+  "score_v1": {
+    "contracts_unchanged": true,
+    "validation_participates_in_score": true,
+    "validation_is_not_described_as_untouched_final_holdout": true
+  },
+  "anti_tuning": {
+    "post_result_search_space_changes_forbidden": true,
+    "post_result_threshold_changes_forbidden": true,
+    "zero_quantitatively_qualified_candidates_is_valid": true
+  },
+  "limitations": [
+    "Twenty-one sessions demonstrate real multisession execution under a frozen policy, not permanent economic validity.",
+    "No claim of future profitability is authorized by this acceptance."
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "schema_version": "robustness-workload-policy/v1",
+  "max_candidates": 160,
+  "max_walk_forward_folds": 3,
+  "max_paths": 12,
+  "max_path_length_sessions": 6,
+  "max_total_sampled_blocks": 72,
+  "max_sensitivity_scenarios": 1,
+  "max_stress_scenarios": 1,
+  "max_candidate_scenario_combinations": 320,
+  "max_expected_cse_builds": 5920
+}

@@ -1,0 +1,12 @@
+{
+  "schema_version": "walk-forward-policy/v1",
+  "method": "ROLLING_FIXED",
+  "discovery_sessions": 13,
+  "validation_sessions": 6,
+  "step_sessions": 1,
+  "gap_sessions": 0,
+  "min_folds": 3,
+  "incomplete_tail_policy": "DROP_INCOMPLETE_TAIL",
+  "discovery_gate": null,
+  "validation_gate": null
+}

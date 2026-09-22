@@ -1,0 +1,77 @@
+{
+  "schema_version": "mining-search-space/v1",
+  "logical_asset": "WIN",
+  "timeframes": [
+    "1m",
+    "2m",
+    "5m",
+    "15m"
+  ],
+  "directions": [
+    "BUY",
+    "SELL"
+  ],
+  "templates": [
+    {
+      "template_id": "TREND.CLOSE",
+      "base": {
+        "kind": "trend_close",
+        "grids": {
+          "average": [
+            "sma_close"
+          ],
+          "period": [
+            2,
+            3
+          ],
+          "operator": [
+            "COMPARE"
+          ]
+        },
+        "direction_grids": {}
+      },
+      "confirmations": []
+    },
+    {
+      "template_id": "TREND.PAIR",
+      "base": {
+        "kind": "trend_pair",
+        "grids": {
+          "average": [
+            "ema_close"
+          ],
+          "short_period": [
+            2,
+            3
+          ],
+          "long_period": [
+            3,
+            4
+          ],
+          "operator": [
+            "COMPARE"
+          ]
+        },
+        "direction_grids": {}
+      },
+      "confirmations": []
+    }
+  ],
+  "stops": [
+    "5",
+    "10"
+  ],
+  "targets": [
+    "5",
+    "10"
+  ],
+  "time_windows": [
+    {
+      "start": "09:00",
+      "end": "18:45",
+      "start_inclusive": true,
+      "end_inclusive": false
+    }
+  ],
+  "constraints": "closed-template-constraints/v1"
+}
