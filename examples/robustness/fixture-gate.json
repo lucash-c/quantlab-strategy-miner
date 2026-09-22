@@ -1,0 +1,11 @@
+{
+  "schema_version": "robustness-gate-policy/v1",
+  "required_families": ["WALK_FORWARD", "MONTE_CARLO", "SENSITIVITY", "STRESS"],
+  "criteria": [
+    {"metric": "walk_forward.evaluable_folds", "operator": "GTE", "threshold": {"numerator": "3", "denominator": "1"}},
+    {"metric": "monte_carlo.path_count", "operator": "GTE", "threshold": {"numerator": "1", "denominator": "1"}},
+    {"metric": "sensitivity.valid_scenarios", "operator": "GTE", "threshold": {"numerator": "1", "denominator": "1"}},
+    {"metric": "stress.valid_scenarios", "operator": "GTE", "threshold": {"numerator": "1", "denominator": "1"}}
+  ],
+  "semantics": "all-criteria-insufficient-precedence/v1"
+}

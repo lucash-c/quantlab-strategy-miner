@@ -18,7 +18,7 @@ def change(method, numerator, denominator="1"):
 
 class ExecutionStressTests(unittest.TestCase):
     @staticmethod
-    def path_fixture():
+    def path_fixture(prices=(99, 100, 105, 101)):
         start = parse_iso8601_ns("2026-09-10T09:00:00-03:00")
         last = start + 3 * NANOSECONDS_PER_MINUTE
         session = TradingSession(
@@ -40,10 +40,10 @@ class ExecutionStressTests(unittest.TestCase):
         ticks = tuple(
             SessionTrade("session", "2026-09-10", "WIN", "WINV26", timestamp, sequence, price, 1)
             for timestamp, sequence, price in (
-                (start, 1, 99),
-                (start + NANOSECONDS_PER_MINUTE, 2, 100),
-                (start + 2 * NANOSECONDS_PER_MINUTE, 3, 105),
-                (last, 4, 101),
+                (start, 1, prices[0]),
+                (start + NANOSECONDS_PER_MINUTE, 2, prices[1]),
+                (start + 2 * NANOSECONDS_PER_MINUTE, 3, prices[2]),
+                (last, 4, prices[3]),
             )
         )
         return FeatureSessionInputV3(
@@ -54,10 +54,10 @@ class ExecutionStressTests(unittest.TestCase):
         )
 
     @staticmethod
-    def execute(record):
+    def execute(record, prices=(99, 100, 105, 101)):
         trades = []
         summary = run_backtest_v3(
-            (ExecutionStressTests.path_fixture(),),
+            (ExecutionStressTests.path_fixture(prices),),
             StrategyDefinitionV3.model_validate(record),
             common_price_scale=0,
             on_trade=trades.append,
@@ -134,25 +134,32 @@ class ExecutionStressTests(unittest.TestCase):
         self.assertLess(stress_trade.net_pnl_units, base_trade.net_pnl_units)
 
     def test_slippage_stress_rebacktest_changes_execution_path(self):
-        baseline = strategy("BUY", friction=False).model_dump(mode="json")
-        stressed = {
-            **baseline,
-            "slippage_model": {
-                "type": "FIXED_POINTS",
-                "version": "1.0.0",
-                "points_per_side": "1",
-            },
-        }
-        base_trade, _ = self.execute(baseline)
-        stress_trade, _ = self.execute(stressed)
-        self.assertEqual(base_trade.exit_reason, "TAKE_PROFIT")
-        self.assertEqual(stress_trade.exit_reason, "SESSION_END")
-        self.assertNotEqual(base_trade.exit_timestamp_ns_utc, stress_trade.exit_timestamp_ns_utc)
-        self.assertNotEqual(
-            base_trade.target_execution_price_units,
-            stress_trade.target_execution_price_units,
-        )
-        self.assertNotEqual(base_trade.net_pnl_units, stress_trade.net_pnl_units)
+        for direction, prices in (
+            ("BUY", (99, 100, 105, 101)),
+            ("SELL", (101, 100, 95, 99)),
+        ):
+            with self.subTest(direction=direction):
+                baseline = strategy(direction, friction=False).model_dump(mode="json")
+                stressed = {
+                    **baseline,
+                    "slippage_model": {
+                        "type": "FIXED_POINTS",
+                        "version": "1.0.0",
+                        "points_per_side": "1",
+                    },
+                }
+                base_trade, _ = self.execute(baseline, prices)
+                stress_trade, _ = self.execute(stressed, prices)
+                self.assertEqual(base_trade.exit_reason, "TAKE_PROFIT")
+                self.assertEqual(stress_trade.exit_reason, "SESSION_END")
+                self.assertNotEqual(
+                    base_trade.exit_timestamp_ns_utc, stress_trade.exit_timestamp_ns_utc
+                )
+                self.assertNotEqual(
+                    base_trade.target_execution_price_units,
+                    stress_trade.target_execution_price_units,
+                )
+                self.assertNotEqual(base_trade.net_pnl_units, stress_trade.net_pnl_units)
 
     def test_all_gate_transitions_are_preserved_including_fail_to_pass(self):
         scenarios = [

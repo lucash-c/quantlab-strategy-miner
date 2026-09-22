@@ -1,0 +1,16 @@
+{
+  "schema_version": "sensitivity-policy/v1",
+  "method": "ONE_AT_A_TIME",
+  "source_pool": {"source": "RESEARCH_VALIDATION_PARTITION", "partition_id": null, "session_ids": []},
+  "perturbations": [
+    {
+      "name": "stop-plus-one",
+      "target": {"kind": "STOP_LOSS", "path": "/stop_loss/value"},
+      "method": "DECIMAL_ABSOLUTE_DELTA",
+      "integer_delta": null,
+      "rational_delta": {"numerator": "1", "denominator": "1"}
+    }
+  ],
+  "tolerance_criteria": [],
+  "validation_gate": null
+}

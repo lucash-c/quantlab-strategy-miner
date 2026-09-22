@@ -1,0 +1,12 @@
+{
+  "schema_version": "execution-stress-policy/v1",
+  "source_pool": {"source": "RESEARCH_VALIDATION_PARTITION", "partition_id": null, "session_ids": []},
+  "scenarios": [
+    {
+      "name": "one-point-each-side",
+      "cost": {"method": "ABSOLUTE_POINTS", "value": {"numerator": "1", "denominator": "1"}},
+      "slippage": {"method": "ABSOLUTE_POINTS", "value": {"numerator": "1", "denominator": "1"}}
+    }
+  ],
+  "validation_gate": null
+}

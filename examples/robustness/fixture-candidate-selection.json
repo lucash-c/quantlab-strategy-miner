@@ -1,0 +1,6 @@
+{
+  "schema_version": "robustness-candidate-selection/v1",
+  "method": "ALL_SCORED",
+  "top_n": null,
+  "candidate_ids": []
+}

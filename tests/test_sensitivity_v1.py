@@ -3,11 +3,112 @@ from __future__ import annotations
 import unittest
 
 from pydantic import ValidationError
+from quantlab_core.strategy_v3 import StrategyDefinitionV3
+from quantlab_mining.canonicalization import named_candidate
 from quantlab_robustness.sensitivity import build_sensitivity_scenarios
 from robustness_helpers import candidate_strategy, sensitivity_policy
 
 
 class SensitivityTests(unittest.TestCase):
+    def test_v1_targets_period_threshold_bounds_stop_and_target_but_not_time(self):
+        candidate_id, baseline = candidate_strategy()
+        specs = [
+            {
+                "name": "period",
+                "target": {
+                    "kind": "FEATURE_PARAMETER",
+                    "path": "/features/0/parameters/period",
+                },
+                "method": "INTEGER_ABSOLUTE_DELTA",
+                "integer_delta": 1,
+            },
+            {
+                "name": "threshold",
+                "target": {
+                    "kind": "CONDITION_CONSTANT",
+                    "path": "/entry_conditions/children/0/right/value",
+                },
+                "method": "DECIMAL_ABSOLUTE_DELTA",
+                "rational_delta": {"numerator": "1", "denominator": "1"},
+            },
+            {
+                "name": "stop",
+                "target": {"kind": "STOP_LOSS", "path": "/stop_loss/value"},
+                "method": "DECIMAL_ABSOLUTE_DELTA",
+                "rational_delta": {"numerator": "1", "denominator": "1"},
+            },
+            {
+                "name": "target",
+                "target": {"kind": "TAKE_PROFIT", "path": "/take_profit/value"},
+                "method": "DECIMAL_ABSOLUTE_DELTA",
+                "rational_delta": {"numerator": "1", "denominator": "1"},
+            },
+        ]
+        scenarios, variants = build_sensitivity_scenarios(
+            candidate_id, baseline, sensitivity_policy(specs)
+        )
+        self.assertEqual([item["status"] for item in scenarios], ["VALID"] * 4)
+        self.assertEqual(len(variants), 4)
+
+        record = baseline.model_dump(mode="json")
+        record["features"] = []
+        record["entry_conditions"] = {
+            "type": "range",
+            "operator": "BETWEEN",
+            "value": {"type": "candle_field", "name": "close"},
+            "lower": {"type": "constant", "dimension": "PRICE", "value": "90"},
+            "upper": {"type": "constant", "dimension": "PRICE", "value": "110"},
+            "lower_inclusive": True,
+            "upper_inclusive": False,
+        }
+        range_id, range_strategy = named_candidate(StrategyDefinitionV3.model_validate(record))
+        bounds, _ = build_sensitivity_scenarios(
+            range_id,
+            range_strategy,
+            sensitivity_policy(
+                [
+                    {
+                        "name": "lower-bound",
+                        "target": {
+                            "kind": "CONDITION_CONSTANT",
+                            "path": "/entry_conditions/lower/value",
+                        },
+                        "method": "DECIMAL_ABSOLUTE_DELTA",
+                        "rational_delta": {"numerator": "1", "denominator": "1"},
+                    },
+                    {
+                        "name": "upper-bound",
+                        "target": {
+                            "kind": "CONDITION_CONSTANT",
+                            "path": "/entry_conditions/upper/value",
+                        },
+                        "method": "DECIMAL_ABSOLUTE_DELTA",
+                        "rational_delta": {"numerator": "-1", "denominator": "1"},
+                    },
+                ]
+            ),
+        )
+        self.assertEqual([item["status"] for item in bounds], ["VALID", "VALID"])
+
+        time_scenario, _ = build_sensitivity_scenarios(
+            candidate_id,
+            baseline,
+            sensitivity_policy(
+                [
+                    {
+                        "name": "time-outside-v1",
+                        "target": {
+                            "kind": "CONDITION_CONSTANT",
+                            "path": "/entry_time_filter/start",
+                        },
+                        "method": "DECIMAL_ABSOLUTE_DELTA",
+                        "rational_delta": {"numerator": "1", "denominator": "1"},
+                    }
+                ]
+            ),
+        )
+        self.assertEqual(time_scenario[0]["reason"], "TARGET_KIND_PATH_MISMATCH")
+
     def test_zero_perturbation_is_rejected_in_preflight(self):
         with self.assertRaisesRegex(ValidationError, "NO_OP_PERTURBATION"):
             sensitivity_policy(

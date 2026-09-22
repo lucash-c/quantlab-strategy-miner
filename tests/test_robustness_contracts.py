@@ -1,20 +1,41 @@
 from __future__ import annotations
 
 import unittest
+from pathlib import Path
 
 from pydantic import ValidationError
 from quantlab_core.errors import ContractError
 from quantlab_core.numeric import CanonicalRational
 from quantlab_robustness.contracts import (
     CandidateSelectionV1,
+    ExecutionStressPolicyV1,
+    MonteCarloPolicyV1,
     RationalValueV1,
+    RobustnessGatePolicyV1,
     RobustnessWorkloadPolicyV1,
+    SensitivityPolicyV1,
+    WalkForwardPolicyV1,
+    load_policy,
 )
 from quantlab_robustness.exact import finite_decimal
 from quantlab_robustness.protocol import workload_preflight
 
 
 class RobustnessContractTests(unittest.TestCase):
+    def test_published_fixture_policies_match_strict_models(self):
+        root = Path("examples/robustness")
+        for name, model in (
+            ("fixture-candidate-selection.json", CandidateSelectionV1),
+            ("fixture-walk-forward.json", WalkForwardPolicyV1),
+            ("fixture-monte-carlo.json", MonteCarloPolicyV1),
+            ("fixture-sensitivity.json", SensitivityPolicyV1),
+            ("fixture-stress.json", ExecutionStressPolicyV1),
+            ("fixture-workload.json", RobustnessWorkloadPolicyV1),
+            ("fixture-gate.json", RobustnessGatePolicyV1),
+        ):
+            with self.subTest(name=name):
+                self.assertIsInstance(load_policy(root / name, model), model)
+
     def test_rational_and_decimal_are_canonical(self):
         self.assertEqual(
             RationalValueV1(numerator="1", denominator="2").value(),

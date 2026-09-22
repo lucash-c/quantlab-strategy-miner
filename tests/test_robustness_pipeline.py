@@ -120,6 +120,7 @@ class RobustnessPipelineTests(unittest.TestCase):
         output,
         seed="0" * 63 + "1",
         stop_after=None,
+        max_paths=100,
     ):
         session_ids = [session.session_id for session in catalog.sessions]
         monte, sensitivity, stress = self.policies(session_ids, seed)
@@ -158,7 +159,7 @@ class RobustnessPipelineTests(unittest.TestCase):
                     "schema_version": "robustness-workload-policy/v1",
                     "max_candidates": 2,
                     "max_walk_forward_folds": 10,
-                    "max_paths": 100,
+                    "max_paths": max_paths,
                     "max_path_length_sessions": 20,
                     "max_total_sampled_blocks": 1000,
                     "max_sensitivity_scenarios": 10,
@@ -275,6 +276,35 @@ class RobustnessPipelineTests(unittest.TestCase):
             self.assertGreater(clean_ops["session_evaluations_built"], 0)
             self.assertEqual(warm_ops["session_evaluations_built"], 0)
             self.assertGreater(warm_ops["session_evaluations_reused"], 0)
+
+            changed_workload = root / "changed-workload"
+            workload_manifest = self.run_once(
+                root=root,
+                research=research,
+                scores=scores,
+                catalog=catalog,
+                cache=root / "robust-cache",
+                checkpoint=root / "changed-workload.sqlite",
+                output=changed_workload,
+                max_paths=200,
+            )
+            self.assertEqual(
+                clean_manifest["robustness_protocol_id"],
+                workload_manifest["robustness_protocol_id"],
+            )
+            self.assertNotEqual(
+                clean_manifest["workload_policy_id"], workload_manifest["workload_policy_id"]
+            )
+            for name, id_field in (
+                ("walk-forward-results.parquet", "walk_forward_result_id"),
+                ("monte-carlo-results.parquet", "monte_carlo_result_id"),
+                ("sensitivity-results.parquet", "sensitivity_result_id"),
+                ("stress-results.parquet", "stress_result_id"),
+            ):
+                self.assertEqual(
+                    parquet_records(clean / name)[0][id_field],
+                    parquet_records(changed_workload / name)[0][id_field],
+                )
 
             resume_cache = root / "resume-cache"
             resume_checkpoint = root / "resume.sqlite"

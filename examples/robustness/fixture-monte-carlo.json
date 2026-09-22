@@ -1,0 +1,14 @@
+{
+  "schema_version": "monte-carlo-policy/v1",
+  "sampling_method": "SESSION_BOOTSTRAP_WITH_REPLACEMENT",
+  "source_pool": {"source": "RESEARCH_VALIDATION_PARTITION", "partition_id": null, "session_ids": []},
+  "number_of_paths": 12,
+  "path_length_sessions": 6,
+  "seed": "0000000000000000000000000000000000000000000000000000000000000001",
+  "sampler_version": "SHA256_COUNTER_REJECTION_V1",
+  "quantile_policy": "NEAREST_RANK_V1",
+  "minimum_source_sessions": 6,
+  "drawdown_thresholds": [
+    {"threshold": {"numerator": "10", "denominator": "1"}, "operator": "GT"}
+  ]
+}
