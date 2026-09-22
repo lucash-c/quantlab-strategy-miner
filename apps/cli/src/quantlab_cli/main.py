@@ -27,6 +27,7 @@ from quantlab_robustness.contracts import (
     ExecutionStressPolicyV1,
     MonteCarloPolicyV1,
     RobustnessGatePolicyV1,
+    RobustnessQuantitativePolicyV1,
     RobustnessWorkloadPolicyV1,
     SensitivityPolicyV1,
     WalkForwardPolicyV1,
@@ -156,6 +157,7 @@ def _parser() -> argparse.ArgumentParser:
     robustness.add_argument("--stress-policy", type=Path, required=True)
     robustness.add_argument("--workload-policy", type=Path, required=True)
     robustness.add_argument("--robustness-gate-policy", type=Path)
+    robustness.add_argument("--quantitative-gate-policy", type=Path)
     robustness.add_argument("--diversity-policy", type=Path)
     robustness.add_argument("--top-n", type=int)
     robustness.add_argument(
@@ -218,6 +220,11 @@ def main(argv: list[str] | None = None) -> int:
                 cache_root=args.cache,
                 checkpoint_path=args.checkpoint,
                 output=args.output,
+                quantitative_policy=load_robustness_policy(
+                    args.quantitative_gate_policy, RobustnessQuantitativePolicyV1
+                )
+                if args.quantitative_gate_policy
+                else None,
                 stop_after=args.stop_after,
                 observer=lambda record: print(json.dumps(record), file=sys.stderr, flush=True),
             )

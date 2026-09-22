@@ -72,6 +72,21 @@ def export_robustness(destination: Path, records: dict[str, Any]) -> dict[str, A
             json_records["robustness-qualified-set.json"] = records["qualified_set"]
             if records["shortlist"] is not None:
                 json_records["robustness-shortlist.json"] = records["shortlist"]
+        quantitative = records.get("quantitative")
+        if quantitative is not None:
+            json_records.update(
+                {
+                    "robustness-quantitative-policy.json": quantitative["policy"],
+                    "robustness-quantitative-protocol.json": quantitative["protocol"],
+                    "robustness-quantitative-qualified-set.json": quantitative[
+                        "qualified_set"
+                    ],
+                }
+            )
+            if quantitative["shortlist"] is not None:
+                json_records["robustness-quantitative-shortlist.json"] = quantitative[
+                    "shortlist"
+                ]
         for name, record in json_records.items():
             write_canonical_json(staging / name, record)
         _write_records(
@@ -129,6 +144,28 @@ def export_robustness(destination: Path, records: dict[str, Any]) -> dict[str, A
                     staging / "robustness-diversified-ranking.jsonl",
                     records["diversified"]["records"],
                 )
+        if quantitative is not None:
+            _write_records(
+                staging / "robustness-quantitative-evidence.parquet",
+                "candidate-robustness-quantitative-evidence/v1",
+                quantitative["evidence"],
+                "candidate_id",
+            )
+            _write_records(
+                staging / "robustness-quantitative-assessments.parquet",
+                "candidate-robustness-quantitative-assessment/v1",
+                quantitative["assessments"],
+                "candidate_id",
+            )
+            _write_jsonl(
+                staging / "robustness-quantitative-ranking.jsonl",
+                quantitative["ranking"]["records"],
+            )
+            if quantitative["diversified"] is not None:
+                _write_jsonl(
+                    staging / "robustness-quantitative-diversified-ranking.jsonl",
+                    quantitative["diversified"]["records"],
+                )
         artifacts = {
             str(path.relative_to(staging)).replace("\\", "/"): sha256_file(path)
             for path in sorted(staging.rglob("*"))
@@ -149,6 +186,14 @@ def export_robustness(destination: Path, records: dict[str, Any]) -> dict[str, A
             "pyarrow_version": PYARROW_VERSION,
             "artifacts": artifacts,
         }
+        if quantitative is not None:
+            manifest.update(
+                quantitative_policy_id=quantitative["policy"]["quantitative_policy_id"],
+                quantitative_protocol_id=quantitative["protocol"]["quantitative_protocol_id"],
+                quantitative_qualified_set_id=quantitative["qualified_set"][
+                    "quantitative_qualified_set_id"
+                ],
+            )
         manifest["robustness_export_id"] = identity("robustness-export/v1", manifest)
         write_canonical_json(staging / "robustness-manifest.json", manifest)
         os.replace(staging, destination)

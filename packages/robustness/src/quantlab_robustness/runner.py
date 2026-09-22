@@ -27,6 +27,7 @@ from quantlab_robustness.contracts import (
     ExecutionStressPolicyV1,
     MonteCarloPolicyV1,
     RobustnessGatePolicyV1,
+    RobustnessQuantitativePolicyV1,
     RobustnessWorkloadPolicyV1,
     SensitivityPolicyV1,
     SessionPoolSelectorV1,
@@ -42,6 +43,15 @@ from quantlab_robustness.evidence import load_score_evidence
 from quantlab_robustness.export import export_robustness
 from quantlab_robustness.monte_carlo import evaluate_candidate_paths
 from quantlab_robustness.protocol import protocol_record, workload_preflight
+from quantlab_robustness.quantitative import (
+    ROBUSTNESS_QUANTITATIVE_ENGINE_VERSION,
+    assess_quantitative_candidate,
+    build_quantitative_evidence,
+    diversify_quantitative_qualified,
+    quantitative_qualified_ranking,
+    quantitative_qualified_set,
+    quantitative_top_n,
+)
 from quantlab_robustness.ranking import (
     diversify_qualified,
     qualified_ranking,
@@ -142,6 +152,7 @@ def run_robustness(
     cache_root: Path,
     checkpoint_path: Path,
     output: Path,
+    quantitative_policy: RobustnessQuantitativePolicyV1 | None = None,
     stop_after: int | None = None,
     observer: Callable[[dict[str, Any]], None] | None = None,
 ) -> dict[str, Any]:
@@ -411,6 +422,116 @@ def run_robustness(
             )
             for candidate in candidate_ids
         ]
+        quantitative = None
+        if quantitative_policy is not None:
+            technical_by_candidate = {
+                item["candidate_id"]: item for item in assessments
+            }
+            quantitative_evidence = [
+                cached(
+                    "quantitative-evidence",
+                    candidate,
+                    {
+                        "candidate_id": candidate,
+                        "dataset_id": authorized.dataset_id,
+                        "evaluation": baseline_evaluation.canonicalized().model_dump(
+                            mode="json"
+                        ),
+                        "family_result_ids": {
+                            family.lower(): result[
+                                {
+                                    "WALK_FORWARD": "walk_forward_result_id",
+                                    "MONTE_CARLO": "monte_carlo_result_id",
+                                    "SENSITIVITY": "sensitivity_result_id",
+                                    "STRESS": "stress_result_id",
+                                }[family]
+                            ]
+                            for family, result in family_by_candidate[candidate].items()
+                        },
+                        "sensitivity_source_pool_id": sensitivity_pool["source_pool_id"],
+                        "stress_source_pool_id": stress_pool["source_pool_id"],
+                        "engine_version": ROBUSTNESS_QUANTITATIVE_ENGINE_VERSION,
+                    },
+                    lambda candidate=candidate, strategy=research.candidates[candidate]: (
+                        build_quantitative_evidence(
+                            candidate_id=candidate,
+                            strategy=strategy,
+                            baseline_evaluation=baseline_evaluation,
+                            sensitivity_policy=sensitivity_policy,
+                            sensitivity_pool=sensitivity_pool,
+                            stress_policy=stress_policy,
+                            stress_pool=stress_pool,
+                            family_results=family_by_candidate[candidate],
+                            evaluator=evaluator,
+                        )
+                    ),
+                )
+                for candidate in candidate_ids
+            ]
+            evidence_by_candidate = {
+                item["candidate_id"]: item for item in quantitative_evidence
+            }
+            quantitative_assessments = [
+                assess_quantitative_candidate(
+                    candidate_id=candidate,
+                    strategy_score_id=score_by_candidate[candidate]["strategy_score_id"],
+                    robustness_protocol_id=protocol["robustness_protocol_id"],
+                    technical_assessment=technical_by_candidate[candidate],
+                    evidence=evidence_by_candidate[candidate],
+                    policy=quantitative_policy,
+                )
+                for candidate in candidate_ids
+            ]
+            quantitative_protocol = {
+                "schema_version": "robustness-quantitative-protocol/v1",
+                "robustness_protocol_id": protocol["robustness_protocol_id"],
+                "robustness_candidate_set_id": candidate_set[
+                    "robustness_candidate_set_id"
+                ],
+                "dataset_id": authorized.dataset_id,
+                "technical_gate_policy_id": None
+                if gate_policy is None
+                else gate_policy.policy_id,
+                "quantitative_policy_id": quantitative_policy.policy_id,
+                "engine_version": ROBUSTNESS_QUANTITATIVE_ENGINE_VERSION,
+                "technical_gate_semantics_unchanged": True,
+                "score_v1_recomputed": False,
+            }
+            quantitative_protocol["quantitative_protocol_id"] = identity(
+                "robustness-quantitative-protocol/v1", quantitative_protocol
+            )
+            quantitative_qualified = quantitative_qualified_set(
+                quantitative_assessments, quantitative_policy.policy_id
+            )
+            quantitative_ranking = quantitative_qualified_ranking(
+                list(scores.raw), quantitative_qualified
+            )
+            quantitative_diversified = quantitative_shortlist = None
+            if diversity_policy is not None:
+                quantitative_diversified = diversify_quantitative_qualified(
+                    quantitative_ranking, diversity_policy
+                )
+                if top_n is not None:
+                    quantitative_shortlist = quantitative_top_n(
+                        quantitative_diversified, top_n
+                    )
+            quantitative = {
+                "policy": {
+                    **quantitative_policy.model_dump(mode="json"),
+                    "quantitative_policy_id": quantitative_policy.policy_id,
+                },
+                "protocol": quantitative_protocol,
+                "evidence": sorted(
+                    quantitative_evidence, key=lambda item: item["candidate_id"]
+                ),
+                "assessments": sorted(
+                    quantitative_assessments, key=lambda item: item["candidate_id"]
+                ),
+                "qualified_set": quantitative_qualified,
+                "ranking": quantitative_ranking,
+                "diversified": quantitative_diversified,
+                "shortlist": quantitative_shortlist,
+            }
         qualified = ranking = diversified = shortlist = None
         if gate_policy is not None:
             qualified = qualified_set(assessments, gate_policy.policy_id)
@@ -465,6 +586,7 @@ def run_robustness(
             "ranking": ranking,
             "diversified": diversified,
             "shortlist": shortlist,
+            "quantitative": quantitative,
         }
         manifest = export_robustness(output, export_records)
         operational = {
@@ -476,6 +598,13 @@ def run_robustness(
             "elapsed_seconds": str(time.perf_counter() - started),
             "scientific_identity_excludes_this_record": True,
         }
+        if quantitative is not None:
+            operational["quantitative_status_counts"] = {
+                status: sum(
+                    item["status"] == status for item in quantitative["assessments"]
+                )
+                for status in ("PASSED", "FAILED", "INSUFFICIENT_EVIDENCE")
+            }
         write_canonical_json(output.parent / (output.name + ".operational.json"), operational)
         return manifest
     finally:

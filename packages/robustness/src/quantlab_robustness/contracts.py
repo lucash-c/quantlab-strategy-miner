@@ -350,6 +350,68 @@ class RobustnessGatePolicyV1(StrictModel):
         return identity(self.schema_version, record)
 
 
+class QuantitativeThresholdV1(StrictModel):
+    operator: Literal["GT", "GTE", "LT", "LTE", "EQ", "NE"]
+    threshold: RationalValueV1
+
+
+class WalkForwardQuantitativeCriteriaV1(StrictModel):
+    minimum_positive_fold_fraction: RationalValueV1
+    median_validation_net_pnl_per_session: QuantitativeThresholdV1
+    median_validation_average_trade: QuantitativeThresholdV1
+
+    @model_validator(mode="after")
+    def valid_fraction(self) -> WalkForwardQuantitativeCriteriaV1:
+        value = self.minimum_positive_fold_fraction.value()
+        if value.compare(CanonicalRational(0)) <= 0 or value.compare(CanonicalRational(1)) > 0:
+            raise ValueError("minimum positive fold fraction must be within (0,1]")
+        return self
+
+
+class MonteCarloQuantitativeCriteriaV1(StrictModel):
+    median_total_net: QuantitativeThresholdV1
+    probability_net_le_zero: QuantitativeThresholdV1
+
+
+class SensitivityQuantitativeCriteriaV1(StrictModel):
+    all_required_variants_net: QuantitativeThresholdV1
+    baseline_net: QuantitativeThresholdV1
+    median_variant_to_baseline_net_ratio: QuantitativeThresholdV1
+
+
+class StressQuantitativeCriteriaV1(StrictModel):
+    all_required_scenarios_net: QuantitativeThresholdV1
+    all_required_scenarios_average_trade: QuantitativeThresholdV1
+
+
+class RobustnessQuantitativePolicyV1(StrictModel):
+    """Additive economic evidence gate; it never changes the technical v1 gate."""
+
+    schema_version: Literal["robustness-quantitative-policy/v1"]
+    technical_requirement: Literal["ROBUSTNESS_PASSED"]
+    required_families: Annotated[tuple[Literal[*ROBUSTNESS_FAMILIES], ...], Field(strict=False)]
+    walk_forward: WalkForwardQuantitativeCriteriaV1
+    monte_carlo: MonteCarloQuantitativeCriteriaV1
+    sensitivity: SensitivityQuantitativeCriteriaV1
+    stress: StressQuantitativeCriteriaV1
+    diagnostic_only: Annotated[tuple[str, ...], Field(default=(), strict=False)]
+    semantics: Literal["all-criteria-insufficient-precedence/v1"]
+
+    @model_validator(mode="after")
+    def complete_and_unique(self) -> RobustnessQuantitativePolicyV1:
+        if set(self.required_families) != set(ROBUSTNESS_FAMILIES):
+            raise ValueError("quantitative policy requires all four robustness families")
+        if len(self.required_families) != len(set(self.required_families)):
+            raise ValueError("quantitative required_families must be unique")
+        if len(self.diagnostic_only) != len(set(self.diagnostic_only)):
+            raise ValueError("diagnostic_only metrics must be unique")
+        return self
+
+    @property
+    def policy_id(self) -> str:
+        return identity(self.schema_version, self.model_dump(mode="json"))
+
+
 class RobustnessWorkloadPolicyV1(StrictModel):
     schema_version: Literal["robustness-workload-policy/v1"]
     max_candidates: int = Field(ge=1)

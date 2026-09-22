@@ -12,6 +12,7 @@ from quantlab_robustness.contracts import (
     CandidateSelectionV1,
     ExecutionStressPolicyV1,
     MonteCarloPolicyV1,
+    RobustnessQuantitativePolicyV1,
     RobustnessWorkloadPolicyV1,
     SensitivityPolicyV1,
 )
@@ -121,6 +122,7 @@ class RobustnessPipelineTests(unittest.TestCase):
         seed="0" * 63 + "1",
         stop_after=None,
         max_paths=100,
+        quantitative=False,
     ):
         session_ids = [session.session_id for session in catalog.sessions]
         monte, sensitivity, stress = self.policies(session_ids, seed)
@@ -199,8 +201,154 @@ class RobustnessPipelineTests(unittest.TestCase):
             cache_root=cache,
             checkpoint_path=checkpoint,
             output=output,
+            quantitative_policy=RobustnessQuantitativePolicyV1.model_validate(
+                json_record(
+                    Path("examples/acceptance/ninth-increment/quantitative-gate-v1.json")
+                )
+            )
+            if quantitative
+            else None,
             stop_after=stop_after,
         )
+
+    def test_quantitative_verdict_is_additive_deterministic_and_resumable(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            catalog, _ = prepare(root / "history", count=21)
+            research = root / "research"
+            write_research_evidence(research)
+            scores = root / "scores"
+            run_scoring(
+                research,
+                score_policy(),
+                ranking_policy(),
+                diversity_policy(),
+                top_n_value=4,
+                cache_root=root / "score-cache",
+                output=scores,
+            )
+            technical = root / "technical"
+            self.run_once(
+                root=root,
+                research=research,
+                scores=scores,
+                catalog=catalog,
+                cache=root / "cache",
+                checkpoint=root / "technical.sqlite",
+                output=technical,
+            )
+            clean = root / "quantitative-clean"
+            clean_manifest = self.run_once(
+                root=root,
+                research=research,
+                scores=scores,
+                catalog=catalog,
+                cache=root / "cache",
+                checkpoint=root / "quantitative-clean.sqlite",
+                output=clean,
+                quantitative=True,
+            )
+            for name in (
+                "walk-forward-results.parquet",
+                "monte-carlo-results.parquet",
+                "sensitivity-results.parquet",
+                "stress-results.parquet",
+                "robustness-assessments.parquet",
+                "robustness-gate-results.parquet",
+                "robustness-qualified-set.json",
+                "robustness-ranking.jsonl",
+                "robustness-diversified-ranking.jsonl",
+                "robustness-shortlist.json",
+            ):
+                self.assertEqual(sha256_file(technical / name), sha256_file(clean / name), name)
+            self.assertIn("quantitative_policy_id", clean_manifest)
+            quantitative_assessments = parquet_records(
+                clean / "robustness-quantitative-assessments.parquet"
+            )
+            self.assertEqual(len(quantitative_assessments), 1)
+            self.assertIn(
+                quantitative_assessments[0]["status"],
+                {"PASSED", "FAILED", "INSUFFICIENT_EVIDENCE"},
+            )
+            technical_assessment = parquet_records(
+                clean / "robustness-assessments.parquet"
+            )[0]
+            self.assertEqual(
+                quantitative_assessments[0]["technical_robustness_assessment_id"],
+                technical_assessment["robustness_assessment_id"],
+            )
+            self.assertFalse(quantitative_assessments[0]["technical_gate_changed"])
+            self.assertFalse(quantitative_assessments[0]["research_score_recomputed"])
+
+            warm = root / "quantitative-warm"
+            self.run_once(
+                root=root,
+                research=research,
+                scores=scores,
+                catalog=catalog,
+                cache=root / "cache",
+                checkpoint=root / "quantitative-warm.sqlite",
+                output=warm,
+                quantitative=True,
+            )
+            self.assertEqual(tree_hashes(clean), tree_hashes(warm))
+
+            resume_cache = root / "resume-cache"
+            resume_checkpoint = root / "resume.sqlite"
+            with self.assertRaises(ControlledRobustnessInterruption):
+                self.run_once(
+                    root=root,
+                    research=research,
+                    scores=scores,
+                    catalog=catalog,
+                    cache=resume_cache,
+                    checkpoint=resume_checkpoint,
+                    output=root / "interrupted",
+                    stop_after=5,
+                    quantitative=True,
+                )
+            resumed = root / "quantitative-resumed"
+            self.run_once(
+                root=root,
+                research=research,
+                scores=scores,
+                catalog=catalog,
+                cache=resume_cache,
+                checkpoint=resume_checkpoint,
+                output=resumed,
+                quantitative=True,
+            )
+            self.assertEqual(tree_hashes(clean), tree_hashes(resumed))
+
+            changed = root / "changed-seed"
+            self.run_once(
+                root=root,
+                research=research,
+                scores=scores,
+                catalog=catalog,
+                cache=root / "cache",
+                checkpoint=root / "changed-seed.sqlite",
+                output=changed,
+                seed="0" * 63 + "2",
+                quantitative=True,
+            )
+            for name, id_field in (
+                ("walk-forward-results.parquet", "walk_forward_result_id"),
+                ("sensitivity-results.parquet", "sensitivity_result_id"),
+                ("stress-results.parquet", "stress_result_id"),
+            ):
+                self.assertEqual(
+                    parquet_records(clean / name)[0][id_field],
+                    parquet_records(changed / name)[0][id_field],
+                )
+            self.assertNotEqual(
+                parquet_records(clean / "monte-carlo-results.parquet")[0][
+                    "monte_carlo_result_id"
+                ],
+                parquet_records(changed / "monte-carlo-results.parquet")[0][
+                    "monte_carlo_result_id"
+                ],
+            )
 
     def test_clean_warm_resume_and_seed_invalidation(self):
         with tempfile.TemporaryDirectory() as temporary:
