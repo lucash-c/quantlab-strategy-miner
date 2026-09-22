@@ -1,0 +1,76 @@
+{
+  "schema_version": "ninth-increment-precommitment-amendment/v1",
+  "amends": "docs/evidence/ninth-increment-precommitment-v1.json",
+  "preserves_commit": "6b65337",
+  "status": "POLICIES_FROZEN_SOURCE_HASHES_PENDING",
+  "result_artifacts_observed_before_amendment": false,
+  "reason": "The original 21-session whitelist included seven sessions no longer available through the official public B3 endpoint. Before any real quantitative execution, the acceptance window was replaced with 20 recent, completed, officially available sessions.",
+  "original_whitelist_path": "examples/acceptance/ninth-increment/session-whitelist-v1.json",
+  "amended_whitelist_path": "examples/acceptance/ninth-increment/session-whitelist-v2.json",
+  "amended_whitelist_sha256": "088bfe24f81429ac826a910e97cfb8d563e0f74c4b1b18bd168ef848bc5751b8",
+  "unavailable_original_sessions": [
+    "2026-08-13",
+    "2026-08-14",
+    "2026-08-17",
+    "2026-08-18",
+    "2026-08-19",
+    "2026-08-20",
+    "2026-08-21"
+  ],
+  "replacement_recent_sessions": [
+    "2026-09-14",
+    "2026-09-15",
+    "2026-09-16",
+    "2026-09-17",
+    "2026-09-18",
+    "2026-09-21"
+  ],
+  "explicitly_excluded_current_session": "2026-09-22",
+  "logical_asset": "WIN",
+  "physical_contract": "WINV26",
+  "original_walk_forward_policy_path": "examples/acceptance/ninth-increment/walk-forward-policy-v1.json",
+  "real_acceptance_walk_forward_policy_path": "examples/acceptance/ninth-increment/walk-forward-policy-real-20-v1.json",
+  "real_acceptance_walk_forward_policy_sha256": "f2ba2c2fb0cdc50cf57651103fc3202e5a46102800054ace6e3c70c7933f2d79",
+  "real_acceptance_walk_forward_policy_id": "sha256:43c483cb1c1673c135f3f6d18e3de6f2bd3c079599aec659a9092b2110183594",
+  "walk_forward_change": {
+    "discovery_sessions": 13,
+    "validation_sessions": 6,
+    "step_sessions": 1,
+    "gap_sessions": 0,
+    "incomplete_tail_policy": "DROP_INCOMPLETE_TAIL",
+    "original_min_folds": 3,
+    "real_acceptance_min_folds": 2,
+    "mathematical_reason": "Twenty chronological sessions produce exactly two complete 13+6 folds at step 1."
+  },
+  "quantitative_policy_path": "examples/acceptance/ninth-increment/quantitative-gate-v1.json",
+  "quantitative_threshold_changes": [],
+  "unchanged_quantitative_families": [
+    "MONTE_CARLO",
+    "SENSITIVITY",
+    "STRESS"
+  ],
+  "walk_forward_positive_fold_rule": {
+    "fraction": {
+      "numerator": "2",
+      "denominator": "3"
+    },
+    "evaluable_folds": 2,
+    "minimum_positive_folds": 2
+  },
+  "technical_gate": {
+    "path": "examples/acceptance/ninth-increment/technical-gate-v1.json",
+    "legacy_policy_unchanged": true,
+    "legacy_status_semantics_unchanged": "ROBUSTNESS_PASSED"
+  },
+  "official_source_manifest_path": "docs/evidence/ninth-increment-official-sources-v1.json",
+  "official_source_manifest_sha256": "dd6188be1c4fba7a1cead8462c56ce81655a56226184618e231cc6a5e4edb8b7",
+  "anti_tuning": {
+    "change_made_in_response_to_strategy_performance": false,
+    "real_quantitative_results_observed": false,
+    "search_space_changed": false,
+    "monte_carlo_changed": false,
+    "sensitivity_changed": false,
+    "stress_changed": false
+  },
+  "scientific_limitation": "Two folds provide more limited temporal evidence than three or more folds. This acceptance primarily demonstrates real multisession execution, OOS execution, absence of leakage and reoptimization, execution of the four robustness families, and application of the frozen quantitative criteria; it is not strong evidence of future generalization."
+}

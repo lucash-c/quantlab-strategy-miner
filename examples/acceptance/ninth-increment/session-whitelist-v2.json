@@ -1,0 +1,36 @@
+{
+  "schema_version": "real-multisession-whitelist/v1",
+  "logical_asset": "WIN",
+  "physical_contract": "WINV26",
+  "sessions": [
+    "2026-08-24",
+    "2026-08-25",
+    "2026-08-26",
+    "2026-08-27",
+    "2026-08-28",
+    "2026-08-31",
+    "2026-09-01",
+    "2026-09-02",
+    "2026-09-03",
+    "2026-09-04",
+    "2026-09-08",
+    "2026-09-09",
+    "2026-09-10",
+    "2026-09-11",
+    "2026-09-14",
+    "2026-09-15",
+    "2026-09-16",
+    "2026-09-17",
+    "2026-09-18",
+    "2026-09-21"
+  ],
+  "excluded_non_trading_dates": [
+    "2026-09-07"
+  ],
+  "excluded_current_or_unclosed_dates": [
+    "2026-09-22"
+  ],
+  "automatic_session_discovery": false,
+  "automatic_rollover": false,
+  "missing_session_substitution": false
+}
