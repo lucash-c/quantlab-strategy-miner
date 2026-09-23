@@ -270,25 +270,26 @@ def assess_quantitative_candidate(
     strategy_score_id: str,
     robustness_protocol_id: str,
     technical_assessment: dict[str, Any],
+    technical_completeness: dict[str, Any] | None = None,
     evidence: dict[str, Any],
     policy: RobustnessQuantitativePolicyV1,
 ) -> dict[str, Any]:
     criteria: list[dict[str, Any]] = []
     technical_status = technical_assessment["status"]
-    if technical_status == "ROBUSTNESS_PASSED":
-        technical_result = "PASSED"
-        technical_reason = None
-    elif technical_status == "ROBUSTNESS_INSUFFICIENT_EVIDENCE":
-        technical_result = "INSUFFICIENT_EVIDENCE"
-        technical_reason = "TECHNICAL_EVIDENCE_INSUFFICIENT"
-    elif technical_status == "ROBUSTNESS_FAILED":
-        technical_result = "FAILED"
-        technical_reason = "TECHNICAL_COMPLETENESS_FAILED"
-    else:
-        technical_result = "INSUFFICIENT_EVIDENCE"
-        technical_reason = "TECHNICAL_GATE_NOT_CONFIGURED"
-    criteria.append(
-        {
+    if policy.technical_requirement == "ROBUSTNESS_PASSED":
+        if technical_status == "ROBUSTNESS_PASSED":
+            technical_result = "PASSED"
+            technical_reason = None
+        elif technical_status == "ROBUSTNESS_INSUFFICIENT_EVIDENCE":
+            technical_result = "INSUFFICIENT_EVIDENCE"
+            technical_reason = "TECHNICAL_EVIDENCE_INSUFFICIENT"
+        elif technical_status == "ROBUSTNESS_FAILED":
+            technical_result = "FAILED"
+            technical_reason = "TECHNICAL_COMPLETENESS_FAILED"
+        else:
+            technical_result = "INSUFFICIENT_EVIDENCE"
+            technical_reason = "TECHNICAL_GATE_NOT_CONFIGURED"
+        technical_criterion = {
             "family": "TECHNICAL",
             "metric": "technical_robustness_status",
             "source_id": technical_assessment["robustness_assessment_id"],
@@ -298,7 +299,32 @@ def assess_quantitative_candidate(
             "result": technical_result,
             "reason": technical_reason,
         }
-    )
+    else:
+        completeness_status = (
+            None if technical_completeness is None else technical_completeness["status"]
+        )
+        if completeness_status == "NINTH_INCREMENT_TECHNICAL_COMPLETE":
+            technical_result = "PASSED"
+            technical_reason = None
+        elif completeness_status == "NINTH_INCREMENT_TECHNICAL_INCOMPLETE":
+            technical_result = "FAILED"
+            technical_reason = "NINTH_INCREMENT_TECHNICAL_COMPLETENESS_FAILED"
+        else:
+            technical_result = "INSUFFICIENT_EVIDENCE"
+            technical_reason = "NINTH_INCREMENT_TECHNICAL_EVIDENCE_INSUFFICIENT"
+        technical_criterion = {
+            "family": "TECHNICAL_COMPLETENESS",
+            "metric": "ninth_increment_technical_status",
+            "source_id": None
+            if technical_completeness is None
+            else technical_completeness["technical_completeness_assessment_id"],
+            "operator": "EQ",
+            "threshold": policy.technical_requirement,
+            "observed_value": completeness_status,
+            "result": technical_result,
+            "reason": technical_reason,
+        }
+    criteria.append(technical_criterion)
 
     walk = evidence["walk_forward_metrics"]
     positive_rule = QuantitativeThresholdV1(
@@ -474,6 +500,19 @@ def assess_quantitative_candidate(
         "candidate_changed": False,
         "technical_gate_changed": False,
     }
+    if policy.technical_requirement == "NINTH_INCREMENT_TECHNICAL_COMPLETE":
+        record.update(
+            legacy_robustness_status=technical_status,
+            ninth_increment_technical_completeness_assessment_id=None
+            if technical_completeness is None
+            else technical_completeness["technical_completeness_assessment_id"],
+            ninth_increment_technical_status=None
+            if technical_completeness is None
+            else technical_completeness["status"],
+            quantitative_dependency="NINTH_INCREMENT_TECHNICAL_COMPLETENESS",
+            quantitative_robustness_status=status,
+            legacy_robustness_is_not_quantitative_prerequisite=True,
+        )
     record["quantitative_assessment_id"] = identity(
         "candidate-robustness-quantitative-assessment/v1", record
     )

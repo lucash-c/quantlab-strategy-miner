@@ -6,8 +6,10 @@ from copy import deepcopy
 from pathlib import Path
 
 from quantlab_core.numeric import CanonicalRational
+from quantlab_robustness.assessment import assess_technical_completeness
 from quantlab_robustness.contracts import (
     RobustnessQuantitativePolicyV1,
+    RobustnessTechnicalCompletenessPolicyV1,
     WalkForwardPolicyV1,
 )
 from quantlab_robustness.exact import defined, undefined
@@ -28,6 +30,27 @@ def policy() -> RobustnessQuantitativePolicyV1:
             Path("examples/acceptance/ninth-increment/quantitative-gate-v1.json").read_text(
                 encoding="utf-8"
             )
+        )
+    )
+
+
+def real_twenty_policy() -> RobustnessQuantitativePolicyV1:
+    return RobustnessQuantitativePolicyV1.model_validate(
+        json.loads(
+            Path(
+                "examples/acceptance/ninth-increment/quantitative-gate-real-20-v2.json"
+            ).read_text(encoding="utf-8")
+        )
+    )
+
+
+def completeness_policy() -> RobustnessTechnicalCompletenessPolicyV1:
+    return RobustnessTechnicalCompletenessPolicyV1.model_validate(
+        json.loads(
+            Path(
+                "examples/acceptance/ninth-increment/"
+                "technical-completeness-real-20-v1.json"
+            ).read_text(encoding="utf-8")
         )
     )
 
@@ -90,6 +113,14 @@ def technical(status: str = "ROBUSTNESS_PASSED") -> dict:
     }
 
 
+def complete_technical() -> dict:
+    return {
+        "candidate_id": "A",
+        "technical_completeness_assessment_id": "completeness-A",
+        "status": "NINTH_INCREMENT_TECHNICAL_COMPLETE",
+    }
+
+
 def assess(source: dict, *, technical_status: str = "ROBUSTNESS_PASSED") -> dict:
     return assess_quantitative_candidate(
         candidate_id="A",
@@ -112,6 +143,20 @@ class QuantitativeRobustnessV1Tests(unittest.TestCase):
             Path("examples/acceptance/ninth-increment/technical-gate-v1.json").read_text()
         )
         self.assertEqual(legacy, additive)
+
+    def test_corrected_policy_changes_only_the_technical_dependency(self):
+        original = policy().model_dump(mode="json")
+        corrected = real_twenty_policy().model_dump(mode="json")
+        self.assertEqual(original.pop("technical_requirement"), "ROBUSTNESS_PASSED")
+        self.assertEqual(
+            corrected.pop("technical_requirement"),
+            "NINTH_INCREMENT_TECHNICAL_COMPLETE",
+        )
+        self.assertEqual(original, corrected)
+        self.assertEqual(
+            real_twenty_policy().policy_id,
+            "sha256:0a60a6ffc58dcfa6694348109c44b598d4969de6013b7f5e436e9e6f08a52def",
+        )
 
     def test_pass_and_exact_walk_forward_fold_requirement(self):
         result = assess(evidence())
@@ -178,6 +223,17 @@ class QuantitativeRobustnessV1Tests(unittest.TestCase):
         )
         self.assertEqual(plan["unused_tail_session_ids"], [])
 
+        legacy_plan = build_walk_forward_plan(
+            dataset_id="dataset", logical_asset="WIN", sessions=sessions, policy=old
+        )
+        self.assertEqual(legacy_plan["fold_count"], 2)
+        self.assertEqual(legacy_plan["required_min_folds"], 3)
+        self.assertEqual(legacy_plan["status"], "INSUFFICIENT_WALK_FORWARD_HISTORY")
+        self.assertEqual(
+            [fold["validation_session_ids"] for fold in legacy_plan["folds"]],
+            [fold["validation_session_ids"] for fold in plan["folds"]],
+        )
+
         two_fold_evidence = evidence()
         two_fold_evidence["walk_forward_metrics"]["evaluable_folds"] = metric(2)
         two_fold_evidence["walk_forward_metrics"][
@@ -191,6 +247,69 @@ class QuantitativeRobustnessV1Tests(unittest.TestCase):
         )
         self.assertEqual(criterion["minimum_positive_folds"], 2)
         self.assertEqual(criterion["result"], "FAILED")
+
+    def test_ninth_completeness_is_separate_from_legacy_insufficient_status(self):
+        source = evidence()
+        source["walk_forward_metrics"]["evaluable_folds"] = metric(2)
+        source["walk_forward_metrics"]["positive_validation_fold_rate"] = metric(1)
+        result = assess_quantitative_candidate(
+            candidate_id="A",
+            strategy_score_id="score-A",
+            robustness_protocol_id="legacy-protocol",
+            technical_assessment=technical("ROBUSTNESS_INSUFFICIENT_EVIDENCE"),
+            technical_completeness=complete_technical(),
+            evidence=source,
+            policy=real_twenty_policy(),
+        )
+        self.assertEqual(result["technical_robustness_status"], "ROBUSTNESS_INSUFFICIENT_EVIDENCE")
+        self.assertEqual(result["legacy_robustness_status"], "ROBUSTNESS_INSUFFICIENT_EVIDENCE")
+        self.assertEqual(
+            result["ninth_increment_technical_status"],
+            "NINTH_INCREMENT_TECHNICAL_COMPLETE",
+        )
+        self.assertEqual(result["status"], "PASSED")
+        self.assertEqual(result["quantitative_robustness_status"], "PASSED")
+        self.assertTrue(result["legacy_robustness_is_not_quantitative_prerequisite"])
+        criterion = result["criteria"][0]
+        self.assertEqual(criterion["family"], "TECHNICAL_COMPLETENESS")
+        self.assertEqual(criterion["result"], "PASSED")
+
+    def test_technical_completeness_requires_two_folds_and_four_families(self):
+        family_results = {
+            "WALK_FORWARD": {
+                "status": "COMPLETED",
+                "walk_forward_result_id": "walk",
+                "metrics": {"evaluable_folds": metric(2)},
+            },
+            "MONTE_CARLO": {
+                "status": "COMPLETED",
+                "monte_carlo_result_id": "monte",
+                "metrics": {"path_count": metric(1)},
+            },
+            "SENSITIVITY": {
+                "status": "COMPLETED",
+                "sensitivity_result_id": "sensitivity",
+                "metrics": {"valid_scenarios": metric(1)},
+            },
+            "STRESS": {
+                "status": "COMPLETED",
+                "stress_result_id": "stress",
+                "metrics": {"valid_scenarios": metric(1)},
+            },
+        }
+        result = assess_technical_completeness(
+            candidate_id="A",
+            strategy_score_id="score-A",
+            technical_completeness_protocol_id="completeness-protocol",
+            family_results=family_results,
+            policy=completeness_policy(),
+        )
+        self.assertEqual(result["status"], "NINTH_INCREMENT_TECHNICAL_COMPLETE")
+        self.assertFalse(result["legacy_robustness_status_reinterpreted"])
+        self.assertEqual(
+            completeness_policy().policy_id,
+            "sha256:2e7be06cdf967c582b6a22107ca90a2c4da89b4240944b1c785d564b00b281ff",
+        )
 
     def test_failure_is_not_hidden_and_ratio_is_exact(self):
         source = evidence()

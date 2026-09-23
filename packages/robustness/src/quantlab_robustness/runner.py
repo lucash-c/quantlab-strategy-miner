@@ -18,7 +18,7 @@ from quantlab_scoring.contracts import ResearchDiversityPolicyV1
 from quantlab_scoring.evidence import load_research_evidence
 
 from quantlab_robustness import ROBUSTNESS_ENGINE_VERSION
-from quantlab_robustness.assessment import assess_candidate
+from quantlab_robustness.assessment import assess_candidate, assess_technical_completeness
 from quantlab_robustness.cache import RobustnessCheckpoint, RobustnessResultCache
 from quantlab_robustness.candidate_set import build_candidate_set
 from quantlab_robustness.contracts import (
@@ -28,6 +28,7 @@ from quantlab_robustness.contracts import (
     MonteCarloPolicyV1,
     RobustnessGatePolicyV1,
     RobustnessQuantitativePolicyV1,
+    RobustnessTechnicalCompletenessPolicyV1,
     RobustnessWorkloadPolicyV1,
     SensitivityPolicyV1,
     SessionPoolSelectorV1,
@@ -153,12 +154,29 @@ def run_robustness(
     checkpoint_path: Path,
     output: Path,
     quantitative_policy: RobustnessQuantitativePolicyV1 | None = None,
+    quantitative_walk_forward_policy: WalkForwardPolicyV1 | None = None,
+    technical_completeness_policy: RobustnessTechnicalCompletenessPolicyV1 | None = None,
     stop_after: int | None = None,
     observer: Callable[[dict[str, Any]], None] | None = None,
 ) -> dict[str, Any]:
     started = time.perf_counter()
     if output.exists():
         raise ContractError("refusing to overwrite completed robustness output")
+    if (quantitative_walk_forward_policy is None) != (
+        technical_completeness_policy is None
+    ):
+        raise ContractError(
+            "quantitative Walk-Forward and technical completeness policies must be paired"
+        )
+    if (
+        quantitative_policy is not None
+        and quantitative_policy.technical_requirement
+        == "NINTH_INCREMENT_TECHNICAL_COMPLETE"
+        and technical_completeness_policy is None
+    ):
+        raise ContractError(
+            "Ninth Increment quantitative verdict requires technical completeness"
+        )
     if authorized.dataset_id != catalog.manifest["dataset_id"]:
         raise ContractError("authorized session universe belongs to another dataset")
     by_id = {session.session_id: session for session in catalog.sessions}
@@ -187,26 +205,37 @@ def run_robustness(
         sessions=session_metadata,
         policy=walk_forward_policy,
     )
+    quantitative_walk_plan = (
+        None
+        if quantitative_walk_forward_policy is None
+        else build_walk_forward_plan(
+            dataset_id=authorized.dataset_id,
+            logical_asset=catalog.manifest["logical_asset"],
+            sessions=session_metadata,
+            policy=quantitative_walk_forward_policy,
+        )
+    )
+    source_pool_walk_plan = quantitative_walk_plan or walk_plan
     monte_pool = _resolve_pool(
         selector=monte_carlo_policy.source_pool,
         catalog=catalog,
         authorized_ids=list(authorized.session_ids),
         research_directory=research_directory,
-        walk_forward_plan=walk_plan,
+        walk_forward_plan=source_pool_walk_plan,
     )
     sensitivity_pool = _resolve_pool(
         selector=sensitivity_policy.source_pool,
         catalog=catalog,
         authorized_ids=list(authorized.session_ids),
         research_directory=research_directory,
-        walk_forward_plan=walk_plan,
+        walk_forward_plan=source_pool_walk_plan,
     )
     stress_pool = _resolve_pool(
         selector=stress_policy.source_pool,
         catalog=catalog,
         authorized_ids=list(authorized.session_ids),
         research_directory=research_directory,
-        walk_forward_plan=walk_plan,
+        walk_forward_plan=source_pool_walk_plan,
     )
     path_set = build_path_set(monte_carlo_policy, monte_pool)
     protocol = protocol_record(
@@ -222,6 +251,42 @@ def run_robustness(
         gate=gate_policy,
         required_families=required_families,
     )
+    technical_completeness_protocol = None
+    if technical_completeness_policy is not None:
+        if quantitative_walk_forward_policy is None or quantitative_walk_plan is None:
+            raise AssertionError("paired Ninth Increment policies were not resolved")
+        technical_completeness_protocol = {
+            "schema_version": "robustness-technical-completeness-protocol/v1",
+            "robustness_protocol_id": protocol["robustness_protocol_id"],
+            "robustness_candidate_set_id": candidate_set["robustness_candidate_set_id"],
+            "dataset_id": authorized.dataset_id,
+            "authorized_session_ids": list(authorized.session_ids),
+            "walk_forward_policy_id": quantitative_walk_forward_policy.policy_id,
+            "walk_forward_plan_id": quantitative_walk_plan["walk_forward_plan_id"],
+            "monte_carlo_policy_id": monte_carlo_policy.policy_id,
+            "sensitivity_policy_id": sensitivity_policy.policy_id,
+            "stress_policy_id": stress_policy.policy_id,
+            "technical_completeness_policy_id": technical_completeness_policy.policy_id,
+            "legacy_robustness_protocol_unchanged": True,
+        }
+        technical_completeness_protocol["technical_completeness_protocol_id"] = identity(
+            "robustness-technical-completeness-protocol/v1",
+            technical_completeness_protocol,
+        )
+    checkpoint_protocol_id = protocol["robustness_protocol_id"]
+    if technical_completeness_protocol is not None:
+        checkpoint_protocol_id = identity(
+            "robustness-execution-context/v1",
+            {
+                "robustness_protocol_id": protocol["robustness_protocol_id"],
+                "technical_completeness_protocol_id": technical_completeness_protocol[
+                    "technical_completeness_protocol_id"
+                ],
+                "quantitative_policy_id": None
+                if quantitative_policy is None
+                else quantitative_policy.policy_id,
+            },
+        )
     sensitivity_scenario_count = len(sensitivity_policy.perturbations)
     stress_scenarios = resolve_stress_scenarios(baseline_evaluation, stress_policy)
     valid_stress_count = sum(item["status"] == "VALID" for item in stress_scenarios)
@@ -239,7 +304,7 @@ def run_robustness(
     workload_plan = workload_preflight(
         policy=workload_policy,
         candidate_count=len(candidate_ids),
-        fold_count=walk_plan["fold_count"],
+        fold_count=source_pool_walk_plan["fold_count"],
         monte_carlo_paths=monte_carlo_policy.number_of_paths,
         path_length=monte_carlo_policy.path_length_sessions,
         sensitivity_scenarios=sensitivity_scenario_count,
@@ -252,7 +317,7 @@ def run_robustness(
     if observer:
         observer({"phase": "PREFLIGHT", **workload_plan["scientific_counts"]})
     result_cache = RobustnessResultCache(cache_root)
-    checkpoint = RobustnessCheckpoint(checkpoint_path, protocol["robustness_protocol_id"])
+    checkpoint = RobustnessCheckpoint(checkpoint_path, checkpoint_protocol_id)
     session_cache = SessionEvaluationCache(cache_root)
     evaluator = CandidateSessionEvaluator(
         catalog=catalog,
@@ -292,6 +357,7 @@ def run_robustness(
         return record
 
     walk_results = []
+    quantitative_walk_results = []
     monte_results = []
     sensitivity_results = []
     stress_results = []
@@ -326,6 +392,30 @@ def run_robustness(
                     ),
                 )
             )
+            if quantitative_walk_forward_policy is not None:
+                if quantitative_walk_plan is None:
+                    raise AssertionError("Ninth Increment Walk-Forward plan is unavailable")
+                quantitative_walk_results.append(
+                    cached(
+                        "ninth-increment-walk-forward",
+                        candidate,
+                        {
+                            **common,
+                            "policy_id": quantitative_walk_forward_policy.policy_id,
+                            "plan_id": quantitative_walk_plan["walk_forward_plan_id"],
+                        },
+                        lambda candidate=candidate, strategy=strategy: (
+                            run_walk_forward_candidate(
+                                candidate_id=candidate,
+                                strategy=strategy,
+                                evaluation=baseline_evaluation,
+                                policy=quantitative_walk_forward_policy,
+                                plan=quantitative_walk_plan,
+                                evaluator=evaluator,
+                            )
+                        ),
+                    )
+                )
             monte_records = evaluator.evaluate(
                 candidate_id=candidate,
                 strategy=strategy,
@@ -422,11 +512,73 @@ def run_robustness(
             )
             for candidate in candidate_ids
         ]
+        technical_completeness = None
+        completeness_family_by_candidate = None
+        if technical_completeness_policy is not None:
+            if (
+                technical_completeness_protocol is None
+                or quantitative_walk_forward_policy is None
+                or quantitative_walk_plan is None
+            ):
+                raise AssertionError("Ninth Increment technical context is unavailable")
+            completeness_family_by_candidate = {
+                candidate: {
+                    **family_by_candidate[candidate],
+                    "WALK_FORWARD": next(
+                        item
+                        for item in quantitative_walk_results
+                        if item["candidate_id"] == candidate
+                    ),
+                }
+                for candidate in candidate_ids
+            }
+            technical_completeness = {
+                "policy": {
+                    **technical_completeness_policy.model_dump(mode="json"),
+                    "technical_completeness_policy_id": technical_completeness_policy.policy_id,
+                },
+                "protocol": technical_completeness_protocol,
+                "walk_forward_policy": {
+                    **quantitative_walk_forward_policy.model_dump(mode="json"),
+                    "walk_forward_policy_id": quantitative_walk_forward_policy.policy_id,
+                },
+                "walk_forward_plan": quantitative_walk_plan,
+                "walk_forward_results": sorted(
+                    quantitative_walk_results, key=lambda item: item["candidate_id"]
+                ),
+                "assessments": [
+                    assess_technical_completeness(
+                        candidate_id=candidate,
+                        strategy_score_id=score_by_candidate[candidate][
+                            "strategy_score_id"
+                        ],
+                        technical_completeness_protocol_id=technical_completeness_protocol[
+                            "technical_completeness_protocol_id"
+                        ],
+                        family_results=completeness_family_by_candidate[candidate],
+                        policy=technical_completeness_policy,
+                    )
+                    for candidate in candidate_ids
+                ],
+            }
         quantitative = None
         if quantitative_policy is not None:
             technical_by_candidate = {
                 item["candidate_id"]: item for item in assessments
             }
+            completeness_by_candidate = (
+                {}
+                if technical_completeness is None
+                else {
+                    item["candidate_id"]: item
+                    for item in technical_completeness["assessments"]
+                }
+            )
+            quantitative_family_by_candidate = (
+                family_by_candidate
+                if completeness_family_by_candidate is None
+                else completeness_family_by_candidate
+            )
             quantitative_evidence = [
                 cached(
                     "quantitative-evidence",
@@ -446,7 +598,9 @@ def run_robustness(
                                     "STRESS": "stress_result_id",
                                 }[family]
                             ]
-                            for family, result in family_by_candidate[candidate].items()
+                            for family, result in quantitative_family_by_candidate[
+                                candidate
+                            ].items()
                         },
                         "sensitivity_source_pool_id": sensitivity_pool["source_pool_id"],
                         "stress_source_pool_id": stress_pool["source_pool_id"],
@@ -461,7 +615,7 @@ def run_robustness(
                             sensitivity_pool=sensitivity_pool,
                             stress_policy=stress_policy,
                             stress_pool=stress_pool,
-                            family_results=family_by_candidate[candidate],
+                            family_results=quantitative_family_by_candidate[candidate],
                             evaluator=evaluator,
                         )
                     ),
@@ -477,6 +631,7 @@ def run_robustness(
                     strategy_score_id=score_by_candidate[candidate]["strategy_score_id"],
                     robustness_protocol_id=protocol["robustness_protocol_id"],
                     technical_assessment=technical_by_candidate[candidate],
+                    technical_completeness=completeness_by_candidate.get(candidate),
                     evidence=evidence_by_candidate[candidate],
                     policy=quantitative_policy,
                 )
@@ -493,10 +648,20 @@ def run_robustness(
                 if gate_policy is None
                 else gate_policy.policy_id,
                 "quantitative_policy_id": quantitative_policy.policy_id,
+                "technical_completeness_protocol_id": None
+                if technical_completeness is None
+                else technical_completeness["protocol"][
+                    "technical_completeness_protocol_id"
+                ],
                 "engine_version": ROBUSTNESS_QUANTITATIVE_ENGINE_VERSION,
                 "technical_gate_semantics_unchanged": True,
                 "score_v1_recomputed": False,
             }
+            if technical_completeness is not None:
+                quantitative_protocol.update(
+                    quantitative_dependency="NINTH_INCREMENT_TECHNICAL_COMPLETENESS",
+                    legacy_robustness_is_not_quantitative_prerequisite=True,
+                )
             quantitative_protocol["quantitative_protocol_id"] = identity(
                 "robustness-quantitative-protocol/v1", quantitative_protocol
             )
@@ -587,6 +752,7 @@ def run_robustness(
             "diversified": diversified,
             "shortlist": shortlist,
             "quantitative": quantitative,
+            "technical_completeness": technical_completeness,
         }
         manifest = export_robustness(output, export_records)
         operational = {
@@ -604,6 +770,18 @@ def run_robustness(
                     item["status"] == status for item in quantitative["assessments"]
                 )
                 for status in ("PASSED", "FAILED", "INSUFFICIENT_EVIDENCE")
+            }
+        if technical_completeness is not None:
+            operational["ninth_increment_technical_status_counts"] = {
+                status: sum(
+                    item["status"] == status
+                    for item in technical_completeness["assessments"]
+                )
+                for status in (
+                    "NINTH_INCREMENT_TECHNICAL_COMPLETE",
+                    "NINTH_INCREMENT_TECHNICAL_INCOMPLETE",
+                    "NINTH_INCREMENT_TECHNICAL_INSUFFICIENT_EVIDENCE",
+                )
             }
         write_canonical_json(output.parent / (output.name + ".operational.json"), operational)
         return manifest

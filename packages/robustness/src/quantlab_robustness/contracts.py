@@ -350,6 +350,46 @@ class RobustnessGatePolicyV1(StrictModel):
         return identity(self.schema_version, record)
 
 
+class RobustnessTechnicalCompletenessPolicyV1(StrictModel):
+    """Ninth Increment execution completeness, separate from the legacy gate."""
+
+    schema_version: Literal["robustness-technical-completeness-policy/v1"]
+    required_families: Annotated[tuple[Literal[*ROBUSTNESS_FAMILIES], ...], Field(strict=False)]
+    criteria: Annotated[tuple[RobustnessCriterionV1, ...], Field(strict=False)]
+    semantics: Literal["all-criteria-insufficient-precedence/v1"]
+
+    @model_validator(mode="after")
+    def nonempty_consistent(self) -> RobustnessTechnicalCompletenessPolicyV1:
+        if not self.criteria:
+            raise ValueError("Technical Completeness must contain at least one criterion")
+        if set(self.required_families) != set(ROBUSTNESS_FAMILIES):
+            raise ValueError("Technical Completeness requires all four families")
+        if len(self.required_families) != len(set(self.required_families)):
+            raise ValueError("technical required_families must be unique")
+        for criterion in self.criteria:
+            family = criterion.metric.split(".", 1)[0].upper()
+            if family not in ROBUSTNESS_FAMILIES:
+                raise ValueError("technical criterion references an unknown family")
+        return self
+
+    @property
+    def policy_id(self) -> str:
+        criteria = sorted(
+            (
+                {"criterion_id": item.criterion_id, **item.model_dump(mode="json")}
+                for item in self.criteria
+            ),
+            key=lambda item: item["criterion_id"],
+        )
+        record = {
+            "schema_version": self.schema_version,
+            "required_families": sorted(self.required_families),
+            "criteria": criteria,
+            "semantics": self.semantics,
+        }
+        return identity(self.schema_version, record)
+
+
 class QuantitativeThresholdV1(StrictModel):
     operator: Literal["GT", "GTE", "LT", "LTE", "EQ", "NE"]
     threshold: RationalValueV1
@@ -388,7 +428,9 @@ class RobustnessQuantitativePolicyV1(StrictModel):
     """Additive economic evidence gate; it never changes the technical v1 gate."""
 
     schema_version: Literal["robustness-quantitative-policy/v1"]
-    technical_requirement: Literal["ROBUSTNESS_PASSED"]
+    technical_requirement: Literal[
+        "ROBUSTNESS_PASSED", "NINTH_INCREMENT_TECHNICAL_COMPLETE"
+    ]
     required_families: Annotated[tuple[Literal[*ROBUSTNESS_FAMILIES], ...], Field(strict=False)]
     walk_forward: WalkForwardQuantitativeCriteriaV1
     monte_carlo: MonteCarloQuantitativeCriteriaV1

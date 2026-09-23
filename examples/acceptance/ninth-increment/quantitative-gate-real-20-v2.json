@@ -1,0 +1,92 @@
+{
+  "schema_version": "robustness-quantitative-policy/v1",
+  "technical_requirement": "NINTH_INCREMENT_TECHNICAL_COMPLETE",
+  "required_families": [
+    "WALK_FORWARD",
+    "MONTE_CARLO",
+    "SENSITIVITY",
+    "STRESS"
+  ],
+  "walk_forward": {
+    "minimum_positive_fold_fraction": {
+      "numerator": "2",
+      "denominator": "3"
+    },
+    "median_validation_net_pnl_per_session": {
+      "operator": "GT",
+      "threshold": {
+        "numerator": "0",
+        "denominator": "1"
+      }
+    },
+    "median_validation_average_trade": {
+      "operator": "GT",
+      "threshold": {
+        "numerator": "0",
+        "denominator": "1"
+      }
+    }
+  },
+  "monte_carlo": {
+    "median_total_net": {
+      "operator": "GT",
+      "threshold": {
+        "numerator": "0",
+        "denominator": "1"
+      }
+    },
+    "probability_net_le_zero": {
+      "operator": "LTE",
+      "threshold": {
+        "numerator": "1",
+        "denominator": "4"
+      }
+    }
+  },
+  "sensitivity": {
+    "all_required_variants_net": {
+      "operator": "GT",
+      "threshold": {
+        "numerator": "0",
+        "denominator": "1"
+      }
+    },
+    "baseline_net": {
+      "operator": "GT",
+      "threshold": {
+        "numerator": "0",
+        "denominator": "1"
+      }
+    },
+    "median_variant_to_baseline_net_ratio": {
+      "operator": "GTE",
+      "threshold": {
+        "numerator": "1",
+        "denominator": "2"
+      }
+    }
+  },
+  "stress": {
+    "all_required_scenarios_net": {
+      "operator": "GT",
+      "threshold": {
+        "numerator": "0",
+        "denominator": "1"
+      }
+    },
+    "all_required_scenarios_average_trade": {
+      "operator": "GT",
+      "threshold": {
+        "numerator": "0",
+        "denominator": "1"
+      }
+    }
+  },
+  "diagnostic_only": [
+    "monte_carlo.p95_max_drawdown",
+    "monte_carlo.p99_max_drawdown",
+    "monte_carlo.median_max_consecutive_losses",
+    "stress.win_rate"
+  ],
+  "semantics": "all-criteria-insufficient-precedence/v1"
+}

@@ -7,7 +7,10 @@ from typing import Any
 from quantlab_core.errors import ContractError
 from quantlab_mining.contracts import identity
 
-from quantlab_robustness.contracts import RobustnessGatePolicyV1
+from quantlab_robustness.contracts import (
+    RobustnessGatePolicyV1,
+    RobustnessTechnicalCompletenessPolicyV1,
+)
 from quantlab_robustness.exact import compare, rational, undefined
 
 _FAMILY_KEYS = {
@@ -22,7 +25,7 @@ def apply_robustness_gate(
     *,
     candidate_id: str,
     family_results: dict[str, dict[str, Any]],
-    policy: RobustnessGatePolicyV1,
+    policy: RobustnessGatePolicyV1 | RobustnessTechnicalCompletenessPolicyV1,
 ) -> dict[str, Any]:
     criteria = []
     for criterion in sorted(policy.criteria, key=lambda item: item.criterion_id):
@@ -137,4 +140,74 @@ def assess_candidate(
         "robustness_rating": None,
     }
     record["robustness_assessment_id"] = identity("candidate-robustness-assessment/v1", record)
+    return record
+
+
+def assess_technical_completeness(
+    *,
+    candidate_id: str,
+    strategy_score_id: str,
+    technical_completeness_protocol_id: str,
+    family_results: dict[str, dict[str, Any]],
+    policy: RobustnessTechnicalCompletenessPolicyV1,
+) -> dict[str, Any]:
+    missing = set(_FAMILY_KEYS) - set(family_results)
+    if missing:
+        raise ContractError(
+            "technical completeness is missing family records: "
+            + ",".join(sorted(missing))
+        )
+    legacy_shaped_gate = apply_robustness_gate(
+        candidate_id=candidate_id,
+        family_results=family_results,
+        policy=policy,
+    )
+    gate = {
+        "schema_version": "robustness-technical-completeness-result/v1",
+        "candidate_id": candidate_id,
+        "technical_completeness_policy_id": policy.policy_id,
+        "result": legacy_shaped_gate["result"],
+        "insufficient_required_families": legacy_shaped_gate[
+            "insufficient_required_families"
+        ],
+        "criteria": legacy_shaped_gate["criteria"],
+        "failures": legacy_shaped_gate["failures"],
+        "short_circuited": False,
+    }
+    gate["technical_completeness_result_id"] = identity(
+        "robustness-technical-completeness-result/v1", gate
+    )
+    status = {
+        "PASS": "NINTH_INCREMENT_TECHNICAL_COMPLETE",
+        "FAIL": "NINTH_INCREMENT_TECHNICAL_INCOMPLETE",
+        "INSUFFICIENT_EVIDENCE": "NINTH_INCREMENT_TECHNICAL_INSUFFICIENT_EVIDENCE",
+    }[gate["result"]]
+    record = {
+        "schema_version": "candidate-robustness-technical-completeness/v1",
+        "candidate_id": candidate_id,
+        "strategy_score_id": strategy_score_id,
+        "technical_completeness_protocol_id": technical_completeness_protocol_id,
+        "technical_completeness_policy_id": policy.policy_id,
+        "families": {
+            _FAMILY_KEYS[family]: {
+                "status": result["status"],
+                "reason": result.get("reason"),
+                "result_id": result.get(
+                    {
+                        "WALK_FORWARD": "walk_forward_result_id",
+                        "MONTE_CARLO": "monte_carlo_result_id",
+                        "SENSITIVITY": "sensitivity_result_id",
+                        "STRESS": "stress_result_id",
+                    }[family]
+                ),
+            }
+            for family, result in sorted(family_results.items())
+        },
+        "gate": gate,
+        "status": status,
+        "legacy_robustness_status_reinterpreted": False,
+    }
+    record["technical_completeness_assessment_id"] = identity(
+        "candidate-robustness-technical-completeness/v1", record
+    )
     return record

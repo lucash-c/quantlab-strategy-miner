@@ -73,6 +73,24 @@ def export_robustness(destination: Path, records: dict[str, Any]) -> dict[str, A
             if records["shortlist"] is not None:
                 json_records["robustness-shortlist.json"] = records["shortlist"]
         quantitative = records.get("quantitative")
+        technical_completeness = records.get("technical_completeness")
+        if technical_completeness is not None:
+            json_records.update(
+                {
+                    "ninth-increment-technical-completeness-policy.json": (
+                        technical_completeness["policy"]
+                    ),
+                    "ninth-increment-technical-completeness-protocol.json": (
+                        technical_completeness["protocol"]
+                    ),
+                    "ninth-increment-walk-forward-policy.json": technical_completeness[
+                        "walk_forward_policy"
+                    ],
+                    "ninth-increment-walk-forward-plan.json": technical_completeness[
+                        "walk_forward_plan"
+                    ],
+                }
+            )
         if quantitative is not None:
             json_records.update(
                 {
@@ -131,6 +149,31 @@ def export_robustness(destination: Path, records: dict[str, Any]) -> dict[str, A
             records["assessments"],
             "candidate_id",
         )
+        if technical_completeness is not None:
+            _write_records(
+                staging / "ninth-increment-walk-forward-folds.parquet",
+                "walk-forward-fold/v1",
+                technical_completeness["walk_forward_plan"]["folds"],
+                "walk_forward_fold_id",
+            )
+            _write_records(
+                staging / "ninth-increment-walk-forward-results.parquet",
+                "candidate-walk-forward-result/v1",
+                technical_completeness["walk_forward_results"],
+                "candidate_id",
+            )
+            _write_records(
+                staging / "ninth-increment-technical-assessments.parquet",
+                "candidate-robustness-technical-completeness/v1",
+                technical_completeness["assessments"],
+                "candidate_id",
+            )
+            _write_records(
+                staging / "ninth-increment-technical-completeness-results.parquet",
+                "robustness-technical-completeness-result/v1",
+                [item["gate"] for item in technical_completeness["assessments"]],
+                "candidate_id",
+            )
         if records["gate_policy"] is not None:
             _write_records(
                 staging / "robustness-gate-results.parquet",
@@ -193,6 +236,18 @@ def export_robustness(destination: Path, records: dict[str, Any]) -> dict[str, A
                 quantitative_qualified_set_id=quantitative["qualified_set"][
                     "quantitative_qualified_set_id"
                 ],
+            )
+        if technical_completeness is not None:
+            manifest.update(
+                technical_completeness_policy_id=technical_completeness["policy"][
+                    "technical_completeness_policy_id"
+                ],
+                technical_completeness_protocol_id=technical_completeness["protocol"][
+                    "technical_completeness_protocol_id"
+                ],
+                ninth_increment_walk_forward_plan_id=technical_completeness[
+                    "walk_forward_plan"
+                ]["walk_forward_plan_id"],
             )
         manifest["robustness_export_id"] = identity("robustness-export/v1", manifest)
         write_canonical_json(staging / "robustness-manifest.json", manifest)

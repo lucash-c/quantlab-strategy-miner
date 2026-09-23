@@ -28,6 +28,7 @@ from quantlab_robustness.contracts import (
     MonteCarloPolicyV1,
     RobustnessGatePolicyV1,
     RobustnessQuantitativePolicyV1,
+    RobustnessTechnicalCompletenessPolicyV1,
     RobustnessWorkloadPolicyV1,
     SensitivityPolicyV1,
     WalkForwardPolicyV1,
@@ -158,6 +159,8 @@ def _parser() -> argparse.ArgumentParser:
     robustness.add_argument("--workload-policy", type=Path, required=True)
     robustness.add_argument("--robustness-gate-policy", type=Path)
     robustness.add_argument("--quantitative-gate-policy", type=Path)
+    robustness.add_argument("--quantitative-walk-forward-policy", type=Path)
+    robustness.add_argument("--technical-completeness-policy", type=Path)
     robustness.add_argument("--diversity-policy", type=Path)
     robustness.add_argument("--top-n", type=int)
     robustness.add_argument(
@@ -224,6 +227,17 @@ def main(argv: list[str] | None = None) -> int:
                     args.quantitative_gate_policy, RobustnessQuantitativePolicyV1
                 )
                 if args.quantitative_gate_policy
+                else None,
+                quantitative_walk_forward_policy=load_robustness_policy(
+                    args.quantitative_walk_forward_policy, WalkForwardPolicyV1
+                )
+                if args.quantitative_walk_forward_policy
+                else None,
+                technical_completeness_policy=load_robustness_policy(
+                    args.technical_completeness_policy,
+                    RobustnessTechnicalCompletenessPolicyV1,
+                )
+                if args.technical_completeness_policy
                 else None,
                 stop_after=args.stop_after,
                 observer=lambda record: print(json.dumps(record), file=sys.stderr, flush=True),

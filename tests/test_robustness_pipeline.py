@@ -13,6 +13,7 @@ from quantlab_robustness.contracts import (
     ExecutionStressPolicyV1,
     MonteCarloPolicyV1,
     RobustnessQuantitativePolicyV1,
+    RobustnessTechnicalCompletenessPolicyV1,
     RobustnessWorkloadPolicyV1,
     SensitivityPolicyV1,
 )
@@ -123,6 +124,7 @@ class RobustnessPipelineTests(unittest.TestCase):
         stop_after=None,
         max_paths=100,
         quantitative=False,
+        ninth=False,
     ):
         session_ids = [session.session_id for session in catalog.sessions]
         monte, sensitivity, stress = self.policies(session_ids, seed)
@@ -203,10 +205,38 @@ class RobustnessPipelineTests(unittest.TestCase):
             output=output,
             quantitative_policy=RobustnessQuantitativePolicyV1.model_validate(
                 json_record(
-                    Path("examples/acceptance/ninth-increment/quantitative-gate-v1.json")
+                    Path(
+                        "examples/acceptance/ninth-increment/"
+                        + (
+                            "quantitative-gate-real-20-v2.json"
+                            if ninth
+                            else "quantitative-gate-v1.json"
+                        )
+                    )
                 )
             )
             if quantitative
+            else None,
+            quantitative_walk_forward_policy=walk_policy(
+                min_folds=2,
+                discovery_gate=test_gate(
+                    criteria=[
+                        {"metric": "trades", "operator": "GTE", "threshold": 1000000}
+                    ]
+                ),
+                validation_gate=test_gate(validation=True, empty=True),
+            )
+            if ninth
+            else None,
+            technical_completeness_policy=RobustnessTechnicalCompletenessPolicyV1.model_validate(
+                json_record(
+                    Path(
+                        "examples/acceptance/ninth-increment/"
+                        "technical-completeness-real-20-v1.json"
+                    )
+                )
+            )
+            if ninth
             else None,
             stop_after=stop_after,
         )
@@ -348,6 +378,76 @@ class RobustnessPipelineTests(unittest.TestCase):
                 parquet_records(changed / "monte-carlo-results.parquet")[0][
                     "monte_carlo_result_id"
                 ],
+            )
+
+    def test_ninth_completeness_is_additive_to_legacy_insufficient_evidence(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            catalog, _ = prepare(root / "history", count=20)
+            research = root / "research"
+            write_research_evidence(research)
+            scores = root / "scores"
+            run_scoring(
+                research,
+                score_policy(),
+                ranking_policy(),
+                diversity_policy(),
+                top_n_value=4,
+                cache_root=root / "score-cache",
+                output=scores,
+            )
+            output = root / "ninth"
+            manifest = self.run_once(
+                root=root,
+                research=research,
+                scores=scores,
+                catalog=catalog,
+                cache=root / "cache",
+                checkpoint=root / "ninth.sqlite",
+                output=output,
+                quantitative=True,
+                ninth=True,
+            )
+            legacy_plan = json_record(output / "walk-forward-plan.json")
+            ninth_plan = json_record(output / "ninth-increment-walk-forward-plan.json")
+            self.assertEqual(legacy_plan["status"], "INSUFFICIENT_WALK_FORWARD_HISTORY")
+            self.assertEqual(legacy_plan["required_min_folds"], 3)
+            self.assertEqual(ninth_plan["status"], "READY")
+            self.assertEqual(ninth_plan["required_min_folds"], 2)
+            self.assertEqual(legacy_plan["fold_count"], ninth_plan["fold_count"])
+            legacy = parquet_records(output / "robustness-assessments.parquet")[0]
+            completeness = parquet_records(
+                output / "ninth-increment-technical-assessments.parquet"
+            )[0]
+            quantitative = parquet_records(
+                output / "robustness-quantitative-assessments.parquet"
+            )[0]
+            self.assertEqual(legacy["status"], "ROBUSTNESS_INSUFFICIENT_EVIDENCE")
+            self.assertEqual(
+                completeness["status"], "NINTH_INCREMENT_TECHNICAL_COMPLETE"
+            )
+            self.assertEqual(
+                quantitative["technical_robustness_status"],
+                "ROBUSTNESS_INSUFFICIENT_EVIDENCE",
+            )
+            self.assertEqual(
+                quantitative["legacy_robustness_status"],
+                "ROBUSTNESS_INSUFFICIENT_EVIDENCE",
+            )
+            self.assertEqual(
+                quantitative["ninth_increment_technical_status"],
+                "NINTH_INCREMENT_TECHNICAL_COMPLETE",
+            )
+            self.assertNotEqual(quantitative["status"], "INSUFFICIENT_EVIDENCE")
+            self.assertEqual(
+                quantitative["quantitative_robustness_status"], quantitative["status"]
+            )
+            self.assertTrue(
+                quantitative["legacy_robustness_is_not_quantitative_prerequisite"]
+            )
+            self.assertEqual(
+                manifest["technical_completeness_policy_id"],
+                completeness["technical_completeness_policy_id"],
             )
 
     def test_clean_warm_resume_and_seed_invalidation(self):
