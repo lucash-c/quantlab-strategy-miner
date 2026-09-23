@@ -36,6 +36,7 @@ from quantlab_robustness.contracts import (
     MonteCarloPolicyV1,
     RobustnessGatePolicyV1,
     RobustnessQuantitativePolicyV1,
+    RobustnessTechnicalCompletenessPolicyV1,
     RobustnessWorkloadPolicyV1,
     SensitivityPolicyV1,
     WalkForwardPolicyV1,
@@ -107,6 +108,21 @@ def main() -> None:
             "schema_version": "ninth-increment-real-input-freeze/v1",
             "whitelist_file_sha256": sha256_file(whitelist_path),
             "source_manifest_file_sha256": sha256_file(source_manifest_path),
+            "legacy_technical_gate_file_sha256": sha256_file(
+                ACCEPTANCE / "technical-gate-v1.json"
+            ),
+            "legacy_walk_forward_policy_file_sha256": sha256_file(
+                ACCEPTANCE / "walk-forward-policy-v1.json"
+            ),
+            "ninth_increment_walk_forward_policy_file_sha256": sha256_file(
+                ACCEPTANCE / "walk-forward-policy-real-20-v1.json"
+            ),
+            "ninth_increment_technical_completeness_policy_file_sha256": sha256_file(
+                ACCEPTANCE / "technical-completeness-real-20-v1.json"
+            ),
+            "quantitative_policy_file_sha256": sha256_file(
+                ACCEPTANCE / "quantitative-gate-real-20-v2.json"
+            ),
             "sources": sources,
             "real_quantitative_results_observed_before_freeze": False,
         },
@@ -200,7 +216,10 @@ def main() -> None:
     candidate_selection = load_robustness_policy(
         ACCEPTANCE / "candidate-selection-v1.json", CandidateSelectionV1
     )
-    walk_forward = load_robustness_policy(
+    legacy_walk_forward = load_robustness_policy(
+        ACCEPTANCE / "walk-forward-policy-v1.json", WalkForwardPolicyV1
+    )
+    ninth_walk_forward = load_robustness_policy(
         ACCEPTANCE / "walk-forward-policy-real-20-v1.json", WalkForwardPolicyV1
     )
     monte_carlo = load_robustness_policy(
@@ -218,8 +237,13 @@ def main() -> None:
     technical_gate = load_robustness_policy(
         ACCEPTANCE / "technical-gate-v1.json", RobustnessGatePolicyV1
     )
+    technical_completeness = load_robustness_policy(
+        ACCEPTANCE / "technical-completeness-real-20-v1.json",
+        RobustnessTechnicalCompletenessPolicyV1,
+    )
     quantitative_gate = load_robustness_policy(
-        ACCEPTANCE / "quantitative-gate-v1.json", RobustnessQuantitativePolicyV1
+        ACCEPTANCE / "quantitative-gate-real-20-v2.json",
+        RobustnessQuantitativePolicyV1,
     )
     robustness_evaluation = evaluation.model_copy(update={"max_sessions": 20})
 
@@ -237,7 +261,7 @@ def main() -> None:
             authorized=authorized,
             baseline_evaluation=robustness_evaluation,
             candidate_selection=candidate_selection,
-            walk_forward_policy=walk_forward,
+            walk_forward_policy=legacy_walk_forward,
             monte_carlo_policy=policy,
             sensitivity_policy=sensitivity,
             stress_policy=stress,
@@ -251,6 +275,8 @@ def main() -> None:
             checkpoint_path=checkpoint or args.work / f"{name}.sqlite",
             output=args.work / name,
             quantitative_policy=quantitative_gate,
+            quantitative_walk_forward_policy=ninth_walk_forward,
+            technical_completeness_policy=technical_completeness,
             stop_after=stop_after,
             observer=lambda event: print(json.dumps({"run": name, **event}), flush=True),
         )
@@ -279,16 +305,47 @@ def main() -> None:
     execute("robustness-changed-seed", policy=changed_seed)
 
     clean = args.work / "robustness-clean"
-    plan = load_json(clean / "walk-forward-plan.json")
-    if plan["fold_count"] != 2 or plan["required_min_folds"] != 2:
-        raise AssertionError("real Walk-Forward did not derive exactly two complete folds")
-    technical = parquet_records(clean / "robustness-assessments.parquet")
+    legacy_plan = load_json(clean / "walk-forward-plan.json")
+    ninth_plan = load_json(clean / "ninth-increment-walk-forward-plan.json")
+    if (
+        legacy_plan["fold_count"] != 2
+        or legacy_plan["required_min_folds"] != 3
+        or legacy_plan["status"] != "INSUFFICIENT_WALK_FORWARD_HISTORY"
+    ):
+        raise AssertionError("legacy Walk-Forward semantics changed for twenty sessions")
+    if (
+        ninth_plan["fold_count"] != 2
+        or ninth_plan["required_min_folds"] != 2
+        or ninth_plan["status"] != "READY"
+    ):
+        raise AssertionError("Ninth Increment Walk-Forward did not derive two complete folds")
+    if [fold["validation_session_ids"] for fold in legacy_plan["folds"]] != [
+        fold["validation_session_ids"] for fold in ninth_plan["folds"]
+    ]:
+        raise AssertionError("legacy and Ninth Increment policies derived different folds")
+    legacy_technical = parquet_records(clean / "robustness-assessments.parquet")
+    ninth_technical = parquet_records(
+        clean / "ninth-increment-technical-assessments.parquet"
+    )
     quantitative = parquet_records(clean / "robustness-quantitative-assessments.parquet")
-    if any(row["status"] == "PASSED" for row in quantitative):
-        raise AssertionError("legacy technical gate cannot pass with only two evaluable folds")
+    if any(row["status"] != "ROBUSTNESS_INSUFFICIENT_EVIDENCE" for row in legacy_technical):
+        raise AssertionError("legacy technical result must preserve insufficient evidence")
+    if any(
+        row["status"] != "NINTH_INCREMENT_TECHNICAL_COMPLETE"
+        for row in ninth_technical
+    ):
+        raise AssertionError("Ninth Increment mandatory families were not technically complete")
+    if any(
+        row.get("quantitative_dependency")
+        != "NINTH_INCREMENT_TECHNICAL_COMPLETENESS"
+        or not row.get("legacy_robustness_is_not_quantitative_prerequisite")
+        for row in quantitative
+    ):
+        raise AssertionError("quantitative verdict used the wrong technical dependency")
 
     family_specs = (
         ("walk-forward", "walk_forward_result_id"),
+        ("ninth-increment-walk-forward", "walk_forward_result_id"),
         ("monte-carlo", "monte_carlo_result_id"),
         ("sensitivity", "sensitivity_result_id"),
         ("stress", "stress_result_id"),
@@ -309,7 +366,12 @@ def main() -> None:
         }
         for family, id_field in family_specs
     }
-    for family in ("walk-forward", "sensitivity", "stress"):
+    for family in (
+        "walk-forward",
+        "ninth-increment-walk-forward",
+        "sensitivity",
+        "stress",
+    ):
         if family_ids[family] != changed_family_ids[family]:
             raise AssertionError(f"Monte Carlo seed invalidated unrelated family: {family}")
     if family_ids["monte-carlo"] == changed_family_ids["monte-carlo"]:
@@ -347,16 +409,25 @@ def main() -> None:
             "validation_is_untouched_final_holdout": False,
         },
         "walk_forward": {
-            "policy_id": walk_forward.policy_id,
-            "fold_count": plan["fold_count"],
-            "folds": plan["folds"],
+            "legacy_policy_id": legacy_walk_forward.policy_id,
+            "legacy_plan": legacy_plan,
+            "ninth_increment_policy_id": ninth_walk_forward.policy_id,
+            "ninth_increment_plan": ninth_plan,
+            "fold_count": ninth_plan["fold_count"],
+            "folds": ninth_plan["folds"],
             "two_fold_generalization_evidence_is_limited": True,
         },
-        "technical_gate": {
+        "legacy_technical_robustness": {
             "policy_id": technical_gate.policy_id,
             "legacy_semantics_unchanged": True,
-            "status_counts": status_counts(technical),
+            "status_counts": status_counts(legacy_technical),
             "minimum_evaluable_folds_remains_three": True,
+        },
+        "ninth_increment_technical_completeness": {
+            "policy_id": technical_completeness.policy_id,
+            "status_counts": status_counts(ninth_technical),
+            "minimum_evaluable_folds": 2,
+            "all_four_families_required": True,
         },
         "quantitative_gate": {
             "policy_id": quantitative_gate.policy_id,
@@ -364,9 +435,23 @@ def main() -> None:
             "qualified_set": load_json(
                 clean / "robustness-quantitative-qualified-set.json"
             ),
-            "technical_gate_required": True,
+            "technical_dependency": "NINTH_INCREMENT_TECHNICAL_COMPLETENESS",
+            "legacy_robustness_is_not_prerequisite": True,
             "thresholds_changed_after_results": False,
         },
+        "verdicts": [
+            {
+                "candidate_id": row["candidate_id"],
+                "legacy_robustness_status": row["legacy_robustness_status"],
+                "ninth_increment_technical_status": row[
+                    "ninth_increment_technical_status"
+                ],
+                "quantitative_robustness_status": row[
+                    "quantitative_robustness_status"
+                ],
+            }
+            for row in quantitative
+        ],
         "family_result_ids": family_ids,
         "changed_seed_family_result_ids": changed_family_ids,
         "clean_warm_resume_byte_identical": True,
@@ -402,7 +487,12 @@ def main() -> None:
                 "report": str(args.work / "acceptance-report.json"),
                 "dataset_id": report["dataset_id"],
                 "folds": 2,
-                "technical": report["technical_gate"]["status_counts"],
+                "legacy_technical": report["legacy_technical_robustness"][
+                    "status_counts"
+                ],
+                "ninth_increment_technical": report[
+                    "ninth_increment_technical_completeness"
+                ]["status_counts"],
                 "quantitative": report["quantitative_gate"]["status_counts"],
             }
         ),

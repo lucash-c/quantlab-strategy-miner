@@ -1,0 +1,52 @@
+{
+  "schema_version": "ninth-increment-precommitment-correction/v2",
+  "amends": "docs/evidence/ninth-increment-precommitment-amendment-v1.json",
+  "preserves_original_precommitment_commit": "6b65337",
+  "status": "CORRECTION_FROZEN_BEFORE_REAL_QUANTITATIVE_EXECUTION",
+  "real_quantitative_results_observed_before_correction": false,
+  "reason": "The legacy technical gate requires three evaluable folds and must remain unchanged. Making ROBUSTNESS_PASSED a prerequisite of the twenty-session quantitative verdict would make approval impossible by construction because the authorized dataset produces exactly two folds. The Ninth Increment therefore adds a separate versioned technical-completeness contract for its two-fold acceptance while preserving and reporting the legacy insufficient-evidence result.",
+  "legacy_technical_robustness": {
+    "gate_path": "examples/acceptance/ninth-increment/technical-gate-v1.json",
+    "gate_file_sha256": "468142286af92f55662e15b8cd841b135426cc17e9a5b99b7f2f632aaf07005f",
+    "gate_policy_id": "sha256:783755d95253aa525c2ea50b22bb1fa98177f7559208a9ae7acabe46916325b8",
+    "walk_forward_policy_path": "examples/acceptance/ninth-increment/walk-forward-policy-v1.json",
+    "walk_forward_policy_id": "sha256:a86a2a379482f6fcbe0ef1caf70f5ef4f99559f3a0f01b600394d504fe829af4",
+    "minimum_folds": 3,
+    "expected_status_with_two_folds": "ROBUSTNESS_INSUFFICIENT_EVIDENCE",
+    "policy_changed": false,
+    "semantics_changed": false
+  },
+  "ninth_increment_technical_completeness": {
+    "policy_path": "examples/acceptance/ninth-increment/technical-completeness-real-20-v1.json",
+    "policy_file_sha256": "5d8cda1020aa70f246afde4d83cf09e5da42d194b6bfbd29e676a7547af83702",
+    "policy_id": "sha256:2e7be06cdf967c582b6a22107ca90a2c4da89b4240944b1c785d564b00b281ff",
+    "walk_forward_policy_path": "examples/acceptance/ninth-increment/walk-forward-policy-real-20-v1.json",
+    "walk_forward_policy_id": "sha256:43c483cb1c1673c135f3f6d18e3de6f2bd3c079599aec659a9092b2110183594",
+    "minimum_folds": 2,
+    "requires_all_four_families": true
+  },
+  "quantitative_robustness": {
+    "original_policy_preserved_path": "examples/acceptance/ninth-increment/quantitative-gate-v1.json",
+    "original_policy_id": "sha256:a1196bb8333baad0ed7d29fbcd3a094d27a2c68e5f25c7b782597845ac093e1f",
+    "corrected_policy_path": "examples/acceptance/ninth-increment/quantitative-gate-real-20-v2.json",
+    "corrected_policy_file_sha256": "bb35537d4280f0ecc3910ca53e582de1784df40cf34f11ba6b7037a03e538b73",
+    "corrected_policy_id": "sha256:0a60a6ffc58dcfa6694348109c44b598d4969de6013b7f5e436e9e6f08a52def",
+    "technical_requirement": "NINTH_INCREMENT_TECHNICAL_COMPLETE",
+    "legacy_robustness_is_not_prerequisite": true,
+    "quantitative_threshold_changes": []
+  },
+  "reported_side_by_side": [
+    "legacy_robustness_status",
+    "ninth_increment_technical_status",
+    "quantitative_robustness_status"
+  ],
+  "anti_tuning": {
+    "change_made_in_response_to_strategy_performance": false,
+    "real_quantitative_results_observed": false,
+    "search_space_changed": false,
+    "quantitative_thresholds_changed": false,
+    "monte_carlo_changed": false,
+    "sensitivity_changed": false,
+    "stress_changed": false
+  }
+}

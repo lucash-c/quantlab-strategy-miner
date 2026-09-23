@@ -66,6 +66,39 @@ class NinthIncrementRealAcceptanceTests(unittest.TestCase):
         self.assertFalse(evidence["anti_tuning"]["change_made_in_response_to_strategy_performance"])
         self.assertEqual(evidence["quantitative_threshold_changes"], [])
 
+    def test_pre_result_correction_preserves_legacy_and_all_thresholds(self):
+        correction = json.loads(
+            Path("docs/evidence/ninth-increment-precommitment-correction-v2.json")
+            .read_text(encoding="utf-8")
+        )
+        original = json.loads(
+            Path("examples/acceptance/ninth-increment/quantitative-gate-v1.json")
+            .read_text(encoding="utf-8")
+        )
+        corrected = json.loads(
+            Path(
+                "examples/acceptance/ninth-increment/quantitative-gate-real-20-v2.json"
+            ).read_text(encoding="utf-8")
+        )
+        legacy_gate = Path("examples/acceptance/ninth-increment/technical-gate-v1.json")
+        eighth_gate = Path("examples/robustness/fixture-gate.json")
+        self.assertEqual(
+            json.loads(legacy_gate.read_text(encoding="utf-8")),
+            json.loads(eighth_gate.read_text(encoding="utf-8")),
+        )
+        self.assertEqual(original.pop("technical_requirement"), "ROBUSTNESS_PASSED")
+        self.assertEqual(
+            corrected.pop("technical_requirement"),
+            "NINTH_INCREMENT_TECHNICAL_COMPLETE",
+        )
+        self.assertEqual(original, corrected)
+        self.assertFalse(correction["real_quantitative_results_observed_before_correction"])
+        self.assertEqual(
+            correction["quantitative_robustness"]["quantitative_threshold_changes"], []
+        )
+        self.assertFalse(correction["legacy_technical_robustness"]["policy_changed"])
+        self.assertFalse(correction["legacy_technical_robustness"]["semantics_changed"])
+
 
 if __name__ == "__main__":
     unittest.main()

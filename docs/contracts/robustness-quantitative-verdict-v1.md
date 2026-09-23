@@ -7,17 +7,22 @@ schemas.
 
 ## Separate verdicts
 
-`candidate-robustness-assessment/v1` remains the sole source of the technical
-status. `candidate-robustness-quantitative-assessment/v1` references that immutable
-assessment and produces exactly one of:
+`candidate-robustness-assessment/v1` remains the sole source of the legacy
+technical status. `candidate-robustness-technical-completeness/v1` is an additive
+Ninth Increment contract that records whether the versioned 20-session acceptance
+completed its two Walk-Forward folds and all four mandatory families.
+`candidate-robustness-quantitative-assessment/v1` produces exactly one of:
 
 - `PASSED`
 - `FAILED`
 - `INSUFFICIENT_EVIDENCE`
 
 Precedence is `INSUFFICIENT_EVIDENCE`, then `FAILED`, then `PASSED`. No criterion
-short-circuits evaluation. The quantitative result requires the technical status
-`ROBUSTNESS_PASSED`; it never reinterprets or overwrites it.
+short-circuits evaluation. A quantitative policy declares its technical dependency
+explicitly. The original policy continues to require `ROBUSTNESS_PASSED`. The
+corrected 20-session policy requires
+`NINTH_INCREMENT_TECHNICAL_COMPLETE` and records the legacy status alongside it;
+it never reinterprets or overwrites the legacy result.
 
 ## Exact rules
 
@@ -67,10 +72,22 @@ complete `13 Discovery + 6 Validation` folds at step one. The Walk-Forward polic
 therefore has `min_folds=2`; the older policy retains `min_folds=3`.
 
 The technical gate is also unchanged and still requires three evaluable folds.
-Consequently, the 20-session execution cannot produce legacy
-`ROBUSTNESS_PASSED`, and therefore cannot produce a quantitatively qualified
-candidate under the frozen dependency. This is an explicit result of compatibility,
-not an after-the-fact threshold adjustment.
+Consequently, the 20-session execution naturally reports legacy
+`ROBUSTNESS_INSUFFICIENT_EVIDENCE`. Separately, the versioned Ninth Increment
+Technical Completeness policy requires the two complete folds produced by the
+authorized dataset plus successful execution of Monte Carlo, Sensitivity and
+Stress. The corrected quantitative policy depends on that completeness status,
+not on legacy `ROBUSTNESS_PASSED`.
+
+Every real-acceptance assessment therefore reports three independent fields:
+
+- `legacy_robustness_status`;
+- `ninth_increment_technical_status`;
+- `quantitative_robustness_status`.
+
+This correction changes no economic metric or threshold. It was frozen before
+any real quantitative result was observed and is recorded in
+`ninth-increment-precommitment-correction-v2.json`.
 
 Two folds provide more limited temporal evidence than three or more folds. The
 real acceptance primarily proves official multi-session ingestion, chronological
