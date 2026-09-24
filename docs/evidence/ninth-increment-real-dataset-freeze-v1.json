@@ -1,0 +1,202 @@
+{
+  "schema_version": "ninth-increment-real-dataset-freeze/v1",
+  "status": "REAL_DATASET_FROZEN_BEFORE_OBSERVED_CANDIDATE_RESULTS",
+  "legacy_eighth_increment_commit": "e200652",
+  "ninth_pre_result_commits": [
+    "6b65337",
+    "b8a19f7",
+    "d8a46b0",
+    "a1ce8bf",
+    "53177ab",
+    "93bb72f"
+  ],
+  "dataset_manifest_created_before_research_evaluation": true,
+  "dataset_manifest_materialized_at": "2026-09-23T11:24:05-03:00",
+  "evidence_record_created_after_operational_interruption": true,
+  "candidate_results_observed_before_dataset_freeze": false,
+  "policies_changed_after_candidate_results": false,
+  "whitelist_path": "examples/acceptance/ninth-increment/session-whitelist-v2.json",
+  "whitelist_file_sha256": "088bfe24f81429ac826a910e97cfb8d563e0f74c4b1b18bd168ef848bc5751b8",
+  "source_manifest_path": "docs/evidence/ninth-increment-official-sources-v1.json",
+  "source_manifest_file_sha256": "dd6188be1c4fba7a1cead8462c56ce81655a56226184618e231cc6a5e4edb8b7",
+  "input_freeze_file_sha256": "7e5c3a504297e8064ba0aa9dabacb4eb6c36c32c95c920bff8cae64a530b0ff1",
+  "market_history_file_sha256": "c0972dbb00d5159e09cdadd70f5cf4697398dae6f55355a757b4e0e09c9f4612",
+  "dataset_id": "sha256:6e3fc4f0f6359e3b01c8163a7b06390df66be2845396b517ec27362e55296262",
+  "window_fingerprint": "sha256:5c06418d192be74f5798eaabd417a7ce1311a1f4f301217bfb114592cbf5e4e1",
+  "logical_asset": "WIN",
+  "physical_contract": "WINV26",
+  "timeframes": ["1m", "2m", "5m", "15m"],
+  "session_count": 20,
+  "sessions": [
+    {
+      "trading_date": "2026-08-24",
+      "source_zip": "24-08-2026_NEGOCIOSAVISTA_DRV.zip",
+      "source_sha256": "fd8b190ad0178a6e57060d0cb616ea5349e4f2cfb32ec107e2dc5effe7a585c3",
+      "import_id": "sha256:4e97070860811b57c7d51415fe68432b2215ed7c18368362177fb87f009c889f",
+      "session_fingerprint": "sha256:f274642c041ccf3ae0be01c830bafafa249a75c4ba721697af9619d116857204",
+      "physical_contract": "WINV26"
+    },
+    {
+      "trading_date": "2026-08-25",
+      "source_zip": "25-08-2026_NEGOCIOSAVISTA_DRV.zip",
+      "source_sha256": "ed818f184fc5264ac12babe300b92defced605b5c8e24b0e55aec5d27240a1f2",
+      "import_id": "sha256:c4d13dd3c89054d2dee31b63dcfa8671711db88aa2a782823cafb786af0ed257",
+      "session_fingerprint": "sha256:f1c1f1968084e0664f7662a17945c8523a270176535f13450db167a65206fc4e",
+      "physical_contract": "WINV26"
+    },
+    {
+      "trading_date": "2026-08-26",
+      "source_zip": "26-08-2026_NEGOCIOSAVISTA_DRV.zip",
+      "source_sha256": "8dbfbf52bbd57ce30269c44ca0f914ab491d5f591d45e2a1ff5ec609e227ce97",
+      "import_id": "sha256:5f6b23d29f5d4137301f0abc9a3f62e6a40368985b57040a540c6bdcf2dcb1da",
+      "session_fingerprint": "sha256:4ff5d14be0c1ac9bb3372d27e352feaf197e94b272c67f649828b5c8cd41780d",
+      "physical_contract": "WINV26"
+    },
+    {
+      "trading_date": "2026-08-27",
+      "source_zip": "27-08-2026_NEGOCIOSAVISTA_DRV.zip",
+      "source_sha256": "01ded91f5e805dcd26c4fa934113905f888197be65aeff2326b2a811bf3f1132",
+      "import_id": "sha256:2b066d8d25ad73a69e09a9a271e2c5d4760a459879e63ebbd8247e1a5de247a9",
+      "session_fingerprint": "sha256:91e94b0b0c4adeff3152517e08241dc5d047363eea445b588da05e8f801fbd82",
+      "physical_contract": "WINV26"
+    },
+    {
+      "trading_date": "2026-08-28",
+      "source_zip": "28-08-2026_NEGOCIOSAVISTA_DRV.zip",
+      "source_sha256": "2cda17c82d597a3000b6d3d9577a25d3620dcb6acda5e21da86aa774a6ad329d",
+      "import_id": "sha256:aa5782c75b2306701aa91fce51630ec616d34ca8ee4a78f7451d316a9dfeaf1d",
+      "session_fingerprint": "sha256:35ae864a3f63a3e7a733dccb66abf4b1298cfabcdef9280441baaebccac83934",
+      "physical_contract": "WINV26"
+    },
+    {
+      "trading_date": "2026-08-31",
+      "source_zip": "31-08-2026_NEGOCIOSAVISTA_DRV.zip",
+      "source_sha256": "12201d11fd33701972ab69b5479a1ab388e86b2e28fdf9fbbf3d41e9f4341bc5",
+      "import_id": "sha256:943b994497558f2e13f61e01c686369ab3836ba424f1fb651fac803c38f3eb61",
+      "session_fingerprint": "sha256:9ca4fd221682e2b32726abbd2b99ab9db133931b7bc803cc3c3101becd7af2d0",
+      "physical_contract": "WINV26"
+    },
+    {
+      "trading_date": "2026-09-01",
+      "source_zip": "01-09-2026_NEGOCIOSAVISTA_DRV.zip",
+      "source_sha256": "65fd09bf93659419babf9b38b9b0337f0c495951561171ffc7a79c4e87768c6d",
+      "import_id": "sha256:9a7b85b66bd229bd40cf19bef13f2e737cba4b0c8af06df638fc0894e5f7edd4",
+      "session_fingerprint": "sha256:6192861fda84d47a3ae5f6a40c4abe381b743f04151596758c20029201aee90d",
+      "physical_contract": "WINV26"
+    },
+    {
+      "trading_date": "2026-09-02",
+      "source_zip": "02-09-2026_NEGOCIOSAVISTA_DRV.zip",
+      "source_sha256": "6116013ec8444840ee325591a27fc022c8fd00de0f168ee528f754ea9bbf8ced",
+      "import_id": "sha256:ef2ea790feacdbf6dee3d4757da74b2cecad2cb39a50c145e80adf3aec6e8548",
+      "session_fingerprint": "sha256:ce50172a25a936d2d23a59205c71b3477af260054ce46ae02b944c3fc084ccf3",
+      "physical_contract": "WINV26"
+    },
+    {
+      "trading_date": "2026-09-03",
+      "source_zip": "03-09-2026_NEGOCIOSAVISTA_DRV.zip",
+      "source_sha256": "6311e5f4b0395b310a6cf37b4ce626bde9873359bd681c4efc75f893391da137",
+      "import_id": "sha256:25d75688802f5516f12202ce2a3ad2ec6f224618c355569a5b219aebafbbb4b8",
+      "session_fingerprint": "sha256:9b39ec63f9a4f5f01c1cb336fb3a61eabecae65036f8a98bdabe586538e1514a",
+      "physical_contract": "WINV26"
+    },
+    {
+      "trading_date": "2026-09-04",
+      "source_zip": "04-09-2026_NEGOCIOSAVISTA_DRV.zip",
+      "source_sha256": "bddf3f01119791c4ea6fcb447dd78607a08b3d80fc5c686b100c0e8429a70350",
+      "import_id": "sha256:8aec2d0c0a492826faba3c3d84aa90c359f45c24530990380283f32fe7740f60",
+      "session_fingerprint": "sha256:d7aba556471c236e3743016aea6e4b7ed40ad4a4a51d7223aea80c46a59452cc",
+      "physical_contract": "WINV26"
+    },
+    {
+      "trading_date": "2026-09-08",
+      "source_zip": "08-09-2026_NEGOCIOSAVISTA_DRV.zip",
+      "source_sha256": "5167e8a6ffbf08956a8b697db06e15bc116608bcaa5c282ea2224f4123402b05",
+      "import_id": "sha256:c6dbefccfb7f12ccc32d8dcab8c33667e0fdcc978017444f3f1840e7c74ea114",
+      "session_fingerprint": "sha256:861fcb5e414300b5a15278792892df6bca18e1fbc8f11bca3b30502baf4bf224",
+      "physical_contract": "WINV26"
+    },
+    {
+      "trading_date": "2026-09-09",
+      "source_zip": "09-09-2026_NEGOCIOSAVISTA_DRV.zip",
+      "source_sha256": "9267ddb00c9677de0504a3223f44ca6bd4ded29d02f2193900ed85c3ac271563",
+      "import_id": "sha256:e098d0232210a035ce7b5072814113262b7c39a9425a5a592a844f323c2edfde",
+      "session_fingerprint": "sha256:a8aebdf531956f1012d17eae77f3c89aff469d3ff4a35ec8999d4337fb24c2cd",
+      "physical_contract": "WINV26"
+    },
+    {
+      "trading_date": "2026-09-10",
+      "source_zip": "10-09-2026_NEGOCIOSAVISTA_DRV.zip",
+      "source_sha256": "fbb243028b3af09f47fb0311f7ea29bd8d8128b218ab04f14b5227e7ea5c4b3f",
+      "import_id": "sha256:6d02f5667d6dc277499af77055b7909e54571a5d7bff7c5910cbb16cb3160dc2",
+      "session_fingerprint": "sha256:ad8560db2ed83ea4b9b9da886a85ff795f5ee669211097d3da91d6e0efe14794",
+      "physical_contract": "WINV26"
+    },
+    {
+      "trading_date": "2026-09-11",
+      "source_zip": "11-09-2026_NEGOCIOSAVISTA_DRV.zip",
+      "source_sha256": "aefe367afed53b4aa93a1da247e1c51ee270e31eac584eff0356a2d1ad2b7132",
+      "import_id": "sha256:2d64915d42118281406d5e417a12a7c4108dde562510539169feeb4049e61a8e",
+      "session_fingerprint": "sha256:11a950ad6ef47d1a1edc7cfbd17f3f0167e98822291b0b4714281283393a7885",
+      "physical_contract": "WINV26"
+    },
+    {
+      "trading_date": "2026-09-14",
+      "source_zip": "14-09-2026_NEGOCIOSAVISTA_DRV.zip",
+      "source_sha256": "1aa320485fd45caa43a130e908c299fa935b74121b9f7346e4463a02c45e1748",
+      "import_id": "sha256:63f0c10e9f6f2a722b5f0a8984f24e281cb144dc4fb0e5d92fdb46b323870a6c",
+      "session_fingerprint": "sha256:c75f07230551d5954c16f878e6ceb5b37565e56cb1b25869cb5a968143843bc5",
+      "physical_contract": "WINV26"
+    },
+    {
+      "trading_date": "2026-09-15",
+      "source_zip": "15-09-2026_NEGOCIOSAVISTA_DRV.zip",
+      "source_sha256": "2ff7cebbfcd55aea9cbf5bd4dbf4957a5e0b5cde468963486a4f855a8047849d",
+      "import_id": "sha256:51c2ecf01428fd78fa8410413dc977d633228e34bd3b5cdd3a4f8bdecd057624",
+      "session_fingerprint": "sha256:bde38f723c5be4524b4f12cf2f220b6fc28fc052556d9ecb6dc717e190b4f006",
+      "physical_contract": "WINV26"
+    },
+    {
+      "trading_date": "2026-09-16",
+      "source_zip": "16-09-2026_NEGOCIOSAVISTA_DRV.zip",
+      "source_sha256": "e586f272001d6835c8036cfcb705583efe0a33f2d201b74532f68eeac997674d",
+      "import_id": "sha256:24ee2c2e21ea58a5519cc70119ccc932fcf9f1bd324ecc113991fb2303c28fc2",
+      "session_fingerprint": "sha256:054ce6f09c8fb43f2a256dc180d4cf8c8a73c3b3fc03e0ea34a7aef9a1642386",
+      "physical_contract": "WINV26"
+    },
+    {
+      "trading_date": "2026-09-17",
+      "source_zip": "17-09-2026_NEGOCIOSAVISTA_DRV.zip",
+      "source_sha256": "c65bd71535dfbd35dd892609beb2774734a2328a22fb339a28ffb351bbdec8a5",
+      "import_id": "sha256:0f932b5d253a78caf43528232e8da4793dc5dd6e226a676400edba40afe3d5aa",
+      "session_fingerprint": "sha256:fb6a54703d1189daad0c80b5e6d5401e050647a91c6317bac37881699893072e",
+      "physical_contract": "WINV26"
+    },
+    {
+      "trading_date": "2026-09-18",
+      "source_zip": "18-09-2026_NEGOCIOSAVISTA_DRV.zip",
+      "source_sha256": "ab1752b1c437256042f4077890e613423531a5cf8da163fde216a244b50f160c",
+      "import_id": "sha256:ab07fbf89b6de0b8ddc0def58fd4a4efe8ee8f384ea1a0c9e60e18a7c80a9035",
+      "session_fingerprint": "sha256:7381d519a0cc555011b74d4e48f8057d1fd64b76a57206352d281bbf665b4aee",
+      "physical_contract": "WINV26"
+    },
+    {
+      "trading_date": "2026-09-21",
+      "source_zip": "21-09-2026_NEGOCIOSAVISTA_DRV.zip",
+      "source_sha256": "d11c72211e6b8d74a09d9e20b66730fb54a480cc7a0bacde79fcfe1705d84abb",
+      "import_id": "sha256:09890d57dc1dcc56eb8db0dc176a0dae91b6f8d035597d93d633fbcff2f7c012",
+      "session_fingerprint": "sha256:87e1caea91387b372cd2dd5c93560307febb94f495588c5c3fe31c1764d5375b",
+      "physical_contract": "WINV26"
+    }
+  ],
+  "operational_state_at_recovery": {
+    "imports_published": 20,
+    "imports_temporary": 0,
+    "sessions_published": 20,
+    "sessions_temporary_excluded": 1,
+    "temporary_session_is_preexisting_interruption_residue": true
+  },
+  "extra_sessions_used": 0,
+  "automatic_rollover_used": false,
+  "current_session_2026_09_22_used": false
+}
