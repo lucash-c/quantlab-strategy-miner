@@ -25,6 +25,7 @@ from quantlab_mining.contracts import (
     EvaluationConfigV1,
     GenerationPolicyV1,
     MiningSearchSpaceV1,
+    identity,
     load_contract,
 )
 from quantlab_research.contracts import GatePolicyV1, SplitPolicyV1
@@ -80,6 +81,39 @@ def tree_hashes(path: Path) -> dict[str, str]:
     }
 
 
+def verified_robustness_manifest(path: Path) -> dict[str, Any]:
+    manifest = load_json(path / "robustness-manifest.json")
+    if manifest.get("schema_version") != "robustness-manifest/v1":
+        raise AssertionError(f"unsupported robustness manifest in {path}")
+    for name, digest in manifest.get("artifacts", {}).items():
+        if sha256_file(path / name) != digest:
+            raise AssertionError(f"robustness artifact hash mismatch: {path / name}")
+    expected = identity(
+        "robustness-export/v1",
+        {key: value for key, value in manifest.items() if key != "robustness_export_id"},
+    )
+    if manifest.get("robustness_export_id") != expected:
+        raise AssertionError(f"robustness_export_id mismatch in {path}")
+    return manifest
+
+
+def family_result_ids(path: Path) -> dict[str, dict[str, str]]:
+    specs = (
+        ("walk-forward", "walk_forward_result_id"),
+        ("ninth-increment-walk-forward", "walk_forward_result_id"),
+        ("monte-carlo", "monte_carlo_result_id"),
+        ("sensitivity", "sensitivity_result_id"),
+        ("stress", "stress_result_id"),
+    )
+    return {
+        family: {
+            row["candidate_id"]: row[id_field]
+            for row in parquet_records(path / f"{family}-results.parquet")
+        }
+        for family, id_field in specs
+    }
+
+
 def status_counts(rows: list[dict[str, Any]], field: str = "status") -> dict[str, int]:
     return dict(sorted(Counter(row[field] for row in rows).items()))
 
@@ -97,11 +131,21 @@ def main() -> None:
             "Research and Score evidence in the existing work directory."
         ),
     )
+    parser.add_argument(
+        "--stress-amendment-v2",
+        action="store_true",
+        help=(
+            "Run the precommitted Stress V2 amendment into new output artifacts while "
+            "preserving and validating the original V1 evidence."
+        ),
+    )
     args = parser.parse_args()
     if args.work.exists() and not args.resume_after_scoring:
         raise ValueError("acceptance work directory must be new")
     if not args.work.exists() and args.resume_after_scoring:
         raise ValueError("resume requires an existing acceptance work directory")
+    if args.stress_amendment_v2 and not args.resume_after_scoring:
+        raise ValueError("Stress V2 amendment requires --resume-after-scoring")
 
     whitelist_path = ACCEPTANCE / "session-whitelist-v2.json"
     source_manifest_path = ROOT / "docs/evidence/ninth-increment-official-sources-v1.json"
@@ -257,9 +301,13 @@ def main() -> None:
     sensitivity = load_robustness_policy(
         ACCEPTANCE / "sensitivity-policy-v1.json", SensitivityPolicyV1
     )
-    stress = load_robustness_policy(
+    original_stress = load_robustness_policy(
         ACCEPTANCE / "stress-policy-v1.json", ExecutionStressPolicyV1
     )
+    amended_stress = load_robustness_policy(
+        ACCEPTANCE / "stress-policy-v2.json", ExecutionStressPolicyV1
+    )
+    stress = amended_stress if args.stress_amendment_v2 else original_stress
     workload = load_robustness_policy(
         ACCEPTANCE / "workload-policy-v1.json", RobustnessWorkloadPolicyV1
     )
@@ -276,6 +324,54 @@ def main() -> None:
     )
     robustness_evaluation = evaluation.model_copy(update={"max_sessions": 20})
 
+    original_clean = args.work / "robustness-clean"
+    original_manifest: dict[str, Any] | None = None
+    original_clean_hashes: dict[str, str] | None = None
+    amendment_record: dict[str, Any] | None = None
+    if args.stress_amendment_v2:
+        amendment_record = load_json(
+            ROOT / "docs/evidence/ninth-increment-stress-policy-amendment-v3.json"
+        )
+        if amendment_record["original_policy"]["stress_policy_id"] != original_stress.policy_id:
+            raise AssertionError("Stress V1 identity differs from amendment provenance")
+        if amendment_record["amended_policy"]["stress_policy_id"] != amended_stress.policy_id:
+            raise AssertionError("Stress V2 identity differs from amendment precommitment")
+        original_manifest = verified_robustness_manifest(original_clean)
+        original_clean_hashes = tree_hashes(original_clean)
+        original_stress_rows = parquet_records(original_clean / "stress-results.parquet")
+        if any(
+            row["metrics"]["valid_scenarios"]["value"]["numerator"] != "0"
+            or len(row["scenarios"]) != 1
+            or row["scenarios"][0]["status"] != "INVALID_STRESS_SCENARIO"
+            or row["scenarios"][0]["reason"] != "NON_STRESS_SCENARIO"
+            for row in original_stress_rows
+        ):
+            raise AssertionError("preserved Stress V1 evidence does not show the structural defect")
+        amendment_freeze = {
+            "schema_version": "ninth-increment-stress-amendment-input-freeze/v1",
+            "precommit_commit": "ed9731e",
+            "amendment_record_file_sha256": sha256_file(
+                ROOT / "docs/evidence/ninth-increment-stress-policy-amendment-v3.json"
+            ),
+            "original_stress_policy_id": original_stress.policy_id,
+            "amended_stress_policy_id": amended_stress.policy_id,
+            "original_robustness_export_id": original_manifest["robustness_export_id"],
+            "original_robustness_manifest_file_sha256": sha256_file(
+                original_clean / "robustness-manifest.json"
+            ),
+            "original_stress_status": "INVALID_STRESS_SCENARIO",
+            "original_stress_reason": "NON_STRESS_SCENARIO",
+            "amended_stress_results_observed_before_freeze": False,
+        }
+        amendment_freeze_path = args.work / "stress-amendment-input-freeze.json"
+        if amendment_freeze_path.exists():
+            if load_json(amendment_freeze_path) != amendment_freeze:
+                raise AssertionError("Stress amendment input freeze changed")
+        else:
+            write_canonical_json(amendment_freeze_path, amendment_freeze)
+
+    run_prefix = "robustness-stress-v2" if args.stress_amendment_v2 else "robustness"
+
     def execute(
         name: str,
         *,
@@ -283,6 +379,11 @@ def main() -> None:
         policy: MonteCarloPolicyV1 = monte_carlo,
         stop_after: int | None = None,
     ) -> dict[str, Any]:
+        destination = args.work / name
+        if destination.exists():
+            if stop_after is not None:
+                raise AssertionError("cannot interrupt an already-published robustness export")
+            return verified_robustness_manifest(destination)
         return run_robustness(
             research_directory=research_output,
             score_directory=score_output,
@@ -302,7 +403,7 @@ def main() -> None:
             market_cache_root=args.cache,
             cache_root=args.cache,
             checkpoint_path=checkpoint or args.work / f"{name}.sqlite",
-            output=args.work / name,
+            output=destination,
             quantitative_policy=quantitative_gate,
             quantitative_walk_forward_policy=ninth_walk_forward,
             technical_completeness_policy=technical_completeness,
@@ -310,30 +411,35 @@ def main() -> None:
             observer=lambda event: print(json.dumps({"run": name, **event}), flush=True),
         )
 
-    clean_manifest = execute("robustness-clean")
-    warm_manifest = execute("robustness-warm")
-    resume_checkpoint = args.work / "robustness-resumed.sqlite"
-    try:
-        execute("robustness-resumed", checkpoint=resume_checkpoint, stop_after=5)
-    except ControlledRobustnessInterruption:
-        pass
-    else:
-        raise AssertionError("controlled robustness interruption did not occur")
-    resumed_manifest = execute("robustness-resumed", checkpoint=resume_checkpoint)
-    clean_hashes = tree_hashes(args.work / "robustness-clean")
+    clean_name = f"{run_prefix}-clean"
+    warm_name = f"{run_prefix}-warm"
+    resumed_name = f"{run_prefix}-resumed"
+    clean_manifest = execute(clean_name)
+    warm_manifest = execute(warm_name)
+    resume_checkpoint = args.work / f"{resumed_name}.sqlite"
+    if not (args.work / resumed_name).exists():
+        try:
+            execute(resumed_name, checkpoint=resume_checkpoint, stop_after=5)
+        except ControlledRobustnessInterruption:
+            pass
+        else:
+            raise AssertionError("controlled robustness interruption did not occur")
+    resumed_manifest = execute(resumed_name, checkpoint=resume_checkpoint)
+    clean_hashes = tree_hashes(args.work / clean_name)
     if not (
         clean_manifest == warm_manifest == resumed_manifest
-        and clean_hashes == tree_hashes(args.work / "robustness-warm")
-        and clean_hashes == tree_hashes(args.work / "robustness-resumed")
+        and clean_hashes == tree_hashes(args.work / warm_name)
+        and clean_hashes == tree_hashes(args.work / resumed_name)
     ):
         raise AssertionError("clean/warm/resume scientific robustness outputs differ")
 
-    changed_seed_record = monte_carlo.model_dump(mode="json")
-    changed_seed_record["seed"] = "0" * 63 + "2"
-    changed_seed = MonteCarloPolicyV1.model_validate(changed_seed_record)
-    execute("robustness-changed-seed", policy=changed_seed)
+    if not args.stress_amendment_v2:
+        changed_seed_record = monte_carlo.model_dump(mode="json")
+        changed_seed_record["seed"] = "0" * 63 + "2"
+        changed_seed = MonteCarloPolicyV1.model_validate(changed_seed_record)
+        execute("robustness-changed-seed", policy=changed_seed)
 
-    clean = args.work / "robustness-clean"
+    clean = args.work / clean_name
     legacy_plan = load_json(clean / "walk-forward-plan.json")
     ninth_plan = load_json(clean / "ninth-increment-walk-forward-plan.json")
     if (
@@ -372,38 +478,63 @@ def main() -> None:
     ):
         raise AssertionError("quantitative verdict used the wrong technical dependency")
 
-    family_specs = (
-        ("walk-forward", "walk_forward_result_id"),
-        ("ninth-increment-walk-forward", "walk_forward_result_id"),
-        ("monte-carlo", "monte_carlo_result_id"),
-        ("sensitivity", "sensitivity_result_id"),
-        ("stress", "stress_result_id"),
-    )
-    family_ids = {
-        family: {
-            row["candidate_id"]: row[id_field]
-            for row in parquet_records(clean / f"{family}-results.parquet")
-        }
-        for family, id_field in family_specs
-    }
-    changed_family_ids = {
-        family: {
-            row["candidate_id"]: row[id_field]
-            for row in parquet_records(
-                args.work / "robustness-changed-seed" / f"{family}-results.parquet"
-            )
-        }
-        for family, id_field in family_specs
-    }
+    family_ids = family_result_ids(clean)
+    original_family_ids = family_result_ids(original_clean)
+    changed_family_ids = family_result_ids(args.work / "robustness-changed-seed")
+    candidate_ids = set(family_ids["stress"])
+    if any(set(ids) != candidate_ids for ids in family_ids.values()):
+        raise AssertionError("current robustness families have different candidate universes")
+    if any(set(ids) != candidate_ids for ids in original_family_ids.values()):
+        raise AssertionError("original robustness families have different candidate universes")
+    if any(set(ids) != candidate_ids for ids in changed_family_ids.values()):
+        raise AssertionError("changed-seed families have different candidate universes")
+
+    if args.stress_amendment_v2:
+        for family in (
+            "walk-forward",
+            "ninth-increment-walk-forward",
+            "monte-carlo",
+            "sensitivity",
+        ):
+            if family_ids[family] != original_family_ids[family]:
+                raise AssertionError(
+                    f"Stress amendment invalidated unrelated family: {family}"
+                )
+        if any(
+            family_ids["stress"][candidate_id]
+            == original_family_ids["stress"][candidate_id]
+            for candidate_id in sorted(candidate_ids)
+        ):
+            raise AssertionError("Stress V2 failed to invalidate a Stress V1 result")
+        amended_stress_rows = parquet_records(clean / "stress-results.parquet")
+        if len(amended_stress_rows) != len(candidate_ids) or any(
+            row["status"] != "COMPLETED"
+            or row["stress_policy_id"] != amended_stress.policy_id
+            or row["metrics"]["valid_scenarios"]["value"]["numerator"] != "1"
+            or len(row["scenarios"]) != 1
+            or row["scenarios"][0]["status"] != "VALID"
+            or row["scenarios"][0]["stress_policy_id"] != amended_stress.policy_id
+            or row["scenarios"][0]["resolved_cost"]["numerator"] != "3"
+            or row["scenarios"][0]["resolved_cost"]["denominator"] != "2"
+            or row["scenarios"][0]["resolved_slippage"]["numerator"] != "3"
+            or row["scenarios"][0]["resolved_slippage"]["denominator"] != "2"
+            for row in amended_stress_rows
+        ):
+            raise AssertionError("Stress V2 evidence is not the exact valid 3/2 amendment")
+        if original_clean_hashes is None or tree_hashes(original_clean) != original_clean_hashes:
+            raise AssertionError("preserved Stress V1 evidence changed during amendment")
+
     for family in (
         "walk-forward",
         "ninth-increment-walk-forward",
         "sensitivity",
         "stress",
     ):
-        if family_ids[family] != changed_family_ids[family]:
+        comparison_ids = original_family_ids if args.stress_amendment_v2 else family_ids
+        if comparison_ids[family] != changed_family_ids[family]:
             raise AssertionError(f"Monte Carlo seed invalidated unrelated family: {family}")
-    if family_ids["monte-carlo"] == changed_family_ids["monte-carlo"]:
+    comparison_ids = original_family_ids if args.stress_amendment_v2 else family_ids
+    if comparison_ids["monte-carlo"] == changed_family_ids["monte-carlo"]:
         raise AssertionError("Monte Carlo seed did not invalidate Monte Carlo evidence")
 
     final_sources = verify_sources(args.input_dir, whitelist, expected)
@@ -411,8 +542,22 @@ def main() -> None:
         raise AssertionError("official source changed during acceptance")
     research = load_research_evidence(research_output)
     timeframes = Counter(strategy.timeframe for strategy in research.candidates.values())
+    operational_names = [
+        "research",
+        "scores",
+        "robustness-clean",
+        "robustness-warm",
+        "robustness-resumed",
+        "robustness-changed-seed",
+    ]
+    if args.stress_amendment_v2:
+        operational_names.extend([clean_name, warm_name, resumed_name])
     report = {
-        "schema_version": "ninth-increment-real-multisession-acceptance/v1",
+        "schema_version": (
+            "ninth-increment-real-multisession-acceptance/v2"
+            if args.stress_amendment_v2
+            else "ninth-increment-real-multisession-acceptance/v1"
+        ),
         "status": "EXECUTED",
         "official_b3_sessions": 20,
         "logical_asset": "WIN",
@@ -482,20 +627,81 @@ def main() -> None:
             for row in quantitative
         ],
         "family_result_ids": family_ids,
+        "original_family_result_ids": original_family_ids,
         "changed_seed_family_result_ids": changed_family_ids,
         "clean_warm_resume_byte_identical": True,
         "scientific_artifact_hashes": clean_hashes,
+        "original_scientific_artifact_hashes": (
+            original_clean_hashes if args.stress_amendment_v2 else clean_hashes
+        ),
         "robustness_manifest": clean_manifest,
+        "original_robustness_manifest": (
+            original_manifest if args.stress_amendment_v2 else clean_manifest
+        ),
+        "stress_policy_history": (
+            {
+                "v1_original": {
+                    "stress_policy_id": original_stress.policy_id,
+                    "policy_file": "examples/acceptance/ninth-increment/stress-policy-v1.json",
+                    "policy_file_sha256": amendment_record["original_policy"][
+                        "file_sha256"
+                    ],
+                    "status": "INVALID_STRESS_SCENARIO",
+                    "reason": "NON_STRESS_SCENARIO",
+                    "valid_scenarios_per_candidate": 0,
+                    "preserved_as_historical_evidence": True,
+                    "technical_consequence": (
+                        "NINTH_INCREMENT_TECHNICAL_INCOMPLETE"
+                    ),
+                },
+                "v2_amendment": {
+                    "precommit_commit": "ed9731e",
+                    "stress_policy_id": amended_stress.policy_id,
+                    "policy_file": "examples/acceptance/ninth-increment/stress-policy-v2.json",
+                    "policy_file_sha256": amendment_record["amended_policy"][
+                        "file_sha256"
+                    ],
+                    "cost_multiplier": {"numerator": "3", "denominator": "2"},
+                    "slippage_multiplier": {
+                        "numerator": "3",
+                        "denominator": "2",
+                    },
+                    "valid_scenarios_per_candidate": 1,
+                    "policy_changed_after_amended_results": False,
+                    "amended_results_accepted_without_optimization": True,
+                },
+            }
+            if args.stress_amendment_v2
+            else None
+        ),
+        "stress_amendment_granular_invalidation": (
+            {
+                "reused_unchanged_families": [
+                    "walk-forward",
+                    "ninth-increment-walk-forward",
+                    "monte-carlo",
+                    "sensitivity",
+                ],
+                "invalidated_family": "stress",
+                "invalidated_descendants": [
+                    "candidate-robustness-assessment",
+                    "ninth-increment-technical-completeness",
+                    "quantitative-gate",
+                    "qualified-set",
+                    "robustness-ranking",
+                    "quantitative-verdict",
+                ],
+                "research_reused": True,
+                "score_reused": True,
+                "candidate_session_evaluations_reused_when_fingerprint_compatible": True,
+                "original_v1_tree_preserved": True,
+            }
+            if args.stress_amendment_v2
+            else None
+        ),
         "operational": {
             name: load_json(args.work / f"{name}.operational.json")
-            for name in (
-                "research",
-                "scores",
-                "robustness-clean",
-                "robustness-warm",
-                "robustness-resumed",
-                "robustness-changed-seed",
-            )
+            for name in operational_names
         },
         "source_immutability_reverified": True,
         "automatic_rollover_used": False,
