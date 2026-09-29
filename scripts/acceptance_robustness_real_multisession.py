@@ -44,6 +44,7 @@ from quantlab_robustness.contracts import (
 from quantlab_robustness.contracts import (
     load_policy as load_robustness_policy,
 )
+from quantlab_robustness.evidence import load_score_evidence
 from quantlab_robustness.runner import ControlledRobustnessInterruption, run_robustness
 from quantlab_scoring.contracts import (
     ResearchDiversityPolicyV1,
@@ -88,9 +89,19 @@ def main() -> None:
     parser.add_argument("--input-dir", type=Path, required=True)
     parser.add_argument("--cache", type=Path, required=True)
     parser.add_argument("--work", type=Path, required=True)
+    parser.add_argument(
+        "--resume-after-scoring",
+        action="store_true",
+        help=(
+            "Resume an interrupted acceptance after validating the already-published "
+            "Research and Score evidence in the existing work directory."
+        ),
+    )
     args = parser.parse_args()
-    if args.work.exists():
+    if args.work.exists() and not args.resume_after_scoring:
         raise ValueError("acceptance work directory must be new")
+    if not args.work.exists() and args.resume_after_scoring:
+        raise ValueError("resume requires an existing acceptance work directory")
 
     whitelist_path = ACCEPTANCE / "session-whitelist-v2.json"
     source_manifest_path = ROOT / "docs/evidence/ninth-increment-official-sources-v1.json"
@@ -101,32 +112,35 @@ def main() -> None:
     if [row["trading_date"] for row in sources] != whitelist["sessions"]:
         raise AssertionError("verified sources differ from the frozen chronological whitelist")
 
-    args.work.mkdir(parents=True)
-    write_canonical_json(
-        args.work / "input-freeze.json",
-        {
-            "schema_version": "ninth-increment-real-input-freeze/v1",
-            "whitelist_file_sha256": sha256_file(whitelist_path),
-            "source_manifest_file_sha256": sha256_file(source_manifest_path),
-            "legacy_technical_gate_file_sha256": sha256_file(
-                ACCEPTANCE / "technical-gate-v1.json"
-            ),
-            "legacy_walk_forward_policy_file_sha256": sha256_file(
-                ACCEPTANCE / "walk-forward-policy-v1.json"
-            ),
-            "ninth_increment_walk_forward_policy_file_sha256": sha256_file(
-                ACCEPTANCE / "walk-forward-policy-real-20-v1.json"
-            ),
-            "ninth_increment_technical_completeness_policy_file_sha256": sha256_file(
-                ACCEPTANCE / "technical-completeness-real-20-v1.json"
-            ),
-            "quantitative_policy_file_sha256": sha256_file(
-                ACCEPTANCE / "quantitative-gate-real-20-v2.json"
-            ),
-            "sources": sources,
-            "real_quantitative_results_observed_before_freeze": False,
-        },
-    )
+    args.work.mkdir(parents=True, exist_ok=args.resume_after_scoring)
+    input_freeze = {
+        "schema_version": "ninth-increment-real-input-freeze/v1",
+        "whitelist_file_sha256": sha256_file(whitelist_path),
+        "source_manifest_file_sha256": sha256_file(source_manifest_path),
+        "legacy_technical_gate_file_sha256": sha256_file(
+            ACCEPTANCE / "technical-gate-v1.json"
+        ),
+        "legacy_walk_forward_policy_file_sha256": sha256_file(
+            ACCEPTANCE / "walk-forward-policy-v1.json"
+        ),
+        "ninth_increment_walk_forward_policy_file_sha256": sha256_file(
+            ACCEPTANCE / "walk-forward-policy-real-20-v1.json"
+        ),
+        "ninth_increment_technical_completeness_policy_file_sha256": sha256_file(
+            ACCEPTANCE / "technical-completeness-real-20-v1.json"
+        ),
+        "quantitative_policy_file_sha256": sha256_file(
+            ACCEPTANCE / "quantitative-gate-real-20-v2.json"
+        ),
+        "sources": sources,
+        "real_quantitative_results_observed_before_freeze": False,
+    }
+    input_freeze_path = args.work / "input-freeze.json"
+    if args.resume_after_scoring:
+        if load_json(input_freeze_path) != input_freeze:
+            raise AssertionError("resume input freeze differs from current frozen inputs")
+    else:
+        write_canonical_json(input_freeze_path, input_freeze)
     started = time.perf_counter()
     source_objects = [
         SessionSource(args.input_dir / source_filename(trading_date), "WINV26")
@@ -145,7 +159,12 @@ def main() -> None:
         raise AssertionError("materialized market sessions differ from frozen whitelist")
     if any(session.physical_contract != "WINV26" for session in catalog.sessions):
         raise AssertionError("materialized market session changed physical contract")
-    write_canonical_json(args.work / "market-history.json", catalog.manifest)
+    market_history_path = args.work / "market-history.json"
+    if args.resume_after_scoring:
+        if load_json(market_history_path) != catalog.manifest:
+            raise AssertionError("resume market history differs from published history")
+    else:
+        write_canonical_json(market_history_path, catalog.manifest)
 
     search_space = load_contract(
         ACCEPTANCE / "real-multisession-acceptance-v1.json", MiningSearchSpaceV1
@@ -161,29 +180,36 @@ def main() -> None:
     )
     research_events: list[dict[str, Any]] = []
     research_output = args.work / "research"
-    run_research(
-        search_space,
-        generation,
-        evaluation,
-        catalog,
-        split,
-        discovery_gate,
-        validation_gate,
-        cache_root=args.cache,
-        checkpoint=args.work / "research.sqlite",
-        output=research_output,
-        observer=research_events.append,
-    )
-    freeze_position = next(
-        index
-        for index, event in enumerate(research_events)
-        if event["phase"] == "DISCOVERY_FREEZE_VALIDATED"
-    )
-    validation_reads_before_freeze = sum(
-        event.get("stage") == "VALIDATION" for event in research_events[:freeze_position]
-    )
-    if validation_reads_before_freeze:
-        raise AssertionError("Validation was accessed before Discovery Freeze")
+    if args.resume_after_scoring:
+        # The original process could only publish Score after this exact observer gate
+        # had accepted zero Validation reads before Discovery Freeze. Validate both
+        # immutable exports below instead of rebuilding either scientific stage.
+        load_research_evidence(research_output)
+        validation_reads_before_freeze = 0
+    else:
+        run_research(
+            search_space,
+            generation,
+            evaluation,
+            catalog,
+            split,
+            discovery_gate,
+            validation_gate,
+            cache_root=args.cache,
+            checkpoint=args.work / "research.sqlite",
+            output=research_output,
+            observer=research_events.append,
+        )
+        freeze_position = next(
+            index
+            for index, event in enumerate(research_events)
+            if event["phase"] == "DISCOVERY_FREEZE_VALIDATED"
+        )
+        validation_reads_before_freeze = sum(
+            event.get("stage") == "VALIDATION" for event in research_events[:freeze_position]
+        )
+        if validation_reads_before_freeze:
+            raise AssertionError("Validation was accessed before Discovery Freeze")
 
     score_output = args.work / "scores"
     score_policy = load_scoring_policy(
@@ -195,15 +221,18 @@ def main() -> None:
     diversity_policy = load_scoring_policy(
         ROOT / "examples/scoring/research-diversity-v1.json", ResearchDiversityPolicyV1
     )
-    run_scoring(
-        research_output,
-        score_policy,
-        ranking_policy,
-        diversity_policy,
-        top_n_value=160,
-        cache_root=args.cache,
-        output=score_output,
-    )
+    if args.resume_after_scoring:
+        load_score_evidence(score_output)
+    else:
+        run_scoring(
+            research_output,
+            score_policy,
+            ranking_policy,
+            diversity_policy,
+            top_n_value=160,
+            cache_root=args.cache,
+            output=score_output,
+        )
 
     session_ids = [session.session_id for session in catalog.sessions]
     authorized = AuthorizedSessionUniverseV1.model_validate(
