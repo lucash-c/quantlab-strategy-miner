@@ -1,0 +1,125 @@
+{
+  "schema_version": "ninth-increment-stress-policy-amendment/v3",
+  "status": "FROZEN_BEFORE_AMENDED_STRESS_EXECUTION",
+  "recorded_at": "2026-09-29T11:32:31.2085163-03:00",
+  "amends": "docs/evidence/ninth-increment-precommitment-correction-v2.json",
+  "preserves_original_precommitment_commit": "6b65337",
+  "reason": "The original Stress scenario requested one absolute cost point and one absolute slippage point, exactly equal to the frozen baseline evaluation. The engine correctly classified it as INVALID_STRESS_SCENARIO with reason NON_STRESS_SCENARIO. The amendment changes only that structurally invalid Stress policy and its descendants; it is not a response to candidate performance.",
+  "original_policy": {
+    "path": "examples/acceptance/ninth-increment/stress-policy-v1.json",
+    "file_sha256": "435793dd0370c871e29548344ec9e4801025c976e2c8d2e257e808a9e8a66935",
+    "stress_policy_id": "sha256:2a834d2438c9c8fe5861dfa3cea72e2bd4eda140fe68877f72d95f5c7d18c780",
+    "requested_cost": {
+      "method": "ABSOLUTE_POINTS",
+      "value": {"numerator": "1", "denominator": "1"}
+    },
+    "requested_slippage": {
+      "method": "ABSOLUTE_POINTS",
+      "value": {"numerator": "1", "denominator": "1"}
+    },
+    "baseline_cost": {"numerator": "1", "denominator": "1"},
+    "baseline_slippage": {"numerator": "1", "denominator": "1"},
+    "structural_status": "INVALID_STRESS_SCENARIO",
+    "structural_reason": "NON_STRESS_SCENARIO",
+    "preserved": true
+  },
+  "amended_policy": {
+    "path": "examples/acceptance/ninth-increment/stress-policy-v2.json",
+    "file_sha256": "8d0d431d9361ce5bc4d44efc370db018994fdab1fa2eb26c8bbb0de77a8f33b9",
+    "stress_policy_id": "sha256:870366affa27ac2b344fa1432bd237ece61ac906fcdfa81d893e020a66f8db7c",
+    "scenario_count": 1,
+    "cost": {
+      "method": "MULTIPLIER",
+      "value": {"numerator": "3", "denominator": "2"}
+    },
+    "slippage": {
+      "method": "MULTIPLIER",
+      "value": {"numerator": "3", "denominator": "2"}
+    },
+    "resolved_cost_from_frozen_baseline": {"numerator": "3", "denominator": "2"},
+    "resolved_slippage_from_frozen_baseline": {
+      "numerator": "3",
+      "denominator": "2"
+    },
+    "new_scenario_results_observed_before_freeze": false
+  },
+  "scientific_context": {
+    "quantitative_results_from_original_invalid_policy_existed_before_amendment": true,
+    "candidate_performance_used_to_choose_amendment": false,
+    "score_or_ranking_used_to_choose_amendment": false,
+    "approval_or_rejection_used_to_choose_amendment": false,
+    "multiple_stress_multipliers_tested": false,
+    "structural_semantic_correction_only": true
+  },
+  "frozen_dataset": {
+    "dataset_id": "sha256:6e3fc4f0f6359e3b01c8163a7b06390df66be2845396b517ec27362e55296262",
+    "window_fingerprint": "sha256:5c06418d192be74f5798eaabd417a7ce1311a1f4f301217bfb114592cbf5e4e1",
+    "session_count": 20,
+    "logical_asset": "WIN",
+    "physical_contract": "WINV26"
+  },
+  "invalidation_scope": {
+    "invalidated": [
+      "STRESS",
+      "CandidateRobustnessAssessment",
+      "RobustnessGateResult",
+      "RobustnessQualifiedSet",
+      "RobustnessRanking",
+      "RobustnessDiversifiedRanking",
+      "RobustnessShortlist",
+      "NinthIncrementTechnicalCompleteness",
+      "RobustnessQuantitativeEvidence",
+      "RobustnessQuantitativeVerdict",
+      "RobustnessQuantitativeQualifiedSet",
+      "RobustnessQuantitativeRanking",
+      "RobustnessQuantitativeDiversifiedRanking",
+      "RobustnessQuantitativeShortlist",
+      "RobustnessManifest"
+    ],
+    "must_be_reused_when_fingerprints_match": [
+      "Research",
+      "Score",
+      "CandidateSessionEvaluation",
+      "WALK_FORWARD",
+      "NINTH_INCREMENT_WALK_FORWARD",
+      "MONTE_CARLO",
+      "SENSITIVITY"
+    ]
+  },
+  "unchanged_file_sha256": {
+    "docs/evidence/ninth-increment-official-sources-v1.json": "dd6188be1c4fba7a1cead8462c56ce81655a56226184618e231cc6a5e4edb8b7",
+    "examples/acceptance/ninth-increment/candidate-selection-v1.json": "6d7569064b95426fe16cc3c7692852e973921a3e42c78e4ffd209404077c857d",
+    "examples/acceptance/ninth-increment/monte-carlo-policy-v1.json": "f8efe3b0416f5174dbaaff7f4829fb20546cb2cd228bec76b65e90ef7dd3c2bc",
+    "examples/acceptance/ninth-increment/quantitative-gate-real-20-v2.json": "bb35537d4280f0ecc3910ca53e582de1784df40cf34f11ba6b7037a03e538b73",
+    "examples/acceptance/ninth-increment/real-multisession-acceptance-v1.json": "02ec2a10cbc44d4e9158d8448ffe2a6c9abbab01d5023df032a1fc89cbcfca4a",
+    "examples/acceptance/ninth-increment/sensitivity-policy-v1.json": "1293255f26590aea907cf4b6b27042c2c9570b2ccda5046cf6b2b98c1d24df8e",
+    "examples/acceptance/ninth-increment/session-whitelist-v2.json": "088bfe24f81429ac826a910e97cfb8d563e0f74c4b1b18bd168ef848bc5751b8",
+    "examples/acceptance/ninth-increment/technical-completeness-real-20-v1.json": "5d8cda1020aa70f246afde4d83cf09e5da42d194b6bfbd29e676a7547af83702",
+    "examples/acceptance/ninth-increment/technical-gate-v1.json": "468142286af92f55662e15b8cd841b135426cc17e9a5b99b7f2f632aaf07005f",
+    "examples/acceptance/ninth-increment/walk-forward-policy-real-20-v1.json": "f2ba2c2fb0cdc50cf57651103fc3202e5a46102800054ace6e3c70c7933f2d79",
+    "examples/acceptance/ninth-increment/walk-forward-policy-v1.json": "2af790995f5aac3edd723966803c23e7b176faa8844a38b730df118d4041a4dd",
+    "examples/acceptance/ninth-increment/workload-policy-v1.json": "bd2ec2bfc322007a2196faadb287e227754438b85b062523e1cf7abd8c9ad09e",
+    "examples/mining/evaluation.json": "bc312039ab46363acf234361fd753bbc3ab5f32e5bee30f49a9d61cbe59a4af1",
+    "examples/mining/policy-160.json": "44d7dca8af73f474227a832a86f6db19fcfcb81952ba717efec638c8064b48f9",
+    "examples/research/discovery-no-criteria.json": "4c1162da5fae9df3adc59d1a00adc33a01366e11772f4bb97cd8f040bd73ed62",
+    "examples/research/split-13-6.json": "db448e00929df8206719d64943b4a254fe465d7e5e64eef2e21f616d1225cbb7",
+    "examples/research/validation-no-criteria.json": "50ae0bc0aba92e3235130e69f960feeb6aff6bb579b70abb83db1ab779b8a198",
+    "examples/scoring/research-diversity-v1.json": "71d9b0825e201212edcfed8563379dab1714d93366dd632507a1fcc0dde15609",
+    "examples/scoring/research-ranking-v1.json": "bb7ddb60ffe68f45586d6af05480f6d92cdac655fb800e84ee521204e2444b61",
+    "examples/scoring/research-score-v1.json": "2c4577015e7825b9f2d56627cd4124c49235b845cd27c0c83192fba0a27879ef"
+  },
+  "integrity": {
+    "candidate_universe_changed": false,
+    "candidate_ids_changed": false,
+    "strategies_changed": false,
+    "dataset_or_source_hashes_changed": false,
+    "discovery_or_validation_changed": false,
+    "walk_forward_changed": false,
+    "monte_carlo_changed": false,
+    "sensitivity_changed": false,
+    "score_ranking_or_diversity_changed": false,
+    "technical_completeness_changed": false,
+    "quantitative_thresholds_changed": false,
+    "legacy_gate_changed": false
+  }
+}

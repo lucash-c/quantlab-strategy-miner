@@ -94,3 +94,21 @@ real acceptance primarily proves official multi-session ingestion, chronological
 execution, absence of leakage and reoptimization, execution of the four robustness
 families, and application of the frozen quantitative criteria. It is not strong
 evidence of future generalization or approval for live trading.
+
+## Stress policy V2 amendment
+
+The original real-acceptance Stress policy remains immutable. It requested one
+absolute cost point and one absolute slippage point, exactly equal to the frozen
+baseline, so the engine correctly classified its only scenario as
+`INVALID_STRESS_SCENARIO / NON_STRESS_SCENARIO`.
+
+The additive V2 policy defines exactly one scenario: cost and slippage are each
+multiplied by the canonical rational `3/2`. With the unchanged one-point baseline,
+both resolve exactly to `3/2` points. No alternative multiplier is evaluated or
+selected. Only Stress and its fingerprint descendants are invalidated; Research,
+Score, Walk-Forward, Monte Carlo, Sensitivity and compatible Candidate Session
+Evaluations remain reusable.
+
+The amendment is frozen before any V2 scenario result is observed. Its provenance,
+the preserved V1 identifiers and all unchanged input hashes are recorded in
+`ninth-increment-stress-policy-amendment-v3.json`.
