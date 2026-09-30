@@ -247,3 +247,22 @@ uv run python scripts/acceptance_robustness_fixture.py --work artifacts/robustne
 
 O ZIP B3 de 10/09/2026 permanece apenas regressão técnica de uma sessão. O aceite estatístico real
 de Robustness continua pendente de histórico multissessão real suficiente.
+
+## Nono incremento: aceite real multissessão e veredito quantitativo
+
+O nono incremento executa o protocolo congelado sobre 20 sessões oficiais B3 e 160 candidatos,
+separando explicitamente Legacy Robustness Gate, Technical Completeness do incremento e
+Quantitative Verdict. A emenda Stress V2 é versionada; a V1 inválida por equivalência ao baseline
+permanece como evidência histórica. Consulte o
+[contrato quantitativo](docs/contracts/robustness-quantitative-verdict-v1.md) e a
+[evidência final](docs/evidence/ninth-increment-acceptance.md).
+
+O aceite é opt-in, exige os 20 ZIPs congelados e reutiliza checkpoints/cache compatíveis:
+
+```powershell
+uv run python scripts/acceptance_robustness_real_multisession.py --input-dir artifacts/ninth-increment/official-b3 --cache artifacts/ninth-increment/cache-real-20 --work artifacts/ninth-increment/acceptance-real-20-v3 --resume-after-scoring --stress-amendment-v2
+```
+
+O resultado final não aprova candidatos: os 160 ficaram tecnicamente completos, mas todos falharam
+o Quantitative Verdict congelado. Dois folds continuam evidência temporal limitada e não autorizam
+trading ao vivo.

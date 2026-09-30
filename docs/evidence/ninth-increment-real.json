@@ -1,0 +1,146 @@
+{
+  "schema_version": "ninth-increment-real-evidence/v1",
+  "date": "2026-09-30",
+  "real_b3_multisession": true,
+  "official_session_count": 20,
+  "logical_asset": "WIN",
+  "physical_contract": "WINV26",
+  "dataset_id": "sha256:6e3fc4f0f6359e3b01c8163a7b06390df66be2845396b517ec27362e55296262",
+  "window_fingerprint": "sha256:5c06418d192be74f5798eaabd417a7ce1311a1f4f301217bfb114592cbf5e4e1",
+  "source_manifest": {
+    "path": "docs/evidence/ninth-increment-official-sources-v1.json",
+    "sha256": "dd6188be1c4fba7a1cead8462c56ce81655a56226184618e231cc6a5e4edb8b7",
+    "source_count": 20,
+    "source_substitution_used": false,
+    "immutability_reverified_after_execution": true
+  },
+  "candidate_universe": {
+    "candidate_count": 160,
+    "timeframes": {
+      "1m": 40,
+      "2m": 40,
+      "5m": 40,
+      "15m": 40
+    },
+    "candidate_reoptimization_during_robustness": false,
+    "automatic_rollover_used": false
+  },
+  "research_and_score": {
+    "validation_experiment_id": "sha256:177f4ca1d05eccb8c3a5056f8b4cbd128cde03e7256a5e2546113bf5c95a69b0",
+    "research_export_id": "sha256:ca5b996c6dfdd56e1b5fb4d267d9e75eda80e36ffa36ee7d1dafb69870a62c04",
+    "split_plan_id": "sha256:8c729b350efc7fca2d175c632d8ca3591b5f77077061fddc0c8aefb7e8b55b2f",
+    "discovery_sessions": 13,
+    "validation_sessions": 6,
+    "score_policy_id": "sha256:43088e265da86e649d3b75cbbea2ff48e9130330bf0ab11e4eb982bb6eb0f559",
+    "score_set_id": "sha256:432e8afeeaa66db555f2dea9a6b61dd65a3fc8db2bcb0e6176c4323a5ee04115",
+    "score_export_id": "sha256:7089be9150b40b133206b8e775a4ba625240772e0f825774d4bd3698d7b84154",
+    "reused_for_stress_v2": true,
+    "score_recomputed_by_robustness": false
+  },
+  "walk_forward": {
+    "legacy_policy_id": "sha256:a86a2a379482f6fcbe0ef1caf70f5ef4f99559f3a0f01b600394d504fe829af4",
+    "legacy_plan_id": "sha256:f9a75ac25a404bcecb3975d0471b52a7b4eeb65d204617232b0b89ce144312ed",
+    "ninth_increment_policy_id": "sha256:43c483cb1c1673c135f3f6d18e3de6f2bd3c079599aec659a9092b2110183594",
+    "ninth_increment_plan_id": "sha256:16643775665a8f2495fd7fe2795638d36aaec10e449facd444d7fd04d47714b4",
+    "fold_count": 2,
+    "folds": [
+      {
+        "ordinal": 1,
+        "fold_id": "sha256:df5b90dfebd0971a054c14d22a0e3a06313ceb1d9e293082e3f2d2580350f572",
+        "discovery_dates": ["2026-08-24", "2026-09-10"],
+        "validation_dates": ["2026-09-11", "2026-09-18"]
+      },
+      {
+        "ordinal": 2,
+        "fold_id": "sha256:18c19267a3df33ede0beba904d02062e53e8bca0d64777e9caa8146684793fb4",
+        "discovery_dates": ["2026-08-25", "2026-09-11"],
+        "validation_dates": ["2026-09-14", "2026-09-21"]
+      }
+    ],
+    "two_fold_generalization_evidence_is_limited": true
+  },
+  "stress_policy_history": {
+    "v1_original": {
+      "stress_policy_id": "sha256:2a834d2438c9c8fe5861dfa3cea72e2bd4eda140fe68877f72d95f5c7d18c780",
+      "status": "INVALID_STRESS_SCENARIO",
+      "reason": "NON_STRESS_SCENARIO",
+      "valid_scenarios_per_candidate": 0,
+      "preserved_as_historical_evidence": true
+    },
+    "v2_amendment": {
+      "precommit_commit": "ed9731efb29d6b7243cbb8bcaa75e10a98ad3d74",
+      "stress_policy_id": "sha256:870366affa27ac2b344fa1432bd237ece61ac906fcdfa81d893e020a66f8db7c",
+      "cost_multiplier": {"numerator": "3", "denominator": "2"},
+      "slippage_multiplier": {"numerator": "3", "denominator": "2"},
+      "scenario_count": 1,
+      "valid_scenarios_per_candidate": 1,
+      "valid_candidate_results": 160,
+      "policy_changed_after_results": false,
+      "result_optimization_used": false
+    }
+  },
+  "selective_invalidation": {
+    "invalidated_family": "STRESS",
+    "reused_unchanged_families": [
+      "WALK_FORWARD",
+      "NINTH_INCREMENT_WALK_FORWARD",
+      "MONTE_CARLO",
+      "SENSITIVITY"
+    ],
+    "unchanged_family_result_ids_equal_to_v1": true,
+    "all_stress_result_ids_changed_from_v1": true,
+    "research_reused": true,
+    "score_reused": true,
+    "original_v1_tree_preserved": true
+  },
+  "outcomes": {
+    "legacy_robustness_gate": {
+      "policy_id": "sha256:783755d95253aa525c2ea50b22bb1fa98177f7559208a9ae7acabe46916325b8",
+      "status_counts": {"ROBUSTNESS_INSUFFICIENT_EVIDENCE": 160},
+      "legacy_semantics_unchanged": true,
+      "minimum_evaluable_folds": 3
+    },
+    "ninth_increment_technical_completeness": {
+      "policy_id": "sha256:2e7be06cdf967c582b6a22107ca90a2c4da89b4240944b1c785d564b00b281ff",
+      "status_counts": {"NINTH_INCREMENT_TECHNICAL_COMPLETE": 160},
+      "minimum_evaluable_folds": 2,
+      "all_four_families_required": true
+    },
+    "quantitative_verdict": {
+      "policy_id": "sha256:0a60a6ffc58dcfa6694348109c44b598d4969de6013b7f5e436e9e6f08a52def",
+      "status_counts": {"FAILED": 160},
+      "qualified_candidate_count": 0,
+      "qualified_set_id": "sha256:b6debbf76c6256f5312bd94c56fb1d3cb782773085102435d0662ab3bbdfc645",
+      "thresholds_changed_after_results": false,
+      "technical_dependency": "NINTH_INCREMENT_TECHNICAL_COMPLETENESS"
+    }
+  },
+  "failed_criteria_candidate_counts": {
+    "WALK_FORWARD.positive_validation_fold_rate": 160,
+    "WALK_FORWARD.median_validation_net_pnl_per_session": 160,
+    "WALK_FORWARD.median_validation_average_trade": 160,
+    "MONTE_CARLO.median_total_net": 160,
+    "MONTE_CARLO.probability_net_le_zero": 160,
+    "SENSITIVITY.baseline_net": 160,
+    "SENSITIVITY.variant_net": 160,
+    "STRESS.stressed_net": 160,
+    "STRESS.stressed_average_trade": 160
+  },
+  "determinism_and_integrity": {
+    "clean_warm_resume_byte_identical": true,
+    "scientific_artifact_count_per_run": 43,
+    "robustness_candidate_set_id": "sha256:5d7c5cddd5c4a12c397f96e5c7d1cd127a17e14fe3ac060edf570e49d251935d",
+    "robustness_protocol_id": "sha256:e08f550e62a002264b5e627c19c7e0d6ce73a4007cee2f35faeb442f06e1e999",
+    "monte_carlo_path_set_id": "sha256:463fc8333bb1736413a8e6b5bdb0550f3a324c5a200d2c3765d9bac529b6fe17",
+    "robustness_export_id": "sha256:2db23e25ecbb8e6e0687d673516fa69152db61e0775789f5582c6d64727917b4",
+    "acceptance_report_sha256": "bb40fe1a82cf9f3263d290b3fe877053a901d2bc210a9afe4975b583e510e2e0"
+  },
+  "validation": {
+    "independent_output_checks": "PASSED",
+    "targeted_structural_tests": {"passed": 5, "failed": 0},
+    "full_suite": {"status": "PASSED", "tests": 227, "failed": 0},
+    "ruff": "PASSED",
+    "ci": "RECORDED_AT_DELIVERY_AFTER_FINAL_HEAD"
+  },
+  "scientific_limitation": "Two folds provide more limited temporal evidence than three or more folds. Technical completeness is not quantitative approval, and all 160 candidates failed the frozen quantitative verdict. No candidate is approved for live trading."
+}
