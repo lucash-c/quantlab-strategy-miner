@@ -1,0 +1,382 @@
+{
+  "$defs": {
+    "AtomGrid": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "trend_close",
+            "trend_pair",
+            "vwap_context",
+            "breakout_previous",
+            "momentum",
+            "candle_context",
+            "volume",
+            "volatility"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "grids": {
+          "additionalProperties": {
+            "$ref": "#/$defs/Grid"
+          },
+          "title": "Grids",
+          "type": "object"
+        },
+        "direction_grids": {
+          "additionalProperties": {
+            "additionalProperties": {
+              "$ref": "#/$defs/Grid"
+            },
+            "type": "object"
+          },
+          "propertyNames": {
+            "enum": [
+              "BUY",
+              "SELL"
+            ]
+          },
+          "title": "Direction Grids",
+          "type": "object"
+        }
+      },
+      "required": [
+        "kind",
+        "grids"
+      ],
+      "title": "AtomGrid",
+      "type": "object"
+    },
+    "Direction": {
+      "enum": [
+        "BUY",
+        "SELL"
+      ],
+      "type": "string"
+    },
+    "GenerationPolicyV1": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "generation-policy/v1",
+          "default": "generation-policy/v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "candidate_budget": {
+          "default": 10000,
+          "maximum": 50000,
+          "minimum": 1,
+          "title": "Candidate Budget",
+          "type": "integer"
+        },
+        "expansion_limit": {
+          "default": 1000000,
+          "maximum": 1000000,
+          "minimum": 1,
+          "title": "Expansion Limit",
+          "type": "integer"
+        },
+        "max_conditions": {
+          "default": 3,
+          "maximum": 3,
+          "minimum": 1,
+          "title": "Max Conditions",
+          "type": "integer"
+        },
+        "max_ast_depth": {
+          "default": 2,
+          "maximum": 2,
+          "minimum": 1,
+          "title": "Max Ast Depth",
+          "type": "integer"
+        },
+        "max_features": {
+          "default": 6,
+          "maximum": 6,
+          "minimum": 1,
+          "title": "Max Features",
+          "type": "integer"
+        },
+        "max_variable_dimensions": {
+          "default": 12,
+          "maximum": 12,
+          "minimum": 1,
+          "title": "Max Variable Dimensions",
+          "type": "integer"
+        },
+        "max_cross_conditions": {
+          "default": 1,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Max Cross Conditions",
+          "type": "integer"
+        },
+        "max_time_filters": {
+          "default": 1,
+          "maximum": 1,
+          "minimum": 1,
+          "title": "Max Time Filters",
+          "type": "integer"
+        },
+        "max_grid_values": {
+          "default": 32,
+          "maximum": 32,
+          "minimum": 1,
+          "title": "Max Grid Values",
+          "type": "integer"
+        },
+        "max_templates": {
+          "default": 32,
+          "maximum": 32,
+          "minimum": 1,
+          "title": "Max Templates",
+          "type": "integer"
+        },
+        "min_period": {
+          "default": 1,
+          "maximum": 1000,
+          "minimum": 1,
+          "title": "Min Period",
+          "type": "integer"
+        },
+        "max_period": {
+          "default": 1000,
+          "maximum": 1000,
+          "minimum": 1,
+          "title": "Max Period",
+          "type": "integer"
+        }
+      },
+      "title": "GenerationPolicyV1",
+      "type": "object"
+    },
+    "Grid": {
+      "items": {
+        "anyOf": [
+          {
+            "type": "integer"
+          },
+          {
+            "type": "boolean"
+          },
+          {
+            "type": "string"
+          }
+        ]
+      },
+      "type": "array"
+    },
+    "MiningSearchSpaceV1": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "mining-search-space/v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "logical_asset": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+          "title": "Logical Asset",
+          "type": "string"
+        },
+        "timeframes": {
+          "items": {
+            "enum": [
+              "1m",
+              "2m",
+              "5m",
+              "15m"
+            ],
+            "type": "string"
+          },
+          "title": "Timeframes",
+          "type": "array"
+        },
+        "directions": {
+          "items": {
+            "enum": [
+              "BUY",
+              "SELL"
+            ],
+            "type": "string"
+          },
+          "title": "Directions",
+          "type": "array"
+        },
+        "templates": {
+          "items": {
+            "$ref": "#/$defs/TemplateEntry"
+          },
+          "title": "Templates",
+          "type": "array"
+        },
+        "stops": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Stops",
+          "type": "array"
+        },
+        "targets": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Targets",
+          "type": "array"
+        },
+        "time_windows": {
+          "items": {
+            "$ref": "#/$defs/TimeRangeV3"
+          },
+          "title": "Time Windows",
+          "type": "array"
+        },
+        "constraints": {
+          "const": "closed-template-constraints/v1",
+          "title": "Constraints",
+          "type": "string"
+        }
+      },
+      "required": [
+        "schema_version",
+        "logical_asset",
+        "timeframes",
+        "directions",
+        "templates",
+        "stops",
+        "targets",
+        "time_windows",
+        "constraints"
+      ],
+      "title": "MiningSearchSpaceV1",
+      "type": "object"
+    },
+    "ResolvedSideSearchSpaceV1": {
+      "additionalProperties": false,
+      "properties": {
+        "direction": {
+          "$ref": "#/$defs/Direction"
+        },
+        "search_space": {
+          "$ref": "#/$defs/MiningSearchSpaceV1"
+        }
+      },
+      "required": [
+        "direction",
+        "search_space"
+      ],
+      "title": "ResolvedSideSearchSpaceV1",
+      "type": "object"
+    },
+    "Sha256Identity": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "TemplateEntry": {
+      "additionalProperties": false,
+      "properties": {
+        "template_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+          "title": "Template Id",
+          "type": "string"
+        },
+        "base": {
+          "$ref": "#/$defs/AtomGrid"
+        },
+        "confirmations": {
+          "items": {
+            "$ref": "#/$defs/AtomGrid"
+          },
+          "title": "Confirmations",
+          "type": "array"
+        }
+      },
+      "required": [
+        "template_id",
+        "base",
+        "confirmations"
+      ],
+      "title": "TemplateEntry",
+      "type": "object"
+    },
+    "TimeRangeV3": {
+      "additionalProperties": false,
+      "properties": {
+        "start": {
+          "title": "Start",
+          "type": "string"
+        },
+        "end": {
+          "title": "End",
+          "type": "string"
+        },
+        "start_inclusive": {
+          "title": "Start Inclusive",
+          "type": "boolean"
+        },
+        "end_inclusive": {
+          "title": "End Inclusive",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "start",
+        "end",
+        "start_inclusive",
+        "end_inclusive"
+      ],
+      "title": "TimeRangeV3",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "resolved-search-space/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "mining_request_id": {
+      "$ref": "#/$defs/Sha256Identity"
+    },
+    "mining_constraints_id": {
+      "$ref": "#/$defs/Sha256Identity"
+    },
+    "auto_discovery_profile_id": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Sha256Identity"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "resolution_protocol_id": {
+      "$ref": "#/$defs/Sha256Identity"
+    },
+    "generation_policy": {
+      "$ref": "#/$defs/GenerationPolicyV1"
+    },
+    "subspaces": {
+      "items": {
+        "$ref": "#/$defs/ResolvedSideSearchSpaceV1"
+      },
+      "title": "Subspaces",
+      "type": "array"
+    }
+  },
+  "required": [
+    "schema_version",
+    "mining_request_id",
+    "mining_constraints_id",
+    "auto_discovery_profile_id",
+    "resolution_protocol_id",
+    "generation_policy",
+    "subspaces"
+  ],
+  "title": "ResolvedSearchSpaceV1",
+  "type": "object"
+}

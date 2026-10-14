@@ -1,0 +1,321 @@
+{
+  "schema_version": "auto-discovery-profile/v1",
+  "alias": "AUTO_DISCOVERY_ACCEPTANCE_V1",
+  "logical_asset": "WIN",
+  "timeframes": [
+    "1m",
+    "2m",
+    "5m",
+    "15m"
+  ],
+  "constraints": {
+    "schema_version": "mining-constraints/v1",
+    "logic": "AND_ONLY",
+    "sampling": "NONE",
+    "truncation": "PROHIBITED",
+    "template_catalog": [
+      {
+        "template_id": "A.TC",
+        "base": {
+          "kind": "trend_close",
+          "grids": {
+            "average": [
+              "sma_close"
+            ],
+            "period": [
+              4
+            ],
+            "operator": [
+              "CROSS"
+            ]
+          },
+          "direction_grids": {}
+        },
+        "confirmations": [
+          {
+            "kind": "volume",
+            "grids": {
+              "mode": [
+                "RELATIVE"
+              ],
+              "period": [
+                8
+              ],
+              "include_current": [
+                false
+              ],
+              "threshold": [
+                "1"
+              ]
+            },
+            "direction_grids": {}
+          }
+        ]
+      },
+      {
+        "template_id": "A.TP",
+        "base": {
+          "kind": "trend_pair",
+          "grids": {
+            "average": [
+              "ema_close"
+            ],
+            "short_period": [
+              4
+            ],
+            "long_period": [
+              8
+            ],
+            "operator": [
+              "COMPARE"
+            ]
+          },
+          "direction_grids": {}
+        },
+        "confirmations": [
+          {
+            "kind": "vwap_context",
+            "grids": {
+              "mode": [
+                "CLOSE"
+              ],
+              "operator": [
+                "COMPARE"
+              ]
+            },
+            "direction_grids": {}
+          }
+        ]
+      },
+      {
+        "template_id": "A.VW",
+        "base": {
+          "kind": "vwap_context",
+          "grids": {
+            "mode": [
+              "CLOSE"
+            ],
+            "operator": [
+              "CROSS"
+            ]
+          },
+          "direction_grids": {}
+        },
+        "confirmations": [
+          {
+            "kind": "volatility",
+            "grids": {
+              "mode": [
+                "ATR_THRESHOLD"
+              ],
+              "period": [
+                8
+              ],
+              "threshold": [
+                "0"
+              ]
+            },
+            "direction_grids": {}
+          }
+        ]
+      },
+      {
+        "template_id": "A.BO",
+        "base": {
+          "kind": "breakout_previous",
+          "grids": {
+            "period": [
+              4
+            ],
+            "include_current": [
+              false
+            ]
+          },
+          "direction_grids": {}
+        },
+        "confirmations": [
+          {
+            "kind": "volume",
+            "grids": {
+              "mode": [
+                "ROLLING"
+              ],
+              "period": [
+                8
+              ],
+              "include_current": [
+                false
+              ]
+            },
+            "direction_grids": {}
+          },
+          {
+            "kind": "volatility",
+            "grids": {
+              "mode": [
+                "ROLLING_RANGE"
+              ],
+              "period": [
+                8
+              ],
+              "include_current": [
+                false
+              ]
+            },
+            "direction_grids": {}
+          }
+        ]
+      },
+      {
+        "template_id": "A.MO",
+        "base": {
+          "kind": "momentum",
+          "grids": {
+            "feature": [
+              "point_change"
+            ],
+            "period": [
+              4
+            ]
+          },
+          "direction_grids": {
+            "BUY": {
+              "threshold": [
+                "0"
+              ]
+            },
+            "SELL": {
+              "threshold": [
+                "0"
+              ]
+            }
+          }
+        },
+        "confirmations": []
+      },
+      {
+        "template_id": "A.CA",
+        "base": {
+          "kind": "candle_context",
+          "grids": {
+            "mode": [
+              "CLOSE_POSITION"
+            ],
+            "lower_inclusive": [
+              true
+            ],
+            "upper_inclusive": [
+              true
+            ]
+          },
+          "direction_grids": {
+            "BUY": {
+              "lower": [
+                "0.5"
+              ],
+              "upper": [
+                "1"
+              ]
+            },
+            "SELL": {
+              "lower": [
+                "0"
+              ],
+              "upper": [
+                "0.5"
+              ]
+            }
+          }
+        },
+        "confirmations": []
+      }
+    ],
+    "time_windows": [
+      {
+        "start": "09:00",
+        "end": "18:25",
+        "start_inclusive": true,
+        "end_inclusive": false
+      }
+    ],
+    "sides": {
+      "BUY": {
+        "enabled": true,
+        "template_ids": [
+          "A.TC",
+          "A.TP",
+          "A.VW",
+          "A.BO",
+          "A.MO",
+          "A.CA"
+        ],
+        "stops": [
+          "5"
+        ],
+        "targets": [
+          "10"
+        ]
+      },
+      "SELL": {
+        "enabled": true,
+        "template_ids": [
+          "A.TC",
+          "A.TP",
+          "A.VW",
+          "A.BO",
+          "A.MO",
+          "A.CA"
+        ],
+        "stops": [
+          "10"
+        ],
+        "targets": [
+          "5"
+        ]
+      }
+    },
+    "generation_policy": {
+      "schema_version": "generation-policy/v1",
+      "candidate_budget": 64,
+      "expansion_limit": 64,
+      "max_conditions": 3,
+      "max_ast_depth": 2,
+      "max_features": 6,
+      "max_variable_dimensions": 12,
+      "max_cross_conditions": 1,
+      "max_time_filters": 1,
+      "max_grid_values": 32,
+      "max_templates": 32,
+      "min_period": 1,
+      "max_period": 1000
+    }
+  },
+  "resolution_protocol_id": "sha256:9d9d7fa7c1022b37bab00e2d5b4f4290f9db4cb2502433274aa6d74e2963504d",
+  "expected_candidate_universe": {
+    "counts": {
+      "T": 48,
+      "R": 0,
+      "V": 48,
+      "D": 0,
+      "U": 48
+    },
+    "by_direction": {
+      "BUY": 24,
+      "SELL": 24
+    },
+    "by_timeframe": {
+      "1m": 12,
+      "2m": 12,
+      "5m": 12,
+      "15m": 12
+    },
+    "by_family": {
+      "trend_close": 8,
+      "trend_pair": 8,
+      "vwap_context": 8,
+      "breakout_previous": 8,
+      "momentum": 8,
+      "candle_context": 8
+    }
+  }
+}

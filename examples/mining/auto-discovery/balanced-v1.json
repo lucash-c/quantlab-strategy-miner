@@ -1,0 +1,997 @@
+{
+  "schema_version": "auto-discovery-profile/v1",
+  "alias": "AUTO_DISCOVERY_BALANCED_V1",
+  "logical_asset": "WIN",
+  "timeframes": [
+    "1m",
+    "2m",
+    "5m",
+    "15m"
+  ],
+  "constraints": {
+    "schema_version": "mining-constraints/v1",
+    "logic": "AND_ONLY",
+    "sampling": "NONE",
+    "truncation": "PROHIBITED",
+    "template_catalog": [
+      {
+        "template_id": "TC1",
+        "base": {
+          "kind": "trend_close",
+          "grids": {
+            "average": [
+              "sma_close"
+            ],
+            "period": [
+              4,
+              16
+            ],
+            "operator": [
+              "COMPARE"
+            ]
+          },
+          "direction_grids": {}
+        },
+        "confirmations": []
+      },
+      {
+        "template_id": "TC2",
+        "base": {
+          "kind": "trend_close",
+          "grids": {
+            "average": [
+              "ema_close"
+            ],
+            "period": [
+              8,
+              32
+            ],
+            "operator": [
+              "COMPARE"
+            ]
+          },
+          "direction_grids": {}
+        },
+        "confirmations": [
+          {
+            "kind": "volume",
+            "grids": {
+              "mode": [
+                "RELATIVE"
+              ],
+              "period": [
+                8
+              ],
+              "include_current": [
+                false
+              ],
+              "threshold": [
+                "1"
+              ]
+            },
+            "direction_grids": {}
+          }
+        ]
+      },
+      {
+        "template_id": "TC3",
+        "base": {
+          "kind": "trend_close",
+          "grids": {
+            "average": [
+              "sma_close"
+            ],
+            "period": [
+              8,
+              32
+            ],
+            "operator": [
+              "CROSS"
+            ]
+          },
+          "direction_grids": {}
+        },
+        "confirmations": [
+          {
+            "kind": "vwap_context",
+            "grids": {
+              "mode": [
+                "CLOSE"
+              ],
+              "operator": [
+                "COMPARE"
+              ]
+            },
+            "direction_grids": {}
+          }
+        ]
+      },
+      {
+        "template_id": "TC4",
+        "base": {
+          "kind": "trend_close",
+          "grids": {
+            "average": [
+              "ema_close"
+            ],
+            "period": [
+              4,
+              16
+            ],
+            "operator": [
+              "CROSS"
+            ]
+          },
+          "direction_grids": {}
+        },
+        "confirmations": [
+          {
+            "kind": "volume",
+            "grids": {
+              "mode": [
+                "ROLLING"
+              ],
+              "period": [
+                32
+              ],
+              "include_current": [
+                false
+              ]
+            },
+            "direction_grids": {}
+          },
+          {
+            "kind": "volatility",
+            "grids": {
+              "mode": [
+                "ROLLING_RANGE"
+              ],
+              "period": [
+                32
+              ],
+              "include_current": [
+                false
+              ]
+            },
+            "direction_grids": {}
+          }
+        ]
+      },
+      {
+        "template_id": "TP1",
+        "base": {
+          "kind": "trend_pair",
+          "grids": {
+            "average": [
+              "sma_close"
+            ],
+            "short_period": [
+              2,
+              4
+            ],
+            "long_period": [
+              8
+            ],
+            "operator": [
+              "COMPARE"
+            ]
+          },
+          "direction_grids": {}
+        },
+        "confirmations": []
+      },
+      {
+        "template_id": "TP2",
+        "base": {
+          "kind": "trend_pair",
+          "grids": {
+            "average": [
+              "ema_close"
+            ],
+            "short_period": [
+              4,
+              8
+            ],
+            "long_period": [
+              16
+            ],
+            "operator": [
+              "COMPARE"
+            ]
+          },
+          "direction_grids": {}
+        },
+        "confirmations": [
+          {
+            "kind": "volume",
+            "grids": {
+              "mode": [
+                "RELATIVE"
+              ],
+              "period": [
+                8
+              ],
+              "include_current": [
+                false
+              ],
+              "threshold": [
+                "1"
+              ]
+            },
+            "direction_grids": {}
+          }
+        ]
+      },
+      {
+        "template_id": "TP3",
+        "base": {
+          "kind": "trend_pair",
+          "grids": {
+            "average": [
+              "sma_close"
+            ],
+            "short_period": [
+              8,
+              16
+            ],
+            "long_period": [
+              32
+            ],
+            "operator": [
+              "CROSS"
+            ]
+          },
+          "direction_grids": {}
+        },
+        "confirmations": [
+          {
+            "kind": "vwap_context",
+            "grids": {
+              "mode": [
+                "CLOSE"
+              ],
+              "operator": [
+                "COMPARE"
+              ]
+            },
+            "direction_grids": {}
+          }
+        ]
+      },
+      {
+        "template_id": "TP4",
+        "base": {
+          "kind": "trend_pair",
+          "grids": {
+            "average": [
+              "ema_close"
+            ],
+            "short_period": [
+              2,
+              4
+            ],
+            "long_period": [
+              16
+            ],
+            "operator": [
+              "CROSS"
+            ]
+          },
+          "direction_grids": {}
+        },
+        "confirmations": [
+          {
+            "kind": "volume",
+            "grids": {
+              "mode": [
+                "ROLLING"
+              ],
+              "period": [
+                32
+              ],
+              "include_current": [
+                false
+              ]
+            },
+            "direction_grids": {}
+          },
+          {
+            "kind": "volatility",
+            "grids": {
+              "mode": [
+                "ROLLING_RANGE"
+              ],
+              "period": [
+                32
+              ],
+              "include_current": [
+                false
+              ]
+            },
+            "direction_grids": {}
+          }
+        ]
+      },
+      {
+        "template_id": "VW1",
+        "base": {
+          "kind": "vwap_context",
+          "grids": {
+            "mode": [
+              "CLOSE"
+            ],
+            "operator": [
+              "COMPARE",
+              "CROSS"
+            ]
+          },
+          "direction_grids": {}
+        },
+        "confirmations": []
+      },
+      {
+        "template_id": "VW2",
+        "base": {
+          "kind": "vwap_context",
+          "grids": {
+            "mode": [
+              "CLOSE"
+            ],
+            "operator": [
+              "COMPARE"
+            ]
+          },
+          "direction_grids": {}
+        },
+        "confirmations": [
+          {
+            "kind": "volume",
+            "grids": {
+              "mode": [
+                "RELATIVE"
+              ],
+              "period": [
+                8,
+                32
+              ],
+              "include_current": [
+                false
+              ],
+              "threshold": [
+                "1"
+              ]
+            },
+            "direction_grids": {}
+          }
+        ]
+      },
+      {
+        "template_id": "VW3",
+        "base": {
+          "kind": "vwap_context",
+          "grids": {
+            "mode": [
+              "CLOSE"
+            ],
+            "operator": [
+              "CROSS"
+            ]
+          },
+          "direction_grids": {}
+        },
+        "confirmations": [
+          {
+            "kind": "volume",
+            "grids": {
+              "mode": [
+                "ROLLING"
+              ],
+              "period": [
+                8,
+                32
+              ],
+              "include_current": [
+                false
+              ]
+            },
+            "direction_grids": {}
+          }
+        ]
+      },
+      {
+        "template_id": "VW4",
+        "base": {
+          "kind": "vwap_context",
+          "grids": {
+            "mode": [
+              "CLOSE"
+            ],
+            "operator": [
+              "COMPARE",
+              "CROSS"
+            ]
+          },
+          "direction_grids": {}
+        },
+        "confirmations": [
+          {
+            "kind": "volatility",
+            "grids": {
+              "mode": [
+                "ATR_THRESHOLD"
+              ],
+              "period": [
+                8
+              ],
+              "threshold": [
+                "0"
+              ]
+            },
+            "direction_grids": {}
+          }
+        ]
+      },
+      {
+        "template_id": "BO1",
+        "base": {
+          "kind": "breakout_previous",
+          "grids": {
+            "period": [
+              4,
+              16
+            ],
+            "include_current": [
+              false
+            ]
+          },
+          "direction_grids": {}
+        },
+        "confirmations": []
+      },
+      {
+        "template_id": "BO2",
+        "base": {
+          "kind": "breakout_previous",
+          "grids": {
+            "period": [
+              8,
+              32
+            ],
+            "include_current": [
+              false
+            ]
+          },
+          "direction_grids": {}
+        },
+        "confirmations": [
+          {
+            "kind": "volume",
+            "grids": {
+              "mode": [
+                "RELATIVE"
+              ],
+              "period": [
+                8
+              ],
+              "include_current": [
+                false
+              ],
+              "threshold": [
+                "1"
+              ]
+            },
+            "direction_grids": {}
+          }
+        ]
+      },
+      {
+        "template_id": "BO3",
+        "base": {
+          "kind": "breakout_previous",
+          "grids": {
+            "period": [
+              4,
+              16
+            ],
+            "include_current": [
+              false
+            ]
+          },
+          "direction_grids": {}
+        },
+        "confirmations": [
+          {
+            "kind": "volatility",
+            "grids": {
+              "mode": [
+                "ATR_THRESHOLD"
+              ],
+              "period": [
+                8
+              ],
+              "threshold": [
+                "0"
+              ]
+            },
+            "direction_grids": {}
+          }
+        ]
+      },
+      {
+        "template_id": "BO4",
+        "base": {
+          "kind": "breakout_previous",
+          "grids": {
+            "period": [
+              8,
+              32
+            ],
+            "include_current": [
+              false
+            ]
+          },
+          "direction_grids": {}
+        },
+        "confirmations": [
+          {
+            "kind": "volume",
+            "grids": {
+              "mode": [
+                "ROLLING"
+              ],
+              "period": [
+                32
+              ],
+              "include_current": [
+                false
+              ]
+            },
+            "direction_grids": {}
+          },
+          {
+            "kind": "volatility",
+            "grids": {
+              "mode": [
+                "ROLLING_RANGE"
+              ],
+              "period": [
+                32
+              ],
+              "include_current": [
+                false
+              ]
+            },
+            "direction_grids": {}
+          }
+        ]
+      },
+      {
+        "template_id": "MO1",
+        "base": {
+          "kind": "momentum",
+          "grids": {
+            "feature": [
+              "point_change",
+              "n_candle_return"
+            ],
+            "period": [
+              4,
+              16
+            ]
+          },
+          "direction_grids": {
+            "BUY": {
+              "threshold": [
+                "0"
+              ]
+            },
+            "SELL": {
+              "threshold": [
+                "0"
+              ]
+            }
+          }
+        },
+        "confirmations": []
+      },
+      {
+        "template_id": "MO2",
+        "base": {
+          "kind": "momentum",
+          "grids": {
+            "feature": [
+              "point_change",
+              "n_candle_return"
+            ],
+            "period": [
+              8
+            ]
+          },
+          "direction_grids": {
+            "BUY": {
+              "threshold": [
+                "0"
+              ]
+            },
+            "SELL": {
+              "threshold": [
+                "0"
+              ]
+            }
+          }
+        },
+        "confirmations": [
+          {
+            "kind": "volume",
+            "grids": {
+              "mode": [
+                "RELATIVE"
+              ],
+              "period": [
+                8
+              ],
+              "include_current": [
+                false
+              ],
+              "threshold": [
+                "1"
+              ]
+            },
+            "direction_grids": {}
+          }
+        ]
+      },
+      {
+        "template_id": "MO3",
+        "base": {
+          "kind": "momentum",
+          "grids": {
+            "feature": [
+              "point_change",
+              "n_candle_return"
+            ],
+            "period": [
+              32
+            ]
+          },
+          "direction_grids": {
+            "BUY": {
+              "threshold": [
+                "0"
+              ]
+            },
+            "SELL": {
+              "threshold": [
+                "0"
+              ]
+            }
+          }
+        },
+        "confirmations": [
+          {
+            "kind": "volume",
+            "grids": {
+              "mode": [
+                "ROLLING"
+              ],
+              "period": [
+                32
+              ],
+              "include_current": [
+                false
+              ]
+            },
+            "direction_grids": {}
+          },
+          {
+            "kind": "candle_context",
+            "grids": {
+              "mode": [
+                "DIRECTION"
+              ]
+            },
+            "direction_grids": {}
+          }
+        ]
+      },
+      {
+        "template_id": "CA1",
+        "base": {
+          "kind": "candle_context",
+          "grids": {
+            "mode": [
+              "DIRECTION"
+            ]
+          },
+          "direction_grids": {}
+        },
+        "confirmations": []
+      },
+      {
+        "template_id": "CA2",
+        "base": {
+          "kind": "candle_context",
+          "grids": {
+            "mode": [
+              "GEOMETRY"
+            ],
+            "feature": [
+              "absolute_body",
+              "candle_range"
+            ],
+            "threshold": [
+              "0"
+            ]
+          },
+          "direction_grids": {}
+        },
+        "confirmations": []
+      },
+      {
+        "template_id": "CA3",
+        "base": {
+          "kind": "candle_context",
+          "grids": {
+            "mode": [
+              "CLOSE_POSITION"
+            ],
+            "lower_inclusive": [
+              true
+            ],
+            "upper_inclusive": [
+              true
+            ]
+          },
+          "direction_grids": {
+            "BUY": {
+              "lower": [
+                "0.5"
+              ],
+              "upper": [
+                "1"
+              ]
+            },
+            "SELL": {
+              "lower": [
+                "0"
+              ],
+              "upper": [
+                "0.5"
+              ]
+            }
+          }
+        },
+        "confirmations": []
+      },
+      {
+        "template_id": "CA4",
+        "base": {
+          "kind": "candle_context",
+          "grids": {
+            "mode": [
+              "DIRECTION"
+            ]
+          },
+          "direction_grids": {}
+        },
+        "confirmations": [
+          {
+            "kind": "volume",
+            "grids": {
+              "mode": [
+                "RELATIVE"
+              ],
+              "period": [
+                8,
+                32
+              ],
+              "include_current": [
+                false
+              ],
+              "threshold": [
+                "1"
+              ]
+            },
+            "direction_grids": {}
+          }
+        ]
+      },
+      {
+        "template_id": "CA5",
+        "base": {
+          "kind": "candle_context",
+          "grids": {
+            "mode": [
+              "CLOSE_POSITION"
+            ],
+            "lower_inclusive": [
+              true
+            ],
+            "upper_inclusive": [
+              true
+            ]
+          },
+          "direction_grids": {
+            "BUY": {
+              "lower": [
+                "0.5"
+              ],
+              "upper": [
+                "1"
+              ]
+            },
+            "SELL": {
+              "lower": [
+                "0"
+              ],
+              "upper": [
+                "0.5"
+              ]
+            }
+          }
+        },
+        "confirmations": [
+          {
+            "kind": "momentum",
+            "grids": {
+              "feature": [
+                "point_change",
+                "n_candle_return"
+              ],
+              "period": [
+                8
+              ]
+            },
+            "direction_grids": {
+              "BUY": {
+                "threshold": [
+                  "0"
+                ]
+              },
+              "SELL": {
+                "threshold": [
+                  "0"
+                ]
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "time_windows": [
+      {
+        "start": "09:00",
+        "end": "18:25",
+        "start_inclusive": true,
+        "end_inclusive": false
+      }
+    ],
+    "sides": {
+      "BUY": {
+        "enabled": true,
+        "template_ids": [
+          "TC1",
+          "TC2",
+          "TC3",
+          "TC4",
+          "TP1",
+          "TP2",
+          "TP3",
+          "TP4",
+          "VW1",
+          "VW2",
+          "VW3",
+          "VW4",
+          "BO1",
+          "BO2",
+          "BO3",
+          "BO4",
+          "MO1",
+          "MO2",
+          "MO3",
+          "CA1",
+          "CA2",
+          "CA3",
+          "CA4",
+          "CA5"
+        ],
+        "stops": [
+          "5",
+          "10",
+          "20",
+          "40"
+        ],
+        "targets": [
+          "5",
+          "10",
+          "20",
+          "40"
+        ]
+      },
+      "SELL": {
+        "enabled": true,
+        "template_ids": [
+          "TC1",
+          "TC2",
+          "TC3",
+          "TC4",
+          "TP1",
+          "TP2",
+          "TP3",
+          "TP4",
+          "VW1",
+          "VW2",
+          "VW3",
+          "VW4",
+          "BO1",
+          "BO2",
+          "BO3",
+          "BO4",
+          "MO1",
+          "MO2",
+          "MO3",
+          "CA1",
+          "CA2",
+          "CA3",
+          "CA4",
+          "CA5"
+        ],
+        "stops": [
+          "5",
+          "10",
+          "20",
+          "40"
+        ],
+        "targets": [
+          "5",
+          "10",
+          "20",
+          "40"
+        ]
+      }
+    },
+    "generation_policy": {
+      "schema_version": "generation-policy/v1",
+      "candidate_budget": 8192,
+      "expansion_limit": 8192,
+      "max_conditions": 3,
+      "max_ast_depth": 2,
+      "max_features": 6,
+      "max_variable_dimensions": 12,
+      "max_cross_conditions": 1,
+      "max_time_filters": 1,
+      "max_grid_values": 32,
+      "max_templates": 32,
+      "min_period": 1,
+      "max_period": 1000
+    }
+  },
+  "resolution_protocol_id": "sha256:9d9d7fa7c1022b37bab00e2d5b4f4290f9db4cb2502433274aa6d74e2963504d",
+  "expected_candidate_universe": {
+    "counts": {
+      "T": 6144,
+      "R": 0,
+      "V": 6144,
+      "D": 0,
+      "U": 6144
+    },
+    "by_direction": {
+      "BUY": 3072,
+      "SELL": 3072
+    },
+    "by_timeframe": {
+      "1m": 1536,
+      "2m": 1536,
+      "5m": 1536,
+      "15m": 1536
+    },
+    "by_family": {
+      "trend_close": 1024,
+      "trend_pair": 1024,
+      "vwap_context": 1024,
+      "breakout_previous": 1024,
+      "momentum": 1024,
+      "candle_context": 1024
+    }
+  }
+}

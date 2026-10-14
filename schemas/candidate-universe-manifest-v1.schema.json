@@ -1,0 +1,167 @@
+{
+  "$defs": {
+    "CandidateSubplanManifestV1": {
+      "additionalProperties": false,
+      "properties": {
+        "direction": {
+          "$ref": "#/$defs/Direction"
+        },
+        "search_space_id": {
+          "$ref": "#/$defs/Sha256Identity"
+        },
+        "generation_policy_id": {
+          "$ref": "#/$defs/Sha256Identity"
+        },
+        "candidate_set_id": {
+          "$ref": "#/$defs/Sha256Identity"
+        },
+        "counts": {
+          "$ref": "#/$defs/GenerationCountsV1"
+        }
+      },
+      "required": [
+        "direction",
+        "search_space_id",
+        "generation_policy_id",
+        "candidate_set_id",
+        "counts"
+      ],
+      "title": "CandidateSubplanManifestV1",
+      "type": "object"
+    },
+    "Direction": {
+      "enum": [
+        "BUY",
+        "SELL"
+      ],
+      "type": "string"
+    },
+    "GenerationCountsV1": {
+      "additionalProperties": false,
+      "properties": {
+        "T": {
+          "minimum": 0,
+          "title": "T",
+          "type": "integer"
+        },
+        "R": {
+          "minimum": 0,
+          "title": "R",
+          "type": "integer"
+        },
+        "V": {
+          "minimum": 0,
+          "title": "V",
+          "type": "integer"
+        },
+        "D": {
+          "minimum": 0,
+          "title": "D",
+          "type": "integer"
+        },
+        "U": {
+          "minimum": 0,
+          "title": "U",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "T",
+        "R",
+        "V",
+        "D",
+        "U"
+      ],
+      "title": "GenerationCountsV1",
+      "type": "object"
+    },
+    "Sha256Identity": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "Timeframe": {
+      "enum": [
+        "1m",
+        "2m",
+        "5m",
+        "15m"
+      ],
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "candidate-universe-manifest/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "resolved_search_space_id": {
+      "$ref": "#/$defs/Sha256Identity"
+    },
+    "resolution_protocol_id": {
+      "$ref": "#/$defs/Sha256Identity"
+    },
+    "subplans": {
+      "items": {
+        "$ref": "#/$defs/CandidateSubplanManifestV1"
+      },
+      "title": "Subplans",
+      "type": "array"
+    },
+    "counts": {
+      "$ref": "#/$defs/GenerationCountsV1"
+    },
+    "by_direction": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "propertyNames": {
+        "$ref": "#/$defs/Direction"
+      },
+      "title": "By Direction",
+      "type": "object"
+    },
+    "by_timeframe": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "propertyNames": {
+        "$ref": "#/$defs/Timeframe"
+      },
+      "title": "By Timeframe",
+      "type": "object"
+    },
+    "by_family": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "title": "By Family",
+      "type": "object"
+    },
+    "candidate_ids": {
+      "items": {
+        "$ref": "#/$defs/Sha256Identity"
+      },
+      "title": "Candidate Ids",
+      "type": "array"
+    },
+    "candidate_universe_id": {
+      "$ref": "#/$defs/Sha256Identity"
+    }
+  },
+  "required": [
+    "schema_version",
+    "resolved_search_space_id",
+    "resolution_protocol_id",
+    "subplans",
+    "counts",
+    "by_direction",
+    "by_timeframe",
+    "by_family",
+    "candidate_ids",
+    "candidate_universe_id"
+  ],
+  "title": "CandidateUniverseManifestV1",
+  "type": "object"
+}

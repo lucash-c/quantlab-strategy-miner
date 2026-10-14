@@ -1,0 +1,49 @@
+{
+  "schema_version": "tenth-increment-auto-discovery-precommitment/v1",
+  "baseline_commit": "de88cdc1083a12703ba150a8796971a22920329a",
+  "phase": "SCIENTIFIC_FREEZE_BEFORE_MARKET_EXECUTION",
+  "resolution_protocol_id": "sha256:9d9d7fa7c1022b37bab00e2d5b4f4290f9db4cb2502433274aa6d74e2963504d",
+  "profiles": {
+    "AUTO_DISCOVERY_BALANCED_V1": {
+      "auto_discovery_profile_id": "sha256:d199deb074d14ce6cb4f3b2a91f74979f7f4ce0d577291cb9c1262cec7ef93d2",
+      "mining_constraints_id": "sha256:4c6051572e587b3c363cda82226f36ee3c68272a9dcaeb878792be4d5b335db3",
+      "mining_request_id": "sha256:6c296f4e69907bad12bd5eab74c85e0de55100751621bb40f6e8fce4000f5e22",
+      "resolved_search_space_id": "sha256:212c6e8dc77b1da40066b232fe805bc5814aa478c63395e0c114e403090b4149",
+      "candidate_universe_id": "sha256:2c31cfad6554508ef50a518d2f95b5457ee196f22673915c1a7874c88e1f7610",
+      "counts": {"T": 6144, "R": 0, "V": 6144, "D": 0, "U": 6144},
+      "by_direction": {"BUY": 3072, "SELL": 3072},
+      "by_timeframe": {"1m": 1536, "2m": 1536, "5m": 1536, "15m": 1536},
+      "by_family": {
+        "trend_close": 1024,
+        "trend_pair": 1024,
+        "vwap_context": 1024,
+        "breakout_previous": 1024,
+        "momentum": 1024,
+        "candle_context": 1024
+      }
+    },
+    "AUTO_DISCOVERY_ACCEPTANCE_V1": {
+      "auto_discovery_profile_id": "sha256:d948c66d986cf2834fa03fd9032205124f4191f329ecfe521585d3d139e6eb7b",
+      "mining_constraints_id": "sha256:bac450190e1674c6373b5c82947b5bb4ccceb150f7db59da29ea3f6dbe977d89",
+      "mining_request_id": "sha256:05f0d2603224fa42e76dc1a6292b00231d92aa2a9ac70f756e79cebd3d089693",
+      "resolved_search_space_id": "sha256:a1e776bbe2c0c1fa4090aa5e9b952dd773a3c1114b8ed6ed83f33c576c027a34",
+      "candidate_universe_id": "sha256:7d97661a7221f0de68597f65fd339e5406f3e248a9181308c53c71531f0e0cc1",
+      "counts": {"T": 48, "R": 0, "V": 48, "D": 0, "U": 48},
+      "by_direction": {"BUY": 24, "SELL": 24},
+      "by_timeframe": {"1m": 12, "2m": 12, "5m": 12, "15m": 12},
+      "by_family": {
+        "trend_close": 8,
+        "trend_pair": 8,
+        "vwap_context": 8,
+        "breakout_previous": 8,
+        "momentum": 8,
+        "candle_context": 8
+      }
+    }
+  },
+  "market_data_accessed": false,
+  "research_executed": false,
+  "validation_executed": false,
+  "backtest_executed": false,
+  "performance_used": false
+}
