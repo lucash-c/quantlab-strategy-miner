@@ -10,10 +10,16 @@ from pathlib import Path
 
 from quantlab_core.errors import QuantLabError
 from quantlab_data.session_catalog import load_session_catalog
+from quantlab_mining.auto_discovery import (
+    ProfileRegistry,
+    publish_candidate_plan_bundle,
+    resolve_from_registry,
+)
 from quantlab_mining.batch import run_batch
 from quantlab_mining.contracts import (
     EvaluationConfigV1,
     GenerationPolicyV1,
+    MiningRequestV1,
     MiningSearchSpaceV1,
     load_contract,
 )
@@ -113,6 +119,24 @@ def _parser() -> argparse.ArgumentParser:
             mining.add_argument("--checkpoint", type=Path, required=True)
             mining.add_argument("--output", type=Path, required=True)
             mining.add_argument("--stop-after", type=int, help="controlled acceptance interruption")
+    resolve_auto = subcommands.add_parser(
+        "resolve-auto-discovery",
+        help="resolve a MiningRequest without market access or candidate evaluation",
+    )
+    resolve_auto.add_argument("--request", type=Path, required=True)
+    resolve_auto.add_argument("--profile-registry", type=Path)
+    plan_auto = subcommands.add_parser(
+        "plan-auto-discovery",
+        help="publish an immutable disk-backed Composite Candidate Plan",
+    )
+    plan_auto.add_argument("--request", type=Path, required=True)
+    plan_auto.add_argument("--profile-registry", type=Path)
+    plan_auto.add_argument("--cache", type=Path, required=True)
+    plan_auto.add_argument("--checkpoint", type=Path, required=True)
+    plan_auto.add_argument("--output", type=Path, required=True)
+    plan_auto.add_argument("--workers", type=int, default=1)
+    plan_auto.add_argument("--batch-size", type=int, default=256)
+    plan_auto.add_argument("--stop-after-resolution", action="store_true")
     for command in ("plan-research", "run-research"):
         research = subcommands.add_parser(command, help="frozen chronological Discovery/Validation")
         research.add_argument("--search-space", type=Path, required=True)
@@ -252,6 +276,48 @@ def main(argv: list[str] | None = None) -> int:
                 cache_root=args.cache,
                 output=args.output,
             )
+        elif args.command in {"resolve-auto-discovery", "plan-auto-discovery"}:
+            request = load_contract(args.request, MiningRequestV1)
+            registry = (
+                ProfileRegistry.from_directory(args.profile_registry)
+                if args.profile_registry is not None
+                else None
+            )
+            if args.command == "resolve-auto-discovery":
+                resolved, _, _ = resolve_from_registry(request, registry)
+                print(
+                    json.dumps(
+                        {
+                            **resolved.model_dump(mode="json"),
+                            "resolved_search_space_id": resolved.resolved_search_space_id,
+                        },
+                        sort_keys=True,
+                    )
+                )
+                return 0
+            if args.workers < 1 or args.batch_size < 1:
+                raise QuantLabError("workers and batch-size must be positive")
+            bundle = publish_candidate_plan_bundle(
+                request,
+                registry=registry,
+                cache_root=args.cache,
+                checkpoint=args.checkpoint,
+                output_root=args.output,
+                stop_after_resolution=args.stop_after_resolution,
+            )
+            print(
+                json.dumps(
+                    {
+                        "bundle_id": bundle.bundle_id,
+                        "bundle_directory": str(bundle.directory),
+                        "resolved_search_space_id": bundle.resolved.resolved_search_space_id,
+                        "candidate_universe_id": bundle.plan.manifest.candidate_universe_id,
+                        "counts": bundle.plan.manifest.counts.model_dump(mode="json"),
+                    },
+                    sort_keys=True,
+                )
+            )
+            return 0
         elif args.command in {"plan-research", "run-research"}:
             space = load_contract(args.search_space, MiningSearchSpaceV1)
             policy = load_contract(args.policy, GenerationPolicyV1)

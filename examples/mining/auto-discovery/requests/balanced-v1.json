@@ -1,0 +1,21 @@
+{
+  "schema_version": "mining-request/v1",
+  "mode": "AUTO_DISCOVERY",
+  "logical_asset": "WIN",
+  "timeframes": [
+    "1m",
+    "2m",
+    "5m",
+    "15m"
+  ],
+  "sides": {
+    "BUY": {
+      "enabled": true
+    },
+    "SELL": {
+      "enabled": true
+    }
+  },
+  "auto_discovery_profile_id": "sha256:d199deb074d14ce6cb4f3b2a91f74979f7f4ce0d577291cb9c1262cec7ef93d2",
+  "constraints": null
+}
