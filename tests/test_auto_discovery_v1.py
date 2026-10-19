@@ -2,8 +2,10 @@ from __future__ import annotations
 
 import copy
 import json
+import sqlite3
 import tempfile
 import unittest
+from contextlib import closing
 from pathlib import Path
 from unittest.mock import patch
 
@@ -11,18 +13,24 @@ from pydantic import ValidationError
 from quantlab_core.errors import ContractError
 from quantlab_mining.auto_discovery import (
     RESOLUTION_PROTOCOL_ID,
+    ProfileRegistry,
+    build_composite_candidate_plan,
     preflight_candidate_universe,
+    publish_candidate_plan_bundle,
+    resolve_from_registry,
     resolve_request,
     verify_frozen_profile,
 )
 from quantlab_mining.contracts import (
     AutoDiscoveryProfileV1,
     CandidateUniverseManifestV1,
+    GenerationPolicyV1,
     MiningConstraintsV1,
     MiningRequestV1,
     ResolvedSearchSpaceV1,
     load_contract,
 )
+from quantlab_mining.generator import CandidatePlan, preflight
 
 ROOT = Path(__file__).resolve().parents[1]
 PROFILE_ROOT = ROOT / "examples" / "mining" / "auto-discovery"
@@ -192,7 +200,9 @@ class AutoDiscoveryV1Tests(unittest.TestCase):
                 reversed_order = resolved.model_copy(
                     update={"subspaces": tuple(reversed(resolved.subspaces))}
                 )
-                reordered = preflight_candidate_universe(reversed_order, destination)
+                reordered = preflight_candidate_universe(
+                    reversed_order, Path(tmp) / f"{filename}-reordered"
+                )
                 self.assertEqual(reordered.candidate_universe_id, universe_id)
 
     def test_profile_files_are_canonical_roundtrips(self) -> None:
@@ -203,3 +213,231 @@ class AutoDiscoveryV1Tests(unittest.TestCase):
                 profile.auto_discovery_profile_id,
                 AutoDiscoveryProfileV1.model_validate(copy.deepcopy(dumped)).auto_discovery_profile_id,
             )
+
+    def test_profile_registry_requires_full_hash_and_never_resolves_aliases(self) -> None:
+        registry = ProfileRegistry.from_directory(PROFILE_ROOT)
+        profile = self.profile("acceptance-v1.json")
+        self.assertEqual(registry.resolve(profile.auto_discovery_profile_id), profile)
+        with self.assertRaisesRegex(ContractError, "PROFILE_NOT_FOUND"):
+            registry.resolve(profile.alias)
+        with self.assertRaisesRegex(ContractError, "PROFILE_NOT_FOUND"):
+            registry.resolve("sha256:" + "0" * 64)
+
+    def test_profile_allowlist_can_only_narrow_timeframes_and_sides(self) -> None:
+        profile = self.profile("acceptance-v1.json")
+        narrowed = self.request(profile, sell=False).model_copy(update={"timeframes": ("5m",)})
+        resolved = resolve_request(narrowed, profile)
+        self.assertEqual([item.direction for item in resolved.subspaces], ["BUY"])
+        self.assertEqual(resolved.subspaces[0].search_space.timeframes, ("5m",))
+
+        outside = profile.model_copy(update={"timeframes": ("2m", "5m", "15m")})
+        invalid = self.request(profile).model_dump(mode="json")
+        invalid["timeframes"] = ["1m"]
+        invalid["auto_discovery_profile_id"] = outside.auto_discovery_profile_id
+        request = MiningRequestV1.model_validate(invalid)
+        with self.assertRaisesRegex(ContractError, "TIMEFRAME_OUTSIDE_PROFILE"):
+            resolve_request(request, outside)
+
+    def test_buy_only_and_sell_only_composite_plans_remain_independent(self) -> None:
+        profile = self.profile("acceptance-v1.json")
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            buy = build_composite_candidate_plan(
+                resolve_request(self.request(profile, sell=False), profile), root / "buy"
+            )
+            sell = build_composite_candidate_plan(
+                resolve_request(self.request(profile, buy=False), profile), root / "sell"
+            )
+            self.assertEqual(buy.manifest.counts.U, 24)
+            self.assertEqual(sell.manifest.counts.U, 24)
+            self.assertEqual(buy.manifest.by_direction, {"BUY": 24})
+            self.assertEqual(sell.manifest.by_direction, {"SELL": 24})
+            self.assertFalse(set(buy.manifest.candidate_ids) & set(sell.manifest.candidate_ids))
+
+    def test_bundle_interruption_resume_warm_and_checkpoint_context(self) -> None:
+        profile = self.profile("acceptance-v1.json")
+        request = self.request(profile)
+        registry = ProfileRegistry.from_directory(PROFILE_ROOT)
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            kwargs = {
+                "registry": registry,
+                "cache_root": root / "cache",
+                "checkpoint": root / "checkpoint.json",
+                "output_root": root / "output",
+            }
+            with self.assertRaisesRegex(ContractError, "CONTROLLED_INTERRUPTION"):
+                publish_candidate_plan_bundle(
+                    request, **kwargs, stop_after_resolution=True
+                )
+            self.assertTrue((root / "checkpoint.json").is_file())
+            self.assertFalse((root / "output").exists())
+
+            clean = publish_candidate_plan_bundle(request, **kwargs)
+            expected_files = {
+                "mining-request.json",
+                "mining-constraints.json",
+                "auto-discovery-profile.json",
+                "resolved-search-space.json",
+                "candidate-universe-manifest.json",
+            }
+            self.assertEqual(
+                {path.name for path in clean.directory.iterdir() if path.is_file()},
+                expected_files,
+            )
+            clean_bytes = {name: (clean.directory / name).read_bytes() for name in expected_files}
+            warm = publish_candidate_plan_bundle(request, **kwargs)
+            self.assertEqual(warm.bundle_id, clean.bundle_id)
+            self.assertEqual(
+                clean_bytes,
+                {name: (warm.directory / name).read_bytes() for name in expected_files},
+            )
+
+            fresh = publish_candidate_plan_bundle(
+                request,
+                registry=registry,
+                cache_root=root / "fresh-cache",
+                checkpoint=root / "fresh-checkpoint.json",
+                output_root=root / "fresh-output",
+            )
+            self.assertEqual(fresh.bundle_id, clean.bundle_id)
+            self.assertEqual(
+                clean_bytes,
+                {name: (fresh.directory / name).read_bytes() for name in expected_files},
+            )
+
+            corrupt_artifact = clean.directory / "resolved-search-space.json"
+            corrupt_artifact.write_bytes(b"corrupt")
+            with self.assertRaisesRegex(ContractError, "CHECKPOINT_CONTEXT_MISMATCH"):
+                publish_candidate_plan_bundle(request, **kwargs)
+            self.assertEqual(corrupt_artifact.read_bytes(), b"corrupt")
+
+            different = self.request(profile, sell=False)
+            with self.assertRaisesRegex(ContractError, "CHECKPOINT_CONTEXT_MISMATCH"):
+                publish_candidate_plan_bundle(different, **kwargs)
+
+    def test_corrupt_cache_is_rejected_without_rebuild_or_overwrite(self) -> None:
+        profile = self.profile("acceptance-v1.json")
+        resolved = resolve_request(self.request(profile), profile)
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            plan = build_composite_candidate_plan(resolved, root)
+            plan.database.write_bytes(b"corrupt")
+            with self.assertRaisesRegex(ContractError, "CANDIDATE_PLAN_CACHE_CORRUPT"):
+                build_composite_candidate_plan(resolved, root)
+            self.assertEqual(plan.database.read_bytes(), b"corrupt")
+
+    def test_composite_consolidates_identical_candidates_with_all_provenance(self) -> None:
+        from mining_helpers import small_search
+
+        search = small_search()
+        first = search.templates[0].model_dump(mode="json")
+        second = copy.deepcopy(first)
+        first["template_id"] = "DUPLICATE.A"
+        second["template_id"] = "DUPLICATE.B"
+        constraints = MiningConstraintsV1.model_validate(
+            {
+                "schema_version": "mining-constraints/v1",
+                "logic": "AND_ONLY",
+                "sampling": "NONE",
+                "truncation": "PROHIBITED",
+                "template_catalog": [first, second],
+                "time_windows": [item.model_dump(mode="json") for item in search.time_windows],
+                "sides": {
+                    "BUY": {
+                        "enabled": True,
+                        "template_ids": ["DUPLICATE.A", "DUPLICATE.B"],
+                        "stops": ["5"],
+                        "targets": ["5"],
+                    },
+                    "SELL": {
+                        "enabled": False,
+                        "template_ids": [],
+                        "stops": [],
+                        "targets": [],
+                    },
+                },
+                "generation_policy": GenerationPolicyV1().model_dump(mode="json"),
+            }
+        )
+        request = MiningRequestV1.model_validate(
+            {
+                "schema_version": "mining-request/v1",
+                "mode": "CONSTRAINED",
+                "logical_asset": "WIN",
+                "timeframes": ["1m"],
+                "sides": {"BUY": {"enabled": True}, "SELL": {"enabled": False}},
+                "auto_discovery_profile_id": None,
+                "constraints": constraints.model_dump(mode="json"),
+            }
+        )
+        resolved, _, _ = resolve_from_registry(request, None)
+        with tempfile.TemporaryDirectory() as temporary:
+            plan = build_composite_candidate_plan(resolved, Path(temporary))
+            self.assertEqual(
+                plan.manifest.counts.model_dump(),
+                {"T": 2, "R": 0, "V": 2, "D": 1, "U": 1},
+            )
+            candidate_id = plan.manifest.candidate_ids[0]
+            provenance = list(plan.provenance(candidate_id))
+            self.assertEqual(len(provenance), 2)
+            self.assertEqual(
+                {item[0]["template_id"] for item in provenance},
+                {"DUPLICATE.A", "DUPLICATE.B"},
+            )
+            legacy_search = search.model_copy(update={"directions": ("BUY",)})
+            legacy = preflight(
+                legacy_search, GenerationPolicyV1(), Path(temporary) / "legacy.sqlite"
+            )
+            self.assertEqual(candidate_id, next(legacy.candidates())[0])
+
+    def test_composite_rejects_same_candidate_id_with_different_payload(self) -> None:
+        profile = self.profile("acceptance-v1.json")
+        resolved = resolve_request(self.request(profile), profile)
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            fake_plans = []
+            for index in range(2):
+                database_path = root / f"fake-{index}.sqlite"
+                with closing(sqlite3.connect(database_path)) as database:
+                    database.executescript(
+                        """CREATE TABLE candidates(id TEXT PRIMARY KEY, strategy TEXT NOT NULL);
+                        CREATE TABLE provenance(
+                            id TEXT NOT NULL, origin TEXT NOT NULL, multiplicity INTEGER NOT NULL,
+                            PRIMARY KEY(id, origin));"""
+                    )
+                    database.execute(
+                        "INSERT INTO candidates VALUES (?,?)",
+                        ("sha256:" + "0" * 64, json.dumps({"different": index})),
+                    )
+                    database.commit()
+                fake_plans.append(
+                    CandidatePlan(
+                        database_path,
+                        {
+                            "search_space_id": "sha256:" + str(index) * 64,
+                            "generation_policy_id": resolved.generation_policy.generation_policy_id,
+                            "candidate_set_id": "sha256:" + "0" * 64,
+                            "counts": {"T": 1, "R": 0, "V": 1, "D": 0, "U": 1},
+                        },
+                    )
+                )
+            with (
+                patch("quantlab_mining.auto_discovery.preflight", side_effect=fake_plans),
+                self.assertRaisesRegex(ContractError, "candidate hash collision"),
+            ):
+                build_composite_candidate_plan(resolved, root / "cache")
+
+    def test_resolver_layer_has_no_market_or_result_layer_imports(self) -> None:
+        source = (
+            ROOT / "packages" / "mining" / "src" / "quantlab_mining" / "auto_discovery.py"
+        ).read_text()
+        for forbidden in (
+            "quantlab_data",
+            "quantlab_backtest",
+            "quantlab_research",
+            "quantlab_validation",
+            "quantlab_scoring",
+            "quantlab_robustness",
+        ):
+            self.assertNotIn(forbidden, source)
