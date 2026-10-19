@@ -12,6 +12,7 @@ from quantlab_core.errors import QuantLabError
 from quantlab_data.session_catalog import load_session_catalog
 from quantlab_mining.auto_discovery import (
     ProfileRegistry,
+    load_candidate_plan_bundle,
     publish_candidate_plan_bundle,
     resolve_from_registry,
 )
@@ -25,7 +26,7 @@ from quantlab_mining.contracts import (
 )
 from quantlab_mining.generator import preflight
 from quantlab_research.contracts import GatePolicyV1, SplitPolicyV1
-from quantlab_research.runner import protocol_record, run_research
+from quantlab_research.runner import protocol_record, run_composite_research, run_research
 from quantlab_research.split import create_split
 from quantlab_robustness.contracts import (
     AuthorizedSessionUniverseV1,
@@ -157,6 +158,25 @@ def _parser() -> argparse.ArgumentParser:
             research.add_argument(
                 "--stop-stage", choices=("DISCOVERY", "VALIDATION"), default="VALIDATION"
             )
+    composite_research = subcommands.add_parser(
+        "run-auto-discovery-research",
+        help="run Research over a validated AUTO_DISCOVERY candidate bundle",
+    )
+    composite_research.add_argument("--bundle", type=Path, required=True)
+    composite_research.add_argument("--candidate-cache", type=Path, required=True)
+    composite_research.add_argument("--history", type=Path, required=True)
+    composite_research.add_argument("--evaluation", type=Path, required=True)
+    composite_research.add_argument("--split-policy", type=Path, required=True)
+    composite_research.add_argument("--discovery-gate", type=Path, required=True)
+    composite_research.add_argument("--validation-gate", type=Path, required=True)
+    composite_research.add_argument("--cache", type=Path, required=True)
+    composite_research.add_argument("--checkpoint", type=Path, required=True)
+    composite_research.add_argument("--output", type=Path, required=True)
+    composite_research.add_argument("--previous-experiment", type=Path)
+    composite_research.add_argument("--stop-after", type=int)
+    composite_research.add_argument(
+        "--stop-stage", choices=("DISCOVERY", "VALIDATION"), default="VALIDATION"
+    )
     scoring = subcommands.add_parser(
         "score-research", help="score and rank a completed Research Experiment"
     )
@@ -318,6 +338,28 @@ def main(argv: list[str] | None = None) -> int:
                 )
             )
             return 0
+        elif args.command == "run-auto-discovery-research":
+            bundle = load_candidate_plan_bundle(args.bundle, cache_root=args.candidate_cache)
+            evaluation = load_contract(args.evaluation, EvaluationConfigV1).canonicalized()
+            split_policy = load_contract(args.split_policy, SplitPolicyV1)
+            dgate = load_contract(args.discovery_gate, GatePolicyV1)
+            vgate = load_contract(args.validation_gate, GatePolicyV1)
+            manifest = run_composite_research(
+                bundle.plan,
+                bundle.resolved,
+                evaluation,
+                load_session_catalog(args.history),
+                split_policy,
+                dgate,
+                vgate,
+                cache_root=args.cache,
+                checkpoint=args.checkpoint,
+                output=args.output,
+                previous_experiment=args.previous_experiment,
+                stop_after=args.stop_after,
+                stop_stage=args.stop_stage,
+                observer=lambda r: print(json.dumps(r), file=sys.stderr, flush=True),
+            )
         elif args.command in {"plan-research", "run-research"}:
             space = load_contract(args.search_space, MiningSearchSpaceV1)
             policy = load_contract(args.policy, GenerationPolicyV1)

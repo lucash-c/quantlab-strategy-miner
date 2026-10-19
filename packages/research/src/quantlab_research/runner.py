@@ -19,6 +19,10 @@ from quantlab_core.sessions import HistoricalDataset
 from quantlab_data.feature_cache_v2 import build_feature_set
 from quantlab_data.historical import MarketHistoricalBuild
 from quantlab_data.session_catalog import SessionCatalog, load_metadata, resolve_session
+from quantlab_mining.auto_discovery import (
+    CompositeCandidatePlan,
+    validate_composite_candidate_plan,
+)
 from quantlab_mining.batch import (
     ENGINE_VERSIONS,
     ControlledInterruption,
@@ -30,6 +34,7 @@ from quantlab_mining.contracts import (
     EvaluationConfigV1,
     GenerationPolicyV1,
     MiningSearchSpaceV1,
+    ResolvedSearchSpaceV1,
     identity,
 )
 from quantlab_mining.generator import CandidatePlan, preflight
@@ -75,6 +80,74 @@ def protocol_record(
     }
     record["research_protocol_id"] = identity("research-protocol/v1", record)
     return record
+
+
+def composite_protocol_record(
+    plan: CompositeCandidatePlan,
+    split: dict,
+    dgate: GatePolicyV1,
+    vgate: GatePolicyV1,
+    evaluation: EvaluationConfigV1,
+) -> dict:
+    """Additive protocol lineage for an already-materialized composite universe."""
+
+    manifest = plan.manifest
+    record = {
+        "schema_version": "research-protocol/v2",
+        "resolved_search_space_id": manifest.resolved_search_space_id,
+        "resolution_protocol_id": manifest.resolution_protocol_id,
+        "candidate_universe_id": manifest.candidate_universe_id,
+        "candidate_subplans": [item.model_dump(mode="json") for item in manifest.subplans],
+        "split_plan_id": split["split_plan_id"],
+        "discovery_gate_policy": dgate.canonical_record(),
+        "validation_gate_policy": vgate.canonical_record(),
+        "cost_model": evaluation.cost_model.model_dump(mode="json"),
+        "slippage_model": evaluation.slippage_model.model_dump(mode="json"),
+        "engines": {**ENGINE_VERSIONS, "research": RESEARCH_VERSION},
+        "mathematical_policy": mathematical_policy_record(),
+        "aggregation_policy": AGGREGATION_POLICY,
+        "comparison_policy": COMPARISON_POLICY,
+    }
+    record["research_protocol_id"] = identity("research-protocol/v2", record)
+    return record
+
+
+def _install_composite_plan(checkpoint: Path, plan: CompositeCandidatePlan) -> None:
+    """Clone exact planned candidates into operational Research state without regeneration."""
+
+    validate_composite_candidate_plan(plan)
+    if not checkpoint.exists():
+        with (
+            closing(sqlite3.connect(f"file:{plan.database}?mode=ro", uri=True)) as source,
+            closing(sqlite3.connect(checkpoint)) as destination,
+        ):
+            source.backup(destination)
+        return
+    try:
+        with (
+            closing(sqlite3.connect(f"file:{plan.database}?mode=ro", uri=True)) as source,
+            closing(sqlite3.connect(checkpoint)) as destination,
+        ):
+            if destination.execute("PRAGMA quick_check").fetchone()[0] != "ok":
+                raise ContractError("corrupt research checkpoint")
+            for table, order in (("candidates", "id"), ("provenance", "id,origin")):
+                planned = source.execute(f"SELECT * FROM {table} ORDER BY {order}").fetchall()
+                resumed = destination.execute(f"SELECT * FROM {table} ORDER BY {order}").fetchall()
+                if resumed != planned:
+                    raise ContractError(
+                        "CHECKPOINT_CONTEXT_MISMATCH: composite candidate plan changed"
+                    )
+    except sqlite3.DatabaseError as exc:
+        raise ContractError(f"corrupt research checkpoint: {exc}") from exc
+
+
+def _composite_generation_manifest(plan: CompositeCandidatePlan) -> dict:
+    manifest = plan.manifest.model_dump(mode="json")
+    return {
+        **manifest,
+        "schema_version": "research-candidate-universe-manifest/v1",
+        "candidate_set_id": manifest["candidate_universe_id"],
+    }
 
 
 def initialize(db: sqlite3.Connection, protocol: dict) -> None:
@@ -148,7 +221,7 @@ def _stage(
     stage: str,
     view: dict,
     ids: set[str],
-    plan: CandidatePlan,
+    plan: CandidatePlan | CompositeCandidatePlan,
     catalog: SessionCatalog,
     evaluation: EvaluationConfigV1,
     cache: SessionEvaluationCache,
@@ -330,8 +403,8 @@ def _stage(
 
 
 def run_research(
-    space: MiningSearchSpaceV1,
-    generation: GenerationPolicyV1,
+    space: MiningSearchSpaceV1 | None,
+    generation: GenerationPolicyV1 | None,
     evaluation: EvaluationConfigV1,
     catalog: SessionCatalog,
     split_policy: SplitPolicyV1,
@@ -345,6 +418,8 @@ def run_research(
     stop_stage: str = "VALIDATION",
     observer: Callable[[dict], None] | None = None,
     previous_experiment: Path | None = None,
+    candidate_plan: CompositeCandidatePlan | None = None,
+    resolved_search_space: ResolvedSearchSpaceV1 | None = None,
 ) -> dict:
     if output.exists():
         raise ContractError("refusing to overwrite research output")
@@ -355,9 +430,27 @@ def run_research(
         raise ContractError("gate policies assigned to wrong stages")
     if stop_stage not in {"DISCOVERY", "VALIDATION"} or (stop_after is not None and stop_after < 1):
         raise ContractError("invalid controlled interruption configuration")
+    if (candidate_plan is None) != (resolved_search_space is None):
+        raise ContractError("composite Research requires plan and resolved search space")
+    if candidate_plan is None:
+        if space is None or generation is None:
+            raise ContractError("legacy Research requires search space and generation policy")
+        logical_asset = space.logical_asset
+    else:
+        if space is not None or generation is not None:
+            raise ContractError("composite Research forbids legacy search-space inputs")
+        assert resolved_search_space is not None
+        assets = {item.search_space.logical_asset for item in resolved_search_space.subspaces}
+        if len(assets) != 1:
+            raise ContractError("resolved search space must contain one logical asset")
+        logical_asset = assets.pop()
+        if candidate_plan.manifest.resolved_search_space_id != (
+            resolved_search_space.resolved_search_space_id
+        ):
+            raise ContractError("CHECKPOINT_CONTEXT_MISMATCH: resolved candidate plan")
     evaluation = evaluation.canonicalized()
     catalog = catalog.select(evaluation.max_sessions)
-    if catalog.manifest["logical_asset"] != space.logical_asset:
+    if catalog.manifest["logical_asset"] != logical_asset:
         raise ContractError("historical logical asset differs from search space")
     started = time.perf_counter()
     report = {
@@ -374,9 +467,20 @@ def run_research(
         },
     }
     with single_writer(checkpoint):
-        plan = preflight(space, generation, checkpoint)
+        if candidate_plan is None:
+            assert space is not None and generation is not None
+            plan: CandidatePlan | CompositeCandidatePlan = preflight(
+                space, generation, checkpoint
+            )
+        else:
+            _install_composite_plan(checkpoint, candidate_plan)
+            plan = candidate_plan
         split, discovery, validation = create_split(catalog, split_policy)
-        protocol = protocol_record(plan, split, dgate, vgate, evaluation)
+        protocol = (
+            protocol_record(plan, split, dgate, vgate, evaluation)
+            if isinstance(plan, CandidatePlan)
+            else composite_protocol_record(plan, split, dgate, vgate, evaluation)
+        )
         cache = SessionEvaluationCache(cache_root)
         try:
             with closing(sqlite3.connect(checkpoint)) as db:
@@ -539,11 +643,21 @@ def run_research(
                 for cid, strategy in plan.candidates():
                     groups.setdefault((strategy.timeframe, strategy.direction), set()).add(cid)
                 families: dict[str, set[str]] = {}
-                kinds = {entry.template_id: entry.base.kind for entry in space.templates}
+                kinds = (
+                    {entry.template_id: entry.base.kind for entry in space.templates}
+                    if space is not None
+                    else None
+                )
                 for cid, origin in db.execute(
                     "SELECT id,origin FROM provenance ORDER BY id,origin"
                 ):
-                    families.setdefault(kinds[json.loads(origin)["template_id"]], set()).add(cid)
+                    origin_record = json.loads(origin)
+                    family = (
+                        kinds[origin_record["template_id"]]
+                        if kinds is not None
+                        else origin_record["family"]
+                    )
+                    families.setdefault(family, set()).add(cid)
 
                 def group_counts(members: set[str]) -> dict:
                     return {
@@ -591,6 +705,11 @@ def run_research(
                         known_prior_holdout_overlap=bool(overlap),
                         overlapping_validation_sessions=overlap,
                     )
+                generation_manifest = (
+                    plan.manifest
+                    if isinstance(plan, CandidatePlan)
+                    else _composite_generation_manifest(plan)
+                )
                 records = {
                     "research-protocol.json": protocol,
                     "split-plan.json": split,
@@ -604,8 +723,12 @@ def run_research(
                     "provenance.json": provenance,
                     "metric-registry.json": metric_registry_record(),
                     "feature-registry.json": feature_registry_record(),
-                    "generation-manifest.json": plan.manifest,
+                    "generation-manifest.json": generation_manifest,
                 }
+                if isinstance(plan, CompositeCandidatePlan):
+                    records["candidate-universe-manifest.json"] = plan.manifest.model_dump(
+                        mode="json"
+                    )
                 export_start = time.perf_counter()
                 manifest = export_research(db, output, records, experiment)
                 report["export_seconds"] = str(time.perf_counter() - export_start)
@@ -620,3 +743,42 @@ def run_research(
                 for name in ("evaluation_seconds", "aggregation_seconds", "gates_seconds"):
                     values[name] = str(values[name])
             write_canonical_json(output.parent / (output.name + ".operational.json"), report)
+
+
+def run_composite_research(
+    plan: CompositeCandidatePlan,
+    resolved_search_space: ResolvedSearchSpaceV1,
+    evaluation: EvaluationConfigV1,
+    catalog: SessionCatalog,
+    split_policy: SplitPolicyV1,
+    dgate: GatePolicyV1,
+    vgate: GatePolicyV1,
+    *,
+    cache_root: Path,
+    checkpoint: Path,
+    output: Path,
+    stop_after: int | None = None,
+    stop_stage: str = "VALIDATION",
+    observer: Callable[[dict], None] | None = None,
+    previous_experiment: Path | None = None,
+) -> dict:
+    """Run the existing Research engine over a validated, resolved composite plan."""
+
+    return run_research(
+        None,
+        None,
+        evaluation,
+        catalog,
+        split_policy,
+        dgate,
+        vgate,
+        cache_root=cache_root,
+        checkpoint=checkpoint,
+        output=output,
+        stop_after=stop_after,
+        stop_stage=stop_stage,
+        observer=observer,
+        previous_experiment=previous_experiment,
+        candidate_plan=plan,
+        resolved_search_space=resolved_search_space,
+    )

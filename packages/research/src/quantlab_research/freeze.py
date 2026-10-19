@@ -43,7 +43,10 @@ def validate_freeze(directory: Path, expected: dict | None = None) -> dict:
         record = json.loads((directory / "discovery-freeze.json").read_text())
         eid = record["discovery_freeze_id"]
         payload = {k: v for k, v in record.items() if k != "discovery_freeze_id"}
-        if identity("discovery-freeze/v1", payload) != eid or (expected and record != expected):
+        version = record.get("schema_version")
+        if version not in {"discovery-freeze/v1", "discovery-freeze/v2"}:
+            raise ContractError("unsupported Discovery freeze version")
+        if identity(version, payload) != eid or (expected and record != expected):
             raise ContractError("Discovery freeze identity mismatch")
         for name, fingerprint in record["artifacts"].items():
             path = (directory / name).resolve()
@@ -73,18 +76,30 @@ def publish_freeze(
                 for row in sorted(rows, key=lambda r: r["candidate_id"]):
                     output.write(canonical_json_bytes(row))
         write_canonical_json(staging / "discovery-pass-set.json", approved)
+        if protocol["schema_version"] == "research-protocol/v1":
+            lineage = {
+                "schema_version": "discovery-freeze/v1",
+                "search_space_id": protocol["search_space_id"],
+                "candidate_set_id": protocol["candidate_set_id"],
+            }
+        elif protocol["schema_version"] == "research-protocol/v2":
+            lineage = {
+                "schema_version": "discovery-freeze/v2",
+                "resolved_search_space_id": protocol["resolved_search_space_id"],
+                "candidate_universe_id": protocol["candidate_universe_id"],
+            }
+        else:
+            raise ContractError("unsupported research protocol for Discovery freeze")
         record = {
-            "schema_version": "discovery-freeze/v1",
+            **lineage,
             "research_protocol_id": protocol["research_protocol_id"],
-            "search_space_id": protocol["search_space_id"],
-            "candidate_set_id": protocol["candidate_set_id"],
             "split_plan_id": split["split_plan_id"],
             "discovery_partition_id": split["discovery"]["partition_id"],
             "discovery_gate_policy_id": approved["discovery_gate_policy_id"],
             "discovery_pass_set_id": approved["discovery_pass_set_id"],
             "artifacts": {p.name: sha256_file(p) for p in sorted(staging.iterdir())},
         }
-        record["discovery_freeze_id"] = identity("discovery-freeze/v1", record)
+        record["discovery_freeze_id"] = identity(record["schema_version"], record)
         write_canonical_json(staging / "discovery-freeze.json", record)
         validate_freeze(staging, record)
         if directory.exists():

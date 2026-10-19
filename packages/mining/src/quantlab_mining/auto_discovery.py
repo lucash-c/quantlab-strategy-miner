@@ -235,6 +235,20 @@ def _validate_composite_database(
         raise _cache_error(str(exc)) from exc
 
 
+def validate_composite_candidate_plan(plan: CompositeCandidatePlan) -> None:
+    """Validate manifest/payload agreement without generating or changing candidates."""
+
+    try:
+        persisted = CandidateUniverseManifestV1.model_validate(
+            _load_json(plan.directory / _CANDIDATE_MANIFEST)
+        )
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        raise _cache_error(f"invalid candidate manifest: {exc}") from exc
+    if persisted != plan.manifest:
+        raise _cache_error("in-memory and persisted candidate manifests differ")
+    _validate_composite_database(plan.database, plan.manifest)
+
+
 def _load_cached_plan(
     directory: Path, resolved: ResolvedSearchSpaceV1
 ) -> CompositeCandidatePlan:
@@ -528,6 +542,57 @@ def _validate_bundle(directory: Path, payloads: dict[str, Any]) -> None:
     for name, payload in payloads.items():
         if (directory / name).read_bytes() != canonical_json_bytes(payload):
             raise ContractError(f"CHECKPOINT_CONTEXT_MISMATCH: bundle artifact {name}")
+
+
+def load_candidate_plan_bundle(
+    directory: Path, *, cache_root: Path
+) -> CandidatePlanBundle:
+    """Validate a published bundle and its immutable Composite Candidate Plan.
+
+    This is deliberately a read-only operation.  Research consumes the candidates that
+    were already materialized during planning; it never expands the grids again.
+    """
+
+    try:
+        request = MiningRequestV1.model_validate(_load_json(directory / "mining-request.json"))
+        constraints = MiningConstraintsV1.model_validate(
+            _load_json(directory / "mining-constraints.json")
+        )
+        profile_payload = _load_json(directory / "auto-discovery-profile.json")
+        profile = (
+            AutoDiscoveryProfileV1.model_validate(profile_payload)
+            if profile_payload is not None
+            else None
+        )
+        resolved = ResolvedSearchSpaceV1.model_validate(
+            _load_json(directory / "resolved-search-space.json")
+        )
+        manifest = CandidateUniverseManifestV1.model_validate(
+            _load_json(directory / "candidate-universe-manifest.json")
+        )
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        raise ContractError(
+            f"CHECKPOINT_CONTEXT_MISMATCH: invalid candidate bundle: {exc}"
+        ) from exc
+
+    expected_resolved = resolve_request(request, profile)
+    expected_constraints = profile.constraints if profile is not None else request.constraints
+    if expected_constraints is None or constraints != expected_constraints:
+        raise ContractError("CHECKPOINT_CONTEXT_MISMATCH: bundle constraints")
+    if resolved != expected_resolved:
+        raise ContractError("CHECKPOINT_CONTEXT_MISMATCH: bundle resolution")
+    payloads = _bundle_payloads(request, constraints, profile, resolved, manifest)
+    _validate_bundle(directory, payloads)
+
+    plan_directory = cache_root / resolved.resolved_search_space_id.removeprefix("sha256:")
+    plan = _load_cached_plan(plan_directory, resolved)
+    if plan.manifest != manifest:
+        raise ContractError("CHECKPOINT_CONTEXT_MISMATCH: bundle candidate universe")
+    if profile is not None and _complete_profile_request(request, profile):
+        verify_frozen_profile(profile, manifest)
+    return CandidatePlanBundle(
+        bundle_id=_bundle_id(payloads), directory=directory, plan=plan, resolved=resolved
+    )
 
 
 def publish_candidate_plan_bundle(
