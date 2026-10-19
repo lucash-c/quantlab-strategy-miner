@@ -87,3 +87,47 @@ posteriores. Elas não mudam o universo e não pertencem aos fingerprints cient�
 Esta implementação não modifica Strategy Definition v3, Feature Engine, canonicalização de
 Strategy, Candidate Generator v1, Research, Validation, Score, Robustness, gates ou evidências
 do Nono Incremento. OR, NOT, LLMs e descoberta adaptativa permanecem fora do v1.
+
+## Fase 2 — resolução, plano composto e persistência
+
+O `ProfileRegistry` lê profiles versionados e só permite seleção pelo
+`auto_discovery_profile_id` completo. Alias não é seletor, não existe `latest` e não há fallback
+para um profile default. No modo `CONSTRAINED`, os constraints inline são a definição explícita.
+No modo `AUTO_DISCOVERY`, o profile é a definição e os lados/timeframes do Request funcionam
+somente como allowlist: podem reduzir o profile, nunca ampliá-lo.
+
+Cada subespaço BUY ou SELL é enviado, sem adaptação científica, ao `preflight` legado. O
+`CompositeCandidatePlan` une as tabelas disk-backed por `candidate_id`, ordena os IDs e:
+
+- rejeita o mesmo ID com payload canônico diferente;
+- consolida payloads idênticos sem perder nenhuma proveniência;
+- não cria produto cartesiano BUY × SELL;
+- aplica `candidate_budget` e `expansion_limit` à união global sem truncar;
+- mantém `candidate-semantic/v1` e `candidate-set/v1` inalterados.
+
+O cache do plano é endereçado por `resolved_search_space_id`, publicado via staging + rename e
+validado por inventário, hashes, IDs e payloads canônicos antes do reuso. Cache ausente é
+construído; cache existente divergente/corrompido falha fechado e jamais é sobrescrito.
+
+O bundle científico é endereçado pelo conteúdo dos cinco arquivos canônicos:
+
+- `mining-request.json`;
+- `mining-constraints.json`;
+- `auto-discovery-profile.json` (`null` no modo `CONSTRAINED`);
+- `resolved-search-space.json`;
+- `candidate-universe-manifest.json`.
+
+Checkpoint operacional registra a fase e os IDs de contexto. Uma retomada com contexto diferente
+falha como `CHECKPOINT_CONTEXT_MISMATCH`. Interrupções após resolução são retomáveis; uma
+publicação já concluída só é reutilizada após comparação byte a byte. Workers, batch size, paths e
+tempos não aparecem nos artefatos científicos nem em seus fingerprints.
+
+Os comandos aditivos são:
+
+```text
+resolve-auto-discovery --request ... --profile-registry ...
+plan-auto-discovery --request ... --profile-registry ... --cache ... --checkpoint ... --output ...
+```
+
+Ambos são estritamente estruturais. Eles não carregam catálogo de mercado nem iniciam Research,
+Validation, backtest, Score ou Robustness. `plan-mining` e `run-mining` permanecem compatíveis.

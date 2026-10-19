@@ -184,6 +184,28 @@ Ambos comparam clean, cache aquecido e interrupção/resume byte a byte. O segun
 backtests completos de WINV26. Budget é limite de geração, não promessa de velocidade.
 O ZIP grande não é versionado nem executado na suíte rápida.
 
+## Mining Intent + AUTO_DISCOVERY v1
+
+O Décimo Incremento resolve um `MiningRequestV1` por profile de hash completo e reutiliza o
+Candidate Generator v1 para formar uma união canônica de subplanos BUY/SELL. O planejamento é
+disk-backed, sem mercado e sem avaliação de performance. Consulte a
+[arquitetura](docs/architecture/tenth-increment-auto-discovery-v1.md).
+
+Resolução sem expandir candidatos:
+
+```powershell
+uv run quantlab-miner resolve-auto-discovery --request examples/mining/auto-discovery/requests/acceptance-v1.json --profile-registry examples/mining/auto-discovery
+```
+
+Plano composto e bundle imutável dos cinco artefatos científicos:
+
+```powershell
+uv run quantlab-miner plan-auto-discovery --request examples/mining/auto-discovery/requests/acceptance-v1.json --profile-registry examples/mining/auto-discovery --cache artifacts/auto-discovery-cache --checkpoint artifacts/auto-discovery-checkpoint.json --output artifacts/auto-discovery-plans
+```
+
+O mesmo checkpoint só aceita o mesmo contexto científico. `--workers` e `--batch-size` são
+parâmetros operacionais e não mudam IDs, cardinalidades ou bytes do bundle.
+
 ## Discovery + Validation v1
 
 O sexto incremento usa holdout cronológico de sessões inteiras, com política inicial 13/6,

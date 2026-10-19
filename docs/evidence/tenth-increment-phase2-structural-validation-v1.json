@@ -1,0 +1,109 @@
+{
+  "schema_version": "tenth-increment-phase2-structural-validation/v1",
+  "phase_1_precommit": "45a24fe88f37e0b700eebcc2f6a38241ec6e08d9",
+  "phase_1_parent": "de88cdc1083a12703ba150a8796971a22920329a",
+  "phase_1_ci": {
+    "conclusion": "success",
+    "head_sha": "45a24fe88f37e0b700eebcc2f6a38241ec6e08d9",
+    "run_id": 38618779469,
+    "url": "https://github.com/lucash-c/quantlab-strategy-miner/actions/runs/38618779469"
+  },
+  "phase_2_implementation_commits": [
+    "cf8aea55ecaf2ba7a7a64219ec83dcff973636da",
+    "83768131fd6de9dbbec5e1b70cfc05990ebdc990"
+  ],
+  "frozen_inputs": {
+    "AUTO_DISCOVERY_BALANCED_V1": {
+      "file_sha256": "e018533ef530bb34ff254f26cf314f6017dc19c6be51805bd66105ceab8fb43f",
+      "auto_discovery_profile_id": "sha256:d199deb074d14ce6cb4f3b2a91f74979f7f4ce0d577291cb9c1262cec7ef93d2",
+      "mining_constraints_id": "sha256:4c6051572e587b3c363cda82226f36ee3c68272a9dcaeb878792be4d5b335db3"
+    },
+    "AUTO_DISCOVERY_ACCEPTANCE_V1": {
+      "file_sha256": "35a77f2d14620716fcdbb09f476a47481fb2478e6ceb4a6865ae8441d12982f5",
+      "auto_discovery_profile_id": "sha256:d948c66d986cf2834fa03fd9032205124f4191f329ecfe521585d3d139e6eb7b",
+      "mining_constraints_id": "sha256:bac450190e1674c6373b5c82947b5bb4ccceb150f7db59da29ea3f6dbe977d89"
+    }
+  },
+  "frozen_schema_file_sha256": {
+    "mining-request-v1.schema.json": "a386bcc9f6f2f3b67a58daa5d42c8e5bbdf4bfc379a6a0477f6b3d4810e78ee0",
+    "mining-constraints-v1.schema.json": "7927dbe6ad9a0f7d061155463e54988e64f7879c2e73f32de2165e3e718ee040",
+    "auto-discovery-profile-v1.schema.json": "78fdfa74aebf278d54fe1573ba10ff8a41d08c7e7c184035827873d667a36dbd",
+    "resolved-search-space-v1.schema.json": "1e33e3d52388f89b64d45ac296b651707d3d98a4d73f69b287455ba86b516fa0",
+    "candidate-universe-manifest-v1.schema.json": "d9c2fee25d7e6be5afd2f7a1390ccb3e615e343fc68691814259bb2c56e1d390"
+  },
+  "resolution_protocol_id": "sha256:9d9d7fa7c1022b37bab00e2d5b4f4290f9db4cb2502433274aa6d74e2963504d",
+  "structural_plans": {
+    "AUTO_DISCOVERY_BALANCED_V1": {
+      "mining_request_id": "sha256:6c296f4e69907bad12bd5eab74c85e0de55100751621bb40f6e8fce4000f5e22",
+      "resolved_search_space_id": "sha256:212c6e8dc77b1da40066b232fe805bc5814aa478c63395e0c114e403090b4149",
+      "candidate_universe_id": "sha256:2c31cfad6554508ef50a518d2f95b5457ee196f22673915c1a7874c88e1f7610",
+      "bundle_id": "sha256:d82e43b6fc4e30c02356da0974efe1b9eee7607228cb6e86152f326ca3788b37",
+      "counts": {"T": 6144, "R": 0, "V": 6144, "D": 0, "U": 6144},
+      "by_direction": {"BUY": 3072, "SELL": 3072},
+      "by_timeframe": {"1m": 1536, "2m": 1536, "5m": 1536, "15m": 1536},
+      "by_family": {
+        "trend_close": 1024,
+        "trend_pair": 1024,
+        "vwap_context": 1024,
+        "breakout_previous": 1024,
+        "momentum": 1024,
+        "candle_context": 1024
+      },
+      "bundle_file_sha256": {
+        "mining-request.json": "d29889e3b3eeed90d8ce86d0284f6ff8ef97f29734e2e25eb846fa74d15b0901",
+        "mining-constraints.json": "dfa266691688d454a63402f47d096114bb8e281db65730a79b86d3bda7f01851",
+        "auto-discovery-profile.json": "6408cc9ea5c85856dd133b83087c2a039380549446279d5afccaf4c519cf9f88",
+        "resolved-search-space.json": "cf31d7dac6c7c70e6eb9ea3e02c833aa1a82468635a553d3fbcb7ef331a41c7c",
+        "candidate-universe-manifest.json": "e81275f72a7e633ce97de9732c8227d9d7d24cbd779b8fde59ebbcc94cf4e41f"
+      }
+    },
+    "AUTO_DISCOVERY_ACCEPTANCE_V1": {
+      "mining_request_id": "sha256:05f0d2603224fa42e76dc1a6292b00231d92aa2a9ac70f756e79cebd3d089693",
+      "resolved_search_space_id": "sha256:a1e776bbe2c0c1fa4090aa5e9b952dd773a3c1114b8ed6ed83f33c576c027a34",
+      "candidate_universe_id": "sha256:7d97661a7221f0de68597f65fd339e5406f3e248a9181308c53c71531f0e0cc1",
+      "bundle_id": "sha256:d0b0e4984e3a0cf0944eb787dbe5aaba2abae8949aa04c077b680056ed2e2666",
+      "counts": {"T": 48, "R": 0, "V": 48, "D": 0, "U": 48},
+      "by_direction": {"BUY": 24, "SELL": 24},
+      "by_timeframe": {"1m": 12, "2m": 12, "5m": 12, "15m": 12},
+      "by_family": {
+        "trend_close": 8,
+        "trend_pair": 8,
+        "vwap_context": 8,
+        "breakout_previous": 8,
+        "momentum": 8,
+        "candle_context": 8
+      },
+      "bundle_file_sha256": {
+        "mining-request.json": "302ed54a70bc43b2f72c0d0ce27d5e2d26de8c582001da2c4151c860301b123a",
+        "mining-constraints.json": "00128bd543988ab34f87b149d9fe70f703da331828001a2479042d97693eced5",
+        "auto-discovery-profile.json": "8d3a77070fcabe9269a6a07431c4b9c44a8516fa01741162bf24822cc1428920",
+        "resolved-search-space.json": "5a3295e559b20aa0646be04c7e3aa13c25092fe8bc454abe897b35fe246721bd",
+        "candidate-universe-manifest.json": "2fd7e175de2973b46b5cf6388d3f59781a9327716d5da88ae564e7e143870c60"
+      }
+    }
+  },
+  "validation": {
+    "ruff": "PASS",
+    "full_test_suite": {"status": "PASS", "tests_run": 246},
+    "clean_warm_resume_byte_identical": true,
+    "worker_order_independent": true,
+    "operational_settings_excluded_from_scientific_ids": true,
+    "legacy_cli_regression": "PASS",
+    "long_path_test": {
+      "status": "PASS",
+      "temporary_root": "C:\\qltmp",
+      "prior_failure_cause": "test harness temporary prefix exceeded the traditional Windows path boundary"
+    }
+  },
+  "scope_guards": {
+    "real_b3_data_accessed": false,
+    "research_pipeline_executed": false,
+    "validation_pipeline_executed": false,
+    "scientific_backtest_executed": false,
+    "score_pipeline_executed": false,
+    "robustness_pipeline_executed": false,
+    "quantitative_verdict_executed": false,
+    "full_suite_used_versioned_test_fixtures_and_unit_backtest_tests": true,
+    "ninth_increment_evidence_changed": false
+  }
+}
