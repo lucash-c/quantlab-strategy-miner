@@ -11,6 +11,7 @@ from unittest.mock import patch
 from mining_helpers import small_search
 from quantlab_cli.main import main
 from quantlab_core.canonical import write_canonical_json
+from quantlab_core.errors import ContractError
 from quantlab_mining.contracts import GenerationPolicyV1
 from research_helpers import execution_config, test_gate
 from test_research_integrity import prepared
@@ -42,6 +43,35 @@ def arguments(root, command="plan-research"):
 
 
 class ResearchCliTests(unittest.TestCase):
+    def test_auto_discovery_bundle_is_validated_before_market_access(self):
+        arguments = ["run-auto-discovery-research"]
+        for flag in (
+            "bundle",
+            "candidate-cache",
+            "history",
+            "evaluation",
+            "split-policy",
+            "discovery-gate",
+            "validation-gate",
+            "cache",
+            "checkpoint",
+            "output",
+        ):
+            arguments.extend([f"--{flag}", flag])
+        error = io.StringIO()
+        with (
+            redirect_stderr(error),
+            patch(
+                "quantlab_cli.main.load_candidate_plan_bundle",
+                side_effect=ContractError("invalid bundle"),
+            ) as validate,
+            patch("quantlab_cli.main.load_session_catalog") as market,
+        ):
+            self.assertEqual(main(arguments), 2)
+        validate.assert_called_once()
+        market.assert_not_called()
+        self.assertIn("invalid bundle", error.getvalue())
+
     def test_plan_metadata_only_never_resolves_payload_or_evaluates_cache(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
