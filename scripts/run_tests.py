@@ -7,6 +7,7 @@ import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
 for source in (
     ROOT / "packages" / "core" / "src",
     ROOT / "packages" / "data" / "src",
