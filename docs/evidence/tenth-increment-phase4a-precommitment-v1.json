@@ -1,0 +1,90 @@
+{
+  "schema_version": "tenth-increment-phase4a-precommitment-evidence/v1",
+  "baseline_commit": "901cdf22b7e98abbab6673c8bad1dbf074e8f7e5",
+  "precommitment_path": "examples/acceptance/tenth-increment/real-b3-precommitment-v1.json",
+  "precommitment_file_sha256": "59a45eec219ed4033538eb2f2a5de008bed310f9ba4f56b78749eeaca394a62a",
+  "status": "READY_FOR_VERSIONED_PRECOMMIT_BEFORE_REAL_EXECUTION",
+  "frozen_universe": {
+    "profile": "AUTO_DISCOVERY_ACCEPTANCE_V1",
+    "profile_id": "sha256:d948c66d986cf2834fa03fd9032205124f4191f329ecfe521585d3d139e6eb7b",
+    "candidate_universe_id": "sha256:7d97661a7221f0de68597f65fd339e5406f3e248a9181308c53c71531f0e0cc1",
+    "candidate_count": 48,
+    "bundle_id": "sha256:d0b0e4984e3a0cf0944eb787dbe5aaba2abae8949aa04c077b680056ed2e2666",
+    "bundle_validated_read_only": true
+  },
+  "frozen_dataset": {
+    "dataset_id": "sha256:6e3fc4f0f6359e3b01c8163a7b06390df66be2845396b517ec27362e55296262",
+    "logical_asset": "WIN",
+    "physical_contract": "WINV26",
+    "session_count": 20,
+    "source_files_present": 20,
+    "source_sizes_match": true,
+    "source_sha256_match": true,
+    "source_substitution_used": false
+  },
+  "research": {
+    "protocol_schema_version": "research-protocol/v2",
+    "expected_protocol_id": "sha256:6712a6b80b1fc0df798ffd0192efd8c928bfbd17923a4002eaac0cf7b292ff85",
+    "split_plan_id": "sha256:8c729b350efc7fca2d175c632d8ca3591b5f77077061fddc0c8aefb7e8b55b2f",
+    "discovery_sessions": 13,
+    "validation_sessions": 6,
+    "outside_research_window_but_authorized_for_walk_forward": ["2026-08-24"],
+    "discovery_gate_role": "PASS_THROUGH_TO_LATER_EVALUATION_NOT_ECONOMIC_APPROVAL",
+    "validation_gate_role": "PASS_THROUGH_TO_SCORE_NOT_ECONOMIC_APPROVAL",
+    "synthetic_trades_gte_zero_gate_selected": false,
+    "discovery_freeze_required": true,
+    "reoptimization_allowed": false
+  },
+  "downstream_compatibility": {
+    "research_v2_to_score_v1": "VALIDATED",
+    "score_v1_to_ranking_diversity": "VALIDATED",
+    "score_v1_to_robustness_candidate_set": "VALIDATED",
+    "robustness_to_technical_completeness": "VALIDATED",
+    "robustness_to_quantitative_verdict": "VALIDATED",
+    "legacy_gate_separate": true,
+    "technical_completeness_separate": true,
+    "quantitative_verdict_separate": true
+  },
+  "reused_ninth_increment_policies": {
+    "legacy_walk_forward_policy_id": "sha256:a86a2a379482f6fcbe0ef1caf70f5ef4f99559f3a0f01b600394d504fe829af4",
+    "real_20_walk_forward_policy_id": "sha256:43c483cb1c1673c135f3f6d18e3de6f2bd3c079599aec659a9092b2110183594",
+    "monte_carlo_policy_id": "sha256:a6d3f79bc69e9050b805d695eeeaf1eae16de86887a2b517d101ac58bcdf7811",
+    "sensitivity_policy_id": "sha256:60bff3f679337db0e9efd09c9066beb57d9d574525f5c067e4c0839b82ade729",
+    "stress_v2_policy_id": "sha256:870366affa27ac2b344fa1432bd237ece61ac906fcdfa81d893e020a66f8db7c",
+    "legacy_gate_policy_id": "sha256:783755d95253aa525c2ea50b22bb1fa98177f7559208a9ae7acabe46916325b8",
+    "technical_completeness_policy_id": "sha256:2e7be06cdf967c582b6a22107ca90a2c4da89b4240944b1c785d564b00b281ff",
+    "quantitative_verdict_policy_id": "sha256:0a60a6ffc58dcfa6694348109c44b598d4969de6013b7f5e436e9e6f08a52def"
+  },
+  "cache_readiness": {
+    "candidate_plan_cache_valid": true,
+    "candidate_session_evaluation_pack_count": 2457,
+    "candidate_session_evaluation_content_hashes_valid": true,
+    "reuse_rule": "ONLY_EXACT_MATCHING_CONTENT_ADDRESSED_FINGERPRINTS",
+    "cache_miss_rule": "REBUILD_FROM_FROZEN_OFFICIAL_SOURCES_WITHOUT_SCIENTIFIC_CHANGE"
+  },
+  "workload": {
+    "status": "READY",
+    "maximum_real_candidates": 48,
+    "walk_forward_folds": 2,
+    "monte_carlo_paths": 12,
+    "monte_carlo_sampled_blocks": 72,
+    "sensitivity_scenarios": 1,
+    "stress_scenarios": 1,
+    "candidate_scenario_combinations": 96,
+    "conservative_expected_candidate_session_evaluation_builds": 1632,
+    "execution_mode": "SEQUENTIAL_SINGLE_WRITER",
+    "short_windows_root": "C:/qltmp/quantlab-tenth-phase4b-real"
+  },
+  "scope_guards": {
+    "real_b3_backtest_executed": false,
+    "real_research_executed": false,
+    "real_validation_executed": false,
+    "real_score_executed": false,
+    "real_robustness_executed": false,
+    "real_quantitative_verdict_executed": false,
+    "balanced_6144_executed": false,
+    "real_results_observed": false,
+    "thresholds_changed": false,
+    "profiles_changed": false
+  }
+}

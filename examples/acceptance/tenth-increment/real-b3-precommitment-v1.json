@@ -1,0 +1,273 @@
+{
+  "schema_version": "tenth-increment-real-b3-precommitment/v1",
+  "baseline_commit": "901cdf22b7e98abbab6673c8bad1dbf074e8f7e5",
+  "phase": "PRECOMMITTED_BEFORE_REAL_EXECUTION",
+  "auto_discovery": {
+    "profile": "AUTO_DISCOVERY_ACCEPTANCE_V1",
+    "profile_path": "examples/mining/auto-discovery/acceptance-v1.json",
+    "profile_file_sha256": "35a77f2d14620716fcdbb09f476a47481fb2478e6ceb4a6865ae8441d12982f5",
+    "profile_id": "sha256:d948c66d986cf2834fa03fd9032205124f4191f329ecfe521585d3d139e6eb7b",
+    "request_path": "examples/mining/auto-discovery/requests/acceptance-v1.json",
+    "request_file_sha256": "6bba78ecadf91365b7fda84d3b3686dd674742d089973a7dc6d5e29ee51f9abe",
+    "mining_request_id": "sha256:05f0d2603224fa42e76dc1a6292b00231d92aa2a9ac70f756e79cebd3d089693",
+    "resolution_protocol_id": "sha256:9d9d7fa7c1022b37bab00e2d5b4f4290f9db4cb2502433274aa6d74e2963504d",
+    "resolved_search_space_id": "sha256:a1e776bbe2c0c1fa4090aa5e9b952dd773a3c1114b8ed6ed83f33c576c027a34",
+    "candidate_universe_id": "sha256:7d97661a7221f0de68597f65fd339e5406f3e248a9181308c53c71531f0e0cc1",
+    "candidate_count": 48,
+    "by_direction": {"BUY": 24, "SELL": 24},
+    "by_timeframe": {"1m": 12, "2m": 12, "5m": 12, "15m": 12},
+    "by_family": {
+      "trend_close": 8,
+      "trend_pair": 8,
+      "vwap_context": 8,
+      "breakout_previous": 8,
+      "momentum": 8,
+      "candle_context": 8
+    },
+    "candidate_ids": [
+      "sha256:0e87cf7587c13378d4825433da5b1252a28f649bfc23df623dfe520e0d3959c1",
+      "sha256:16be6a2336d4a9804e165b633bc0eb59eeb8c95e37c8350af9ab4fc4ad74641f",
+      "sha256:17568b3017eb4540885de336f95bd94546fa6542bb2d819d08faeca57d430cde",
+      "sha256:27474f25531e00eb88b316b3ad58ec39ec0f71ebfdaee72a9693eed77b3e1a60",
+      "sha256:2b920055344ab02045fb75996add77e8a43b958145b1be7b92168ca8e35b9b8d",
+      "sha256:2cc8de518288b3fd4b9039b70d2bbc7d6ae08e20dffe1c9f0501438df35b79da",
+      "sha256:2d6804b47c89d5d0c6f36263a6943117a5dbb3ffecb4ae69b0a6bd775d0e5f57",
+      "sha256:348117367002085928024dc589d4174f2d4bf074235a6f846f5dbc706bcb2f44",
+      "sha256:3f46c792e53008823a079451cbcc255300d0f08dba5844b5a836240444bf6852",
+      "sha256:42a1c209ac2fed9b6e858c3742ca9b3bb5294208d0ba9d3207a66894587bcf1c",
+      "sha256:4668b1d5255daf530a5cf6a66ff69383da52a1e5807fc7c95768c9d3e21985a8",
+      "sha256:496f4efe05f1dff2d5a54e77f0099836f6f175083e33c7f8e5f33b50f76252d0",
+      "sha256:5353c4f87f519fa90463249b615dd67bf6e72eeda539de217d5fc5bc8cc4ca94",
+      "sha256:579ba964165bfdb759f5308f5b34816ed301c325a8423329405cba16d3d3d6b2",
+      "sha256:59ecd0199c00719a8bcde2e98fe4f3f8b01809c913035615445ce861adb885f6",
+      "sha256:5aff8b1a8c6b18fa005a74d44044be69f2478711e985490d6fd1383828968a31",
+      "sha256:6f7995e18bef5cac1acdcdb7b7df18b51c65bc5fb0632f6d4b64cf43bbda63e8",
+      "sha256:70db36f4d693ea269bab90a62c0601dc92d230413391307f660fc51a941a3525",
+      "sha256:7402608a70d0a6c2b812f74e276fc9998801bcc039300fa9ff5b83bc006bc1eb",
+      "sha256:7414b6c812f63e84ba1649650c9c69a08f2d8658034fc32705a732d3b42b2a1b",
+      "sha256:74bdcaa95b806bf8604d0530c8fdedd2d8af7ee110c09f66619ae418f4dece1e",
+      "sha256:7defa05eafe025fef490588e2324f343a08ce4462d9f2380a16a7eacfd4c8526",
+      "sha256:83cdac47393bb64f5d8260e44bd3a8736b3d9b5c20af2255519ba190c1f181bc",
+      "sha256:8654de9a64122911d92b37d618c8e8461ce6e50e353927e31cfe60e14e815309",
+      "sha256:8ea02f505b0ab2ba0cbbef1591367d27cdb9abecac49cb601683a28c3736da49",
+      "sha256:93a1e9e3b5965e865eb927a6cd50c0e6f309caed99cac39dbc155e60baad74fb",
+      "sha256:960f91680dffd5417dbd01194f03da4c84e4577bba78b82de01f912a3772f5c1",
+      "sha256:96f0a0ab5c435113a0bafc39cd7eba6cbecdce5eff781981184654bb873a9108",
+      "sha256:98938068f18bbdb862265334bd08c9abb2efd0732fea363cf32bf779ec017e54",
+      "sha256:9cc7645480f4f58bc99236e039716821ec77b81099b5ade76ca6994b29938621",
+      "sha256:9ee5bf368c3e5478e99b68c3da0607d11b71e07ee6134b4529bfa5d9a3d12de1",
+      "sha256:a1629d313f7edee651c139631bcd515d3d48ee7a344e423eaaa4d6f629f12fc5",
+      "sha256:a395ddf8b9598a63735cf57d11aba356866487b4694ccf8966b1755cb1bdfd0f",
+      "sha256:a955f7d13621a9d4ef22edd4bd75c7e816d21121669de16102ab6e3368a04202",
+      "sha256:b0d15995c92b9bbdaeacd3166749b561f1e6d3f670295ecb6158be585393b8a0",
+      "sha256:b1d9daf58bd8ae891feeaf7b669637dddd133c5129e0c0074aa9dc4a9ad896ba",
+      "sha256:b8845f1157fad8a1c2b8765bcc48cca16d97116b3e9087f1a4cb577de40a1757",
+      "sha256:bc7487c5e07e76d691b0e7d2ae274ce00711b8bdb8d726a666c95d8660873865",
+      "sha256:bdff0e41996dc8bcd61e46c79b17cbd2157f21608a9f0520c2060bed4852ae43",
+      "sha256:c24723545a38dbefd90ecaee51d37d646f188154d98be3961ab58a402c5762b0",
+      "sha256:c9415269ca2eaa8228edd6c6a89769fb78e5deecf547715c351a7778b0976932",
+      "sha256:d3d7d6338ee8c14947a21a80266c418f02dcfeba12e4c2f5226d8dd370fb322d",
+      "sha256:d42973c650dae3943ffc07b29cbe7149e3773c0a13bd5d9411198a827e2291be",
+      "sha256:e3a2eb5137253d24318b4b1b2135c1918b5f91f3a45e562ce20c07f4a04476db",
+      "sha256:e540c2eb6ff1b19da6865ccf5a32cc0abe785f673b623e87392761daa62c167c",
+      "sha256:ec066a9934ff890551ce8b54ecd138c630fe33191e3055c14bad54182d477a08",
+      "sha256:f18bbfcfee07f8b4981f767e2e8062d4af49d2fac7c96b1273309e230f55b149",
+      "sha256:fdbede3c3a727532cd2aa7545886d5a5817fdc1b61979a842dc194e6069cb712"
+    ]
+  },
+  "dataset": {
+    "dataset_id": "sha256:6e3fc4f0f6359e3b01c8163a7b06390df66be2845396b517ec27362e55296262",
+    "window_fingerprint": "sha256:5c06418d192be74f5798eaabd417a7ce1311a1f4f301217bfb114592cbf5e4e1",
+    "logical_asset": "WIN",
+    "physical_contract": "WINV26",
+    "timeframes": ["1m", "2m", "5m", "15m"],
+    "session_count": 20,
+    "first_date": "2026-08-24",
+    "last_date": "2026-09-21",
+    "whitelist_path": "examples/acceptance/ninth-increment/session-whitelist-v2.json",
+    "whitelist_file_sha256": "088bfe24f81429ac826a910e97cfb8d563e0f74c4b1b18bd168ef848bc5751b8",
+    "source_manifest_path": "docs/evidence/ninth-increment-official-sources-v1.json",
+    "source_manifest_file_sha256": "dd6188be1c4fba7a1cead8462c56ce81655a56226184618e231cc6a5e4edb8b7",
+    "dataset_freeze_path": "docs/evidence/ninth-increment-real-dataset-freeze-v1.json",
+    "dataset_freeze_file_sha256": "6205bfd338b0869a89f4e026167b2aef9304cec7af1617e1a04508156a664572",
+    "sessions": [
+      {"date": "2026-08-24", "session_id": "sha256:f274642c041ccf3ae0be01c830bafafa249a75c4ba721697af9619d116857204"},
+      {"date": "2026-08-25", "session_id": "sha256:f1c1f1968084e0664f7662a17945c8523a270176535f13450db167a65206fc4e"},
+      {"date": "2026-08-26", "session_id": "sha256:4ff5d14be0c1ac9bb3372d27e352feaf197e94b272c67f649828b5c8cd41780d"},
+      {"date": "2026-08-27", "session_id": "sha256:91e94b0b0c4adeff3152517e08241dc5d047363eea445b588da05e8f801fbd82"},
+      {"date": "2026-08-28", "session_id": "sha256:35ae864a3f63a3e7a733dccb66abf4b1298cfabcdef9280441baaebccac83934"},
+      {"date": "2026-08-31", "session_id": "sha256:9ca4fd221682e2b32726abbd2b99ab9db133931b7bc803cc3c3101becd7af2d0"},
+      {"date": "2026-09-01", "session_id": "sha256:6192861fda84d47a3ae5f6a40c4abe381b743f04151596758c20029201aee90d"},
+      {"date": "2026-09-02", "session_id": "sha256:ce50172a25a936d2d23a59205c71b3477af260054ce46ae02b944c3fc084ccf3"},
+      {"date": "2026-09-03", "session_id": "sha256:9b39ec63f9a4f5f01c1cb336fb3a61eabecae65036f8a98bdabe586538e1514a"},
+      {"date": "2026-09-04", "session_id": "sha256:d7aba556471c236e3743016aea6e4b7ed40ad4a4a51d7223aea80c46a59452cc"},
+      {"date": "2026-09-08", "session_id": "sha256:861fcb5e414300b5a15278792892df6bca18e1fbc8f11bca3b30502baf4bf224"},
+      {"date": "2026-09-09", "session_id": "sha256:a8aebdf531956f1012d17eae77f3c89aff469d3ff4a35ec8999d4337fb24c2cd"},
+      {"date": "2026-09-10", "session_id": "sha256:ad8560db2ed83ea4b9b9da886a85ff795f5ee669211097d3da91d6e0efe14794"},
+      {"date": "2026-09-11", "session_id": "sha256:11a950ad6ef47d1a1edc7cfbd17f3f0167e98822291b0b4714281283393a7885"},
+      {"date": "2026-09-14", "session_id": "sha256:c75f07230551d5954c16f878e6ceb5b37565e56cb1b25869cb5a968143843bc5"},
+      {"date": "2026-09-15", "session_id": "sha256:bde38f723c5be4524b4f12cf2f220b6fc28fc052556d9ecb6dc717e190b4f006"},
+      {"date": "2026-09-16", "session_id": "sha256:054ce6f09c8fb43f2a256dc180d4cf8c8a73c3b3fc03e0ea34a7aef9a1642386"},
+      {"date": "2026-09-17", "session_id": "sha256:fb6a54703d1189daad0c80b5e6d5401e050647a91c6317bac37881699893072e"},
+      {"date": "2026-09-18", "session_id": "sha256:7381d519a0cc555011b74d4e48f8057d1fd64b76a57206352d281bbf665b4aee"},
+      {"date": "2026-09-21", "session_id": "sha256:87e1caea91387b372cd2dd5c93560307febb94f495588c5c3fe31c1764d5375b"}
+    ]
+  },
+  "research": {
+    "protocol_schema_version": "research-protocol/v2",
+    "expected_research_protocol_id": "sha256:6712a6b80b1fc0df798ffd0192efd8c928bfbd17923a4002eaac0cf7b292ff85",
+    "evaluation_path": "examples/mining/evaluation.json",
+    "evaluation_file_sha256": "bc312039ab46363acf234361fd753bbc3ab5f32e5bee30f49a9d61cbe59a4af1",
+    "research_max_sessions": 19,
+    "split_policy_path": "examples/research/split-13-6.json",
+    "split_policy_file_sha256": "db448e00929df8206719d64943b4a254fe465d7e5e64eef2e21f616d1225cbb7",
+    "expected_split_plan_id": "sha256:8c729b350efc7fca2d175c632d8ca3591b5f77077061fddc0c8aefb7e8b55b2f",
+    "discovery_dates": [
+      "2026-08-25", "2026-08-26", "2026-08-27", "2026-08-28", "2026-08-31",
+      "2026-09-01", "2026-09-02", "2026-09-03", "2026-09-04", "2026-09-08",
+      "2026-09-09", "2026-09-10", "2026-09-11"
+    ],
+    "validation_dates": [
+      "2026-09-14", "2026-09-15", "2026-09-16",
+      "2026-09-17", "2026-09-18", "2026-09-21"
+    ],
+    "outside_research_window_but_authorized_downstream": ["2026-08-24"],
+    "discovery_gate": {
+      "path": "examples/research/discovery-no-criteria.json",
+      "file_sha256": "4c1162da5fae9df3adc59d1a00adc33a01366e11772f4bb97cd8f040bd73ed62",
+      "policy_id": "sha256:d94fa28d22d274683a9cdca7c1c830640d42f1f0747037f4907692cbb69bddfc",
+      "role": "PASS_THROUGH_TO_LATER_EVALUATION_NOT_ECONOMIC_APPROVAL"
+    },
+    "validation_gate": {
+      "path": "examples/research/validation-no-criteria.json",
+      "file_sha256": "50ae0bc0aba92e3235130e69f960feeb6aff6bb579b70abb83db1ab779b8a198",
+      "policy_id": "sha256:1a5f835e1eee6d207ea46de0a0c6ab249118a0f8ad7267e46835efb306f171bf",
+      "role": "PASS_THROUGH_TO_SCORE_NOT_ECONOMIC_APPROVAL"
+    },
+    "discovery_freeze_required_before_validation": true,
+    "candidate_session_evaluation_reuse_requires_exact_fingerprint": true,
+    "reoptimization_allowed": false
+  },
+  "score": {
+    "score_policy_path": "examples/scoring/research-score-v1.json",
+    "score_policy_file_sha256": "2c4577015e7825b9f2d56627cd4124c49235b845cd27c0c83192fba0a27879ef",
+    "score_policy_id": "sha256:43088e265da86e649d3b75cbbea2ff48e9130330bf0ab11e4eb982bb6eb0f559",
+    "ranking_policy_path": "examples/scoring/research-ranking-v1.json",
+    "ranking_policy_file_sha256": "bb7ddb60ffe68f45586d6af05480f6d92cdac655fb800e84ee521204e2444b61",
+    "ranking_policy_id": "sha256:a1194d3a2b4d073c94e964cd2bc737cae5554f99102e20d4b396ba3aff9b277c",
+    "diversity_policy_path": "examples/scoring/research-diversity-v1.json",
+    "diversity_policy_file_sha256": "71d9b0825e201212edcfed8563379dab1714d93366dd632507a1fcc0dde15609",
+    "diversity_policy_id": "sha256:084e8af5ad8420c98a7b2ee5cf65828c03a631bae6aab6403b4c0669c782baf5",
+    "top_n": 48,
+    "research_pass_is_not_live_approval": true
+  },
+  "robustness": {
+    "required_families": ["WALK_FORWARD", "MONTE_CARLO", "SENSITIVITY", "STRESS"],
+    "candidate_selection": {
+      "path": "examples/acceptance/ninth-increment/candidate-selection-v1.json",
+      "file_sha256": "6d7569064b95426fe16cc3c7692852e973921a3e42c78e4ffd209404077c857d",
+      "policy_id": "sha256:08012d8846e550e2030556eabcc3c5dd9b5db73feb6aa0fc6cc9f88a22d9b80e",
+      "method": "ALL_SCORED",
+      "maximum_candidates": 48
+    },
+    "legacy_walk_forward": {
+      "path": "examples/acceptance/ninth-increment/walk-forward-policy-v1.json",
+      "file_sha256": "2af790995f5aac3edd723966803c23e7b176faa8844a38b730df118d4041a4dd",
+      "policy_id": "sha256:a86a2a379482f6fcbe0ef1caf70f5ef4f99559f3a0f01b600394d504fe829af4"
+    },
+    "real_20_walk_forward": {
+      "path": "examples/acceptance/ninth-increment/walk-forward-policy-real-20-v1.json",
+      "file_sha256": "f2ba2c2fb0cdc50cf57651103fc3202e5a46102800054ace6e3c70c7933f2d79",
+      "policy_id": "sha256:43c483cb1c1673c135f3f6d18e3de6f2bd3c079599aec659a9092b2110183594",
+      "expected_plan_id": "sha256:16643775665a8f2495fd7fe2795638d36aaec10e449facd444d7fd04d47714b4",
+      "expected_folds": 2
+    },
+    "monte_carlo": {
+      "path": "examples/acceptance/ninth-increment/monte-carlo-policy-v1.json",
+      "file_sha256": "f8efe3b0416f5174dbaaff7f4829fb20546cb2cd228bec76b65e90ef7dd3c2bc",
+      "policy_id": "sha256:a6d3f79bc69e9050b805d695eeeaf1eae16de86887a2b517d101ac58bcdf7811"
+    },
+    "sensitivity": {
+      "path": "examples/acceptance/ninth-increment/sensitivity-policy-v1.json",
+      "file_sha256": "1293255f26590aea907cf4b6b27042c2c9570b2ccda5046cf6b2b98c1d24df8e",
+      "policy_id": "sha256:60bff3f679337db0e9efd09c9066beb57d9d574525f5c067e4c0839b82ade729"
+    },
+    "stress_v1_historical": {
+      "path": "examples/acceptance/ninth-increment/stress-policy-v1.json",
+      "file_sha256": "435793dd0370c871e29548344ec9e4801025c976e2c8d2e257e808a9e8a66935",
+      "policy_id": "sha256:2a834d2438c9c8fe5861dfa3cea72e2bd4eda140fe68877f72d95f5c7d18c780",
+      "status": "INVALID_STRESS_SCENARIO",
+      "reason": "NON_STRESS_SCENARIO",
+      "execution_selected": false
+    },
+    "stress_v2": {
+      "path": "examples/acceptance/ninth-increment/stress-policy-v2.json",
+      "file_sha256": "8d0d431d9361ce5bc4d44efc370db018994fdab1fa2eb26c8bbb0de77a8f33b9",
+      "policy_id": "sha256:870366affa27ac2b344fa1432bd237ece61ac906fcdfa81d893e020a66f8db7c",
+      "cost_multiplier": {"numerator": "3", "denominator": "2"},
+      "slippage_multiplier": {"numerator": "3", "denominator": "2"}
+    },
+    "workload": {
+      "path": "examples/acceptance/ninth-increment/workload-policy-v1.json",
+      "file_sha256": "bd2ec2bfc322007a2196faadb287e227754438b85b062523e1cf7abd8c9ad09e",
+      "policy_id": "sha256:7ffde04b3965a3bca20b27e731221289db310d3b87945ebf10324cb85cd7ee1d",
+      "planned_candidate_scenario_combinations": 96,
+      "planned_expected_cse_builds": 1632
+    },
+    "legacy_gate": {
+      "path": "examples/acceptance/ninth-increment/technical-gate-v1.json",
+      "file_sha256": "468142286af92f55662e15b8cd841b135426cc17e9a5b99b7f2f632aaf07005f",
+      "policy_id": "sha256:783755d95253aa525c2ea50b22bb1fa98177f7559208a9ae7acabe46916325b8"
+    },
+    "technical_completeness": {
+      "path": "examples/acceptance/ninth-increment/technical-completeness-real-20-v1.json",
+      "file_sha256": "5d8cda1020aa70f246afde4d83cf09e5da42d194b6bfbd29e676a7547af83702",
+      "policy_id": "sha256:2e7be06cdf967c582b6a22107ca90a2c4da89b4240944b1c785d564b00b281ff"
+    },
+    "quantitative_verdict": {
+      "path": "examples/acceptance/ninth-increment/quantitative-gate-real-20-v2.json",
+      "file_sha256": "bb35537d4280f0ecc3910ca53e582de1784df40cf34f11ba6b7037a03e538b73",
+      "policy_id": "sha256:0a60a6ffc58dcfa6694348109c44b598d4969de6013b7f5e436e9e6f08a52def",
+      "technical_requirement": "NINTH_INCREMENT_TECHNICAL_COMPLETE"
+    },
+    "verdicts_are_separate": [
+      "LEGACY_ROBUSTNESS_GATE",
+      "NINTH_INCREMENT_TECHNICAL_COMPLETENESS",
+      "QUANTITATIVE_VERDICT"
+    ]
+  },
+  "execution_plan": {
+    "mode": "SEQUENTIAL_SINGLE_WRITER",
+    "real_candidate_limit": 48,
+    "short_windows_root": "C:/qltmp/quantlab-tenth-phase4b-real",
+    "atomic_publication": true,
+    "content_addressed_cache": true,
+    "recoverable_checkpoints": true,
+    "resume_requires_identical_protocol": true,
+    "duplicate_processing_forbidden": true,
+    "scientific_changes_during_execution_forbidden": true
+  },
+  "completion_criteria": {
+    "research_v2_complete": true,
+    "discovery_freeze_validated_before_validation": true,
+    "score_v1_complete": true,
+    "all_selected_robustness_families_complete": true,
+    "legacy_gate_reported_separately": true,
+    "technical_completeness_reported_separately": true,
+    "quantitative_verdict_reported_separately": true,
+    "clean_warm_resume_scientific_outputs_identical": true,
+    "source_hashes_reverified_after_execution": true
+  },
+  "precommitment_integrity": {
+    "real_b3_backtest_executed": false,
+    "real_research_executed": false,
+    "real_validation_executed": false,
+    "real_score_executed": false,
+    "real_robustness_executed": false,
+    "real_quantitative_verdict_executed": false,
+    "real_results_observed": false,
+    "policies_selected_from_prior_frozen_semantics_not_observed_performance": true,
+    "balanced_profile_changed": false,
+    "acceptance_profile_changed": false
+  }
+}
